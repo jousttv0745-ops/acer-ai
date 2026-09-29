@@ -95,13 +95,14 @@ html{scroll-behavior:smooth}
 <header class="hero">
   <div class="eyebrow">內部分享 · Claude 工作法</div>
   <h1>我的 Claude 工作法</h1>
-  <p class="lede">我用 Claude 做過五種工作：設定環境、競品分析、提案簡報、規格文件、追蹤 AI 新訊。每一種都整理成一條可以重複跑的流程。我的原則是：同一件事做到第二次，就把它做成範本。</p>
+  <p class="lede">我用 Claude 做過六種工作：設定環境、競品分析、產品推薦、提案簡報、規格文件、追蹤 AI 新訊。每一種都整理成一條可以重複跑的流程。我的原則是：同一件事做到第二次，就把它做成範本。</p>
   <ul class="map">
     <li><a href="#setup"><span class="n">01</span><span class="t">基礎設定與 Skill Set</span></a></li>
-    <li><a href="#benchmark"><span class="n">02</span><span class="t">競品分析與推薦機制</span></a></li>
-    <li><a href="#deck"><span class="n">03</span><span class="t">Mockup、線上簡報、版本控制</span></a></li>
-    <li><a href="#spec"><span class="n">04</span><span class="t">逆向工程產出規格</span></a></li>
-    <li><a href="#news"><span class="n">05</span><span class="t">AI 新訊排程與雙模型互評</span></a></li>
+    <li><a href="#benchmark"><span class="n">02</span><span class="t">社群爬蟲與影片競品分析</span></a></li>
+    <li><a href="#recommend"><span class="n">03</span><span class="t">產品相容性篩選與推薦機制</span></a></li>
+    <li><a href="#deck"><span class="n">04</span><span class="t">Mockup、線上簡報、版本控制</span></a></li>
+    <li><a href="#spec"><span class="n">05</span><span class="t">安裝檔逆向工程產出規格</span></a></li>
+    <li><a href="#news"><span class="n">06</span><span class="t">AI 新訊排程與雙模型互評</span></a></li>
   </ul>
 </header>
 
@@ -140,7 +141,7 @@ html{scroll-behavior:smooth}
     </div>
     <div class="block">
       <h3>手機遠端控制：離開電腦也能繼續跑</h3>
-      <p>在專案資料夾執行 <code>claude remote-control</code>，或在正在跑的 session 裡輸入 <code>/remote-control</code>。之後用手機上的 Claude app 就能接手同一個 session：看進度、回覆問題、下一步指令。這份提案簡報大部分的修改就是這樣在路上完成的。</p>
+      <p>在專案資料夾執行 <code>claude remote-control</code>，或在正在跑的 session 裡輸入 <code>/remote-control</code>。之後用手機上的 Claude app 就能接手同一個 session：看進度、回覆問題、下一步指令。我的提案簡報就是用這種方式，離開電腦後繼續修改。</p>
     </div>
   </div>
 
@@ -182,36 +183,62 @@ html{scroll-behavior:smooth}
 <section class="ch" id="benchmark">
   <div class="ch-head">
     <div class="ch-num">02 · BENCHMARK</div>
-    <h2>競品分析：先定比較框架，再抓資料，最後轉成推薦</h2>
-    <p class="pain">以前的競品分析是截幾張圖、寫感想，很難回答「所以我們該怎麼做」。現在的做法是：用同一把尺量每一家，再把結論轉成選機推薦規則。</p>
+    <h2>影片競品分析：爬社群找官方影片，再逐格拆解</h2>
+    <p class="pain">競品的官方影片散在各個社群平台，一支一支找、一支一支看太花時間，看完也只留下印象，很難比較。我請 Claude 寫爬蟲把影片找齊，再逐格拆成可以比較的資料。</p>
   </div>
 
   <div>
     <div class="label">工作流程</div>
     <ol class="flow">
-      <li><div><b>定比較框架</b><span>先決定要比哪些面向。以 AI 產品頁為例：網頁定位、功能介紹、資訊安全、硬體導流、SEO／FAQ。</span></div></li>
-      <li><div><b>用腳本抓完整頁面</b><span>請 Claude 寫 Puppeteer 腳本，在 1920px 寬度下慢慢捲動整頁，等圖片載完再全頁截圖，另外存一份手機用的縮小版。</span></div></li>
-      <li><div><b>切區塊、標分類</b><span>把每一家的長頁面切成區塊，每個區塊對應到框架裡的一個分類，最後整理成同一張比較表。</span></div></li>
-      <li><div><b>篩出相容產品</b><span>整理自家產品規格，依功能需要的硬體條件篩出支援的機型，取代一長串相容清單。</span></div></li>
-      <li><div><b>轉成推薦卡</b><span>把篩出來的真實機型、官方產品照放進 mockup 的比較表和推薦卡。</span></div></li>
+      <li><div><b>定分析框架</b><span>先決定每支影片要看哪些面向，例如開場手法、AI 功能怎麼呈現、產品鏡頭和情境鏡頭的比例、結尾怎麼收。</span></div></li>
+      <li><div><b>爬社群找官方影片</b><span>請 Claude 寫爬蟲，在社群平台上搜尋競品（例如 ASUS）的官方帳號，整理出影片清單：標題、連結、日期、互動數。</span></div></li>
+      <li><div><b>逐格分析</b><span>把影片拆成影格，逐格記錄每一段的畫面、字卡、鏡頭和節奏，整理成時間軸。</span></div></li>
+      <li><div><b>整理成比較表</b><span>每支影片都用同一套欄位描述，並排之後，各家的共同手法和差異一眼就看得出來。</span></div></li>
+      <li><div><b>寫出對自家的建議</b><span>每一條建議都要對回某支影片的某個片段，不寫空泛的感想。</span></div></li>
     </ol>
   </div>
 
-  <div class="tools"><span>Claude Code</span><span>Puppeteer</span><span>sharp</span><span>比較框架</span><span>產品規格表</span></div>
-
-  <p class="evidence">實例：Apple Intelligence、Samsung Galaxy AI、ASUS 的 AI 產品頁比較。推薦卡用的是實際篩選出來的機型。</p>
+  <div class="tools"><span>Claude Code</span><span>社群爬蟲</span><span>影格擷取</span><span>分析框架</span></div>
 
   <div class="take">
     <div class="label">Take away</div>
-    <p>先定比較框架再抓資料，每個推薦都要能對回一項證據。</p>
-    <p>抓頁面的腳本可以重複用，競品改版時重跑一次就能更新比較表。</p>
+    <p>先定分析框架再抓資料，每條建議都要能對回一段影片。</p>
+    <p>爬蟲和逐格分析的流程可以重複用，競品出新影片時重跑一次，比較表就更新了。</p>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="ch" id="recommend">
+  <div class="ch-head">
+    <div class="ch-num">03 · RECOMMEND</div>
+    <h2>推薦機制：從相容性篩選開始，推薦出真正能用的產品</h2>
+    <p class="pain">AI 功能通常有硬體門檻。只放一長串相容清單，使用者很難知道自己該買哪一台。所以我先把「哪些機型支援」篩乾淨，再依使用情境推薦。</p>
+  </div>
+
+  <div>
+    <div class="label">工作流程</div>
+    <ol class="flow">
+      <li><div><b>整理功能的硬體條件</b><span>列出每個功能需要什麼條件，例如處理器、記憶體、作業系統版本。</span></div></li>
+      <li><div><b>建立產品規格表</b><span>把自家產品規格整理成同一張表，欄位對應上一步的條件。</span></div></li>
+      <li><div><b>寫篩選規則</b><span>用規則把規格表和條件表對起來，篩出支援的機型。規則寫成文件，換產品線也能直接沿用。</span></div></li>
+      <li><div><b>依情境排序推薦</b><span>把支援的機型對應到使用情境，決定每個情境要優先推哪幾台。</span></div></li>
+      <li><div><b>放進頁面</b><span>用真實機型和官方產品照做推薦卡和比較表。支援機型的說明放進 FAQ，取代原本的相容清單。</span></div></li>
+    </ol>
+  </div>
+
+  <div class="tools"><span>產品規格表</span><span>篩選規則</span><span>情境對應</span><span>推薦卡</span></div>
+
+  <div class="take">
+    <div class="label">Take away</div>
+    <p>推薦的前提是篩選：先確定哪些產品「能用」，再決定推薦哪一台。</p>
+    <p>條件、規格、規則分成三張表，新產品上市時只要補規格，推薦結果就會跟著更新。</p>
   </div>
 </section>
 
 <!-- 03 -->
 <section class="ch" id="deck">
   <div class="ch-head">
-    <div class="ch-num">03 · PROPOSAL</div>
+    <div class="ch-num">04 · PROPOSAL</div>
     <h2>Mockup 和線上簡報：做成可以點的網頁，用 git 管理版本</h2>
     <p class="pain">靜態投影片講不清楚動態的 hero 和互動效果，改版時也很難知道每一版改了什麼。所以我把提案直接做成網頁：mockup 是真的可以動的 HTML，簡報是一個範本引擎。</p>
   </div>
@@ -224,7 +251,8 @@ html{scroll-behavior:smooth}
     </div>
     <div class="block">
       <h3>Mockup：多個方向一起比較</h3>
-      <p>Hero 一次做五個方向（A–E），加上一個比較頁，大家可以直接點開來看。角色動畫用 three.js 做成可以操作的 3D 模型，提供走路、揮手、點頭、跳躍等動作。需要交給設計師時，再轉進 Figma。</p>
+      <p>Hero 一次做五個方向（A–E），加上一個比較頁，大家可以直接點開來看。角色動畫用 three.js 做成可以操作的 3D 模型，提供走路、揮手、點頭、跳躍等動作。</p>
+      <p>Claude 透過 Figma MCP 直接讀寫 Figma：可以把設計稿轉成 HTML，也可以把確定的 HTML 畫面推回 Figma 給設計師接手。</p>
     </div>
   </div>
 
@@ -239,7 +267,7 @@ html{scroll-behavior:smooth}
     </ol>
   </div>
 
-  <div class="tools"><span>HTML mockup</span><span>three.js</span><span>Figma</span><span>git</span><span>GitHub Pages</span><span>Remote Control</span></div>
+  <div class="tools"><span>HTML mockup</span><span>three.js</span><span>Figma MCP</span><span>git</span><span>GitHub Pages</span><span>Remote Control</span></div>
 
   <div class="take">
     <div class="label">Take away</div>
@@ -251,35 +279,35 @@ html{scroll-behavior:smooth}
 <!-- 04 -->
 <section class="ch" id="spec">
   <div class="ch-head">
-    <div class="ch-num">04 · REVERSE SPEC</div>
-    <h2>逆向工程：把既有產品拆回規格文件</h2>
-    <p class="pain">既有的 app 或頁面常常沒有完整規格，規則只存在畫面裡或某個人腦中。我請 Claude 一格一格拆畫面，把看得到的東西寫回文件。</p>
+    <div class="ch-num">05 · REVERSE SPEC</div>
+    <h2>逆向工程：從安裝檔拆回規格文件</h2>
+    <p class="pain">既有的 app 常常沒有完整的規格文件，但安裝檔裡其實都有：功能模組、設定、介面文字、系統需求。我請 Claude 拆開安裝檔，把裡面的東西整理回規格。</p>
   </div>
 
   <div>
     <div class="label">工作流程</div>
     <ol class="flow">
-      <li><div><b>蒐集素材</b><span>截圖、錄影、實際頁面，加上官方說明與影片。</span></div></li>
-      <li><div><b>拆出畫面和功能</b><span>列出每個畫面、每個區塊，以及使用者在上面能做的事。</span></div></li>
-      <li><div><b>套進固定欄位</b><span>每個區塊都用同樣六個欄位描述：目標、素材、比例、範圍、資產、敘事。競品和自家產品用同一張表，拿來比較就很直接。</span></div></li>
-      <li><div><b>產出規格頁</b><span>規格寫在資料檔 <code>spec-data.js</code>，簡報和規格頁讀同一份資料，所以兩邊的內容一定一致。</span></div></li>
-      <li><div><b>找人確認缺口</b><span>看不出來的規則（後端邏輯、例外狀況）列成問題清單，找負責的人確認後補上。</span></div></li>
+      <li><div><b>拆開安裝檔</b><span>解開安裝檔，列出裡面的檔案結構：程式、元件、設定檔、語系檔、圖片資源。</span></div></li>
+      <li><div><b>讀設定和資源</b><span>從設定檔、語系字串、資源檔找出功能清單、畫面文字、支援的語言，以及系統需求。</span></div></li>
+      <li><div><b>整理成功能地圖</b><span>把找到的模組和字串對應到功能，畫出功能和畫面之間的關係。</span></div></li>
+      <li><div><b>寫成規格和需求文件</b><span>按固定格式寫：功能說明、使用流程、系統需求、限制條件。每一條都註明是從哪個檔案讀出來的。</span></div></li>
+      <li><div><b>找人確認缺口</b><span>安裝檔看不出來的規則（例如後端邏輯、例外狀況）列成問題清單，找負責的人確認後補上。</span></div></li>
     </ol>
   </div>
 
-  <div class="tools"><span>截圖／錄影</span><span>六欄位規格表</span><span>spec-data.js</span><span>check-config.js</span></div>
+  <div class="tools"><span>安裝檔解包</span><span>設定檔／語系字串</span><span>功能地圖</span><span>規格文件</span></div>
 
   <div class="take">
     <div class="label">Take away</div>
-    <p>先固定規格的欄位，再請 AI 填內容。</p>
-    <p>欄位固定之後，缺了什麼一眼就看得出來，檢查腳本也能自動抓漏填的地方。AI 負責拆解和整理，看不出來的規則交給人判斷。</p>
+    <p>規格文件裡的每一條，都要能指回安裝檔裡的某個檔案。</p>
+    <p>有來源的描述才能被驗證。AI 負責拆解和整理，安裝檔看不出來的規則交給人判斷。</p>
   </div>
 </section>
 
 <!-- 05 -->
 <section class="ch" id="news">
   <div class="ch-head">
-    <div class="ch-num">05 · CROSS-CHECK</div>
+    <div class="ch-num">06 · CROSS-CHECK</div>
     <h2>AI 新訊：ChatGPT 排程收集，兩個模型互相查核</h2>
     <p class="pain">AI agent 的消息一週就變一次，自己追不完，只看單一模型的整理又怕有錯。所以一邊負責定期收集，兩邊再互相挑錯。</p>
   </div>
@@ -288,14 +316,14 @@ html{scroll-behavior:smooth}
     <div class="label">工作流程</div>
     <ol class="flow">
       <li><div><b>ChatGPT 排程收集</b><span>設定排程任務，定期整理 AI agent 相關新訊，產出摘要。</span></div></li>
-      <li><div><b>Claude 查證並補充</b><span>把摘要交給 Claude，逐條找第二個來源，標出互相衝突和查不到出處的內容。</span></div></li>
-      <li><div><b>回到 ChatGPT 互評</b><span>把 Claude 的查證結果拿回給 ChatGPT，請它反駁或補充。兩邊都同意的才列為結論。</span></div></li>
-      <li><div><b>讓兩個模型直接對話</b><span>除了手動轉貼，也讓兩個模型直接交換資訊，減少我來回搬運的時間。</span></div></li>
+      <li><div><b>放進共用資料夾</b><span>兩個模型共用本機上的同一個資料夾。摘要、查證結果、意見都寫成檔案放在裡面，兩邊讀的是同一份資料。</span></div></li>
+      <li><div><b>Claude 查證並補充</b><span>Claude 讀資料夾裡的摘要，逐條找第二個來源，標出互相衝突和查不到出處的內容，結果寫回資料夾。</span></div></li>
+      <li><div><b>ChatGPT 回頭互評</b><span>ChatGPT 讀 Claude 的查證結果，反駁或補充。兩邊都同意的才列為結論。需要我判斷的地方，我會手動貼過去討論。</span></div></li>
       <li><div><b>篩出和工作相關的行動</b><span>最後由 Claude 挑出和手上專案有關的項目，轉成待辦或 skill 的更新。</span></div></li>
     </ol>
   </div>
 
-  <div class="tools"><span>ChatGPT 排程任務</span><span>Claude</span><span>雙向互評</span></div>
+  <div class="tools"><span>ChatGPT 排程任務</span><span>本機共用資料夾</span><span>Claude</span><span>雙向互評</span></div>
 
   <div class="take">
     <div class="label">Take away</div>
@@ -308,12 +336,12 @@ html{scroll-behavior:smooth}
 <section class="close">
   <div class="eyebrow">總結</div>
   <h2>把每一套工作流程做成範本</h2>
-  <p class="pain">上面五個流程有一個共通點：做第一次時順手留下可以重複用的東西，第二次就從範本開始。</p>
+  <p class="pain">上面六個流程有一個共通點：做第一次時順手留下可以重複用的東西，第二次就從範本開始。</p>
   <div class="tpl">
     <div class="block"><b>CLAUDE.md</b><p>對話規則的範本。每次開新對話都自動套用。</p></div>
     <div class="block"><b>線上簡報引擎</b><p>提案的範本。換專案時只換設定檔和內容。</p></div>
-    <div class="block"><b>抓頁面腳本</b><p>競品分析的範本。競品改版時重跑一次就更新。</p></div>
-    <div class="block"><b>六欄位規格表</b><p>規格文件的範本。競品和自家產品用同一套欄位。</p></div>
+    <div class="block"><b>爬蟲與逐格分析</b><p>競品分析的範本。競品出新影片時重跑一次就更新。</p></div>
+    <div class="block"><b>篩選規則三張表</b><p>推薦機制的範本。新產品上市時只要補規格。</p></div>
   </div>
   <ul class="principles">
     <li><span class="mono">01</span><span>每次要重新交代的規矩，就寫進 CLAUDE.md。</span></li>
