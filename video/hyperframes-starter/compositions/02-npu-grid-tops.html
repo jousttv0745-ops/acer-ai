@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "UI CJK"; src: local("PingFang TC"), local("Noto Sans TC"), local("Noto Sans CJK TC"), local("Microsoft JhengHei"), local("WenQuanYi Zen Hei"); }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #07080c; }
+      #root { position: relative; width: 1920px; height: 1080px; font-family: "UI CJK", sans-serif; color: #eef0f6; }
+      #grid { position: absolute; left: 160px; top: 190px; width: 700px; height: 700px; display: grid; grid-template-columns: repeat(12, 1fr); gap: 8px; }
+      #grid i { display: block; background: #1a1e2c; border-radius: 4px; }
+      #topsNum { position: absolute; right: 180px; top: 250px; font-size: 300px; font-weight: 800; line-height: 1; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; text-align: right; }
+      #topsUnit { position: absolute; right: 180px; top: 590px; font-size: 48px; letter-spacing: 0.2em; color: #4fd1ff; }
+      #topsNote { position: absolute; right: 180px; top: 670px; font-size: 32px; color: #8a90a6; }
+    </style>
+  </head>
+  <body>
+    <!-- 效果：stagger-grid-wave + data-counter -->
+    <div id="root" data-composition-id="npu-grid-tops" data-start="0" data-duration="3.3" data-width="1920" data-height="1080">
+      <div id="grid"></div>
+      <div id="topsNum">0</div>
+      <div id="topsUnit">TOPS</div>
+      <div id="topsNote">裝置端 NPU · 不必上雲</div>
+    </div>
+    <script>
+      // 只用確定性邏輯（不用 Math.random / Date.now），逐幀 seek 才能重現
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const grid = document.getElementById("grid");
+      for (let i = 0; i < 144; i++) grid.appendChild(document.createElement("i"));
+      const counter = { v: 0 };
+      tl.fromTo("#grid i", { scale: 0.2, backgroundColor: "#1a1e2c" },
+          { keyframes: [{ scale: 1.15, backgroundColor: "#4fd1ff", duration: 0.35 }, { scale: 1, backgroundColor: "#8b7bff", duration: 0.4 }, { backgroundColor: "#1f2436", duration: 0.8 }],
+            stagger: { grid: [12, 12], from: "center", each: 0.05 } }, 0.1)
+        .to(counter, { v: 50, duration: 1.8, ease: "expo.out", onUpdate: () => { document.getElementById("topsNum").textContent = Math.round(counter.v); } }, 0.3);
+      window.__timelines["npu-grid-tops"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

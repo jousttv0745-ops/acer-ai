@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canvas 2D · 掃描線＋物件辨識框</title>
+<link rel="stylesheet" href="_demo.css">
+</head>
+<body>
+<div class="frame">
+  <div class="stage"><canvas id="c" width="1280" height="720"></canvas></div>
+  <div class="meta">
+    <span><b>Canvas 2D（原生）</b> · 效果：<code>scan-detect</code> · API：<code>createLinearGradient</code> <code>globalCompositeOperation</code> <code>setLineDash</code> 自寫 easing＋時間軸</span>
+    <button id="replay">重播</button>
+  </div>
+</div>
+<script>
+  const ctx = document.getElementById("c").getContext("2d");
+  const W = 1280, H = 720;
+  const ease = t => 1 - Math.pow(1 - Math.min(Math.max(t, 0), 1), 3); // easeOutCubic
+  // 抽象「照片」：幾何形狀代表桌上的物品
+  const objs = [
+    { x: 180, y: 300, w: 260, h: 200, label: "筆電", conf: 0.98, draw: (c) => { c.fillStyle = "#2a3048"; c.fillRect(180, 330, 260, 150); c.fillStyle = "#3d4666"; c.fillRect(160, 480, 300, 20); } },
+    { x: 560, y: 250, w: 150, h: 250, label: "咖啡杯", conf: 0.94, draw: (c) => { c.fillStyle = "#5a3f2e"; c.beginPath(); c.roundRect(580, 300, 110, 180, 14); c.fill(); c.strokeStyle = "#5a3f2e"; c.lineWidth = 16; c.beginPath(); c.arc(700, 380, 36, -1.2, 1.2); c.stroke(); } },
+    { x: 820, y: 200, w: 300, h: 320, label: "植物", conf: 0.89, draw: (c) => { c.fillStyle = "#1f5a44"; for (let i = 0; i < 7; i++) { c.beginPath(); c.ellipse(970 + Math.cos(i) * 70, 300 + Math.sin(i * 1.7) * 60, 70, 34, i, 0, 7); c.fill(); } c.fillStyle = "#6b4a33"; c.fillRect(910, 420, 120, 100); } },
+  ];
+  let start = performance.now();
+  function frame(now) {
+    const t = (now - start) / 1000;
+    ctx.fillStyle = "#101320"; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "#171b2b"; ctx.fillRect(0, 500, W, 220); // 桌面
+    objs.forEach(o => o.draw(ctx));
+
+    // 1. 掃描線（0–1.4s）：高光帶由上往下掃
+    const sy = ease(t / 1.4) * H;
+    if (t < 1.6) {
+      const g = ctx.createLinearGradient(0, sy - 120, 0, sy);
+      g.addColorStop(0, "rgba(79,209,255,0)"); g.addColorStop(1, "rgba(79,209,255,0.35)");
+      ctx.globalCompositeOperation = "lighter";
+      ctx.fillStyle = g; ctx.fillRect(0, sy - 120, W, 120);
+      ctx.fillStyle = "#4fd1ff"; ctx.fillRect(0, sy - 2, W, 2);
+      ctx.globalCompositeOperation = "source-over";
+    }
+    // 2. 辨識框：從四角收攏 + 標籤 + 信心值跳動
+    objs.forEach((o, i) => {
+      const k = ease((t - 1.2 - i * 0.25) / 0.6);
+      if (k <= 0) return;
+      const pad = (1 - k) * 60;
+      const x = o.x - pad, y = o.y - pad, w = o.w + pad * 2, h = o.h + pad * 2, L = 26;
+      ctx.strokeStyle = `rgba(139,123,255,${k})`; ctx.lineWidth = 3;
+      ctx.beginPath();
+      [[x, y, 1, 1], [x + w, y, -1, 1], [x, y + h, 1, -1], [x + w, y + h, -1, -1]].forEach(([px, py, dx, dy]) => {
+        ctx.moveTo(px + dx * L, py); ctx.lineTo(px, py); ctx.lineTo(px, py + dy * L);
+      });
+      ctx.stroke();
+      ctx.setLineDash([6, 8]); ctx.lineDashOffset = -t * 30; ctx.globalAlpha = 0.35 * k;
+      ctx.strokeRect(x, y, w, h); ctx.setLineDash([]); ctx.globalAlpha = 1;
+      // 標籤膠囊
+      const conf = (o.conf * ease((t - 1.4 - i * 0.25) / 0.8) * 100).toFixed(0);
+      ctx.font = "600 20px system-ui"; const txt = `${o.label}  ${conf}%`; const tw = ctx.measureText(txt).width;
+      ctx.fillStyle = `rgba(20,24,39,${0.9 * k})`; ctx.beginPath(); ctx.roundRect(x, y - 40, tw + 24, 32, 16); ctx.fill();
+      ctx.fillStyle = `rgba(238,240,246,${k})`; ctx.fillText(txt, x + 12, y - 17);
+    });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  document.getElementById("replay").onclick = () => { start = performance.now(); };
+</script>
+</body>
+</html>

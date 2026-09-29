@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matter.js · 雜亂檔案掉落 → AI 自動分類</title>
+<link rel="stylesheet" href="_demo.css">
+</head>
+<body>
+<div class="frame">
+  <div class="stage"><canvas id="c" width="1280" height="720"></canvas></div>
+  <div class="meta">
+    <span><b>Matter.js 0.20</b> · 效果：<code>physics-sort</code> · API：<code>Engine</code> <code>Bodies.rectangle</code> <code>Body.setVelocity</code> <code>Composite</code>（自繪 Canvas，不用內建 Render）</span>
+    <button id="sort">AI 整理</button>
+    <button id="reset">重來</button>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
+<script>
+  const { Engine, Bodies, Body, Composite } = Matter;
+  const W = 1280, H = 720;
+  const ctx = document.getElementById("c").getContext("2d");
+  const engine = Engine.create({ gravity: { y: 1.1 } });
+  const kinds = [
+    { k: "PDF", c: "#ff6fb1", bin: 0 }, { k: "IMG", c: "#4fd1ff", bin: 1 },
+    { k: "MP4", c: "#ffb86b", bin: 2 }, { k: "DOC", c: "#8b7bff", bin: 3 },
+  ];
+  const binX = i => 220 + i * 280;
+  const walls = [
+    Bodies.rectangle(W / 2, H + 30, W, 60, { isStatic: true }),
+    Bodies.rectangle(-30, H / 2, 60, H, { isStatic: true }),
+    Bodies.rectangle(W + 30, H / 2, 60, H, { isStatic: true }),
+  ];
+  Composite.add(engine.world, walls);
+  let files = [], dividers = [];
+
+  function reset() {
+    Composite.remove(engine.world, [...files, ...dividers]);
+    files = []; dividers = [];
+    for (let i = 0; i < 56; i++) {
+      const kind = kinds[i % 4];
+      const b = Bodies.rectangle(100 + Math.random() * (W - 200), -Math.random() * 900, 70, 50, { chamfer: { radius: 6 }, restitution: 0.3, friction: 0.4 });
+      b.kind = kind; files.push(b);
+    }
+    Composite.add(engine.world, files);
+  }
+  function sort() {
+    // 放下三道隔板，再把每個檔案「吸」向它的分類欄
+    if (!dividers.length) {
+      dividers = [1, 2, 3].map(i => Bodies.rectangle(80 + i * 280, H - 170, 10, 340, { isStatic: true }));
+      Composite.add(engine.world, dividers);
+    }
+    files.forEach((b, i) => setTimeout(() => {
+      // 從畫面上方重新落入所屬分類欄（stagger 造成「檔案雨」）
+      Body.setPosition(b, { x: binX(b.kind.bin) + (Math.random() - 0.5) * 120, y: -60 });
+      Body.setVelocity(b, { x: 0, y: 4 });
+      Body.setAngle(b, (Math.random() - 0.5) * 0.6);
+    }, i * 35));
+  }
+  function draw() {
+    Engine.update(engine, 1000 / 60);
+    ctx.fillStyle = "#07080c"; ctx.fillRect(0, 0, W, H);
+    ctx.font = "600 18px system-ui"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    if (dividers.length) {
+      kinds.forEach((k, i) => { ctx.fillStyle = k.c; ctx.globalAlpha = 0.8; ctx.fillText(k.k + " 資料夾", binX(i), 60); });
+      ctx.globalAlpha = 1; ctx.fillStyle = "#2a2f42";
+      dividers.forEach(d => ctx.fillRect(d.position.x - 5, d.position.y - 170, 10, 340));
+    }
+    files.forEach(b => {
+      ctx.save(); ctx.translate(b.position.x, b.position.y); ctx.rotate(b.angle);
+      ctx.fillStyle = "#141827"; ctx.strokeStyle = b.kind.c; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.roundRect(-35, -25, 70, 50, 6); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = b.kind.c; ctx.fillText(b.kind.k, 0, 1);
+      ctx.restore();
+    });
+    requestAnimationFrame(draw);
+  }
+  reset(); draw();
+  document.getElementById("sort").onclick = sort;
+  document.getElementById("reset").onclick = reset;
+</script>
+</body>
+</html>

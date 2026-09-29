@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "UI CJK"; src: local("PingFang TC"), local("Noto Sans TC"), local("Noto Sans CJK TC"), local("Microsoft JhengHei"), local("WenQuanYi Zen Hei"); }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #07080c; }
+      #root { position: relative; width: 1920px; height: 1080px; font-family: "UI CJK", sans-serif; color: #eef0f6; }
+      #glow { position: absolute; inset: 36px; border-radius: 48px; padding: 6px; --a: 0deg;
+        background: conic-gradient(from var(--a), #4fd1ff, #8b7bff, #ff6fb1, #ffb86b, #4fd1ff);
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+        filter: blur(10px); opacity: 0; }
+      #headline { position: absolute; left: 160px; top: 380px; font-size: 128px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+      #headline .ch { display: inline-block; }
+      #headline .hl { color: #8b7bff; }
+    </style>
+  </head>
+  <body>
+    <!-- 效果：ai-edge-glow + text-generate（見 data/motion-effects.json） -->
+    <div id="root" data-composition-id="edge-glow-headline" data-start="0" data-duration="3.2" data-width="1920" data-height="1080">
+      <div id="glow"></div>
+      <h1 id="headline">Your PC,<br />now <span class="hl">intelligent.</span></h1>
+    </div>
+    <script>
+      // 只用確定性邏輯（不用 Math.random / Date.now），逐幀 seek 才能重現
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      // 標語拆字（取代 SplitText，零依賴）
+      const wrap = (node) => {
+        [...node.childNodes].forEach((n) => {
+          if (n.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            [...n.textContent].forEach((c) => {
+              const s = document.createElement("span");
+              s.className = "ch"; s.textContent = c === " " ? "\u00a0" : c;
+              frag.appendChild(s);
+            });
+            n.replaceWith(frag);
+          } else if (n.nodeType === 1 && n.tagName !== "BR") wrap(n);
+        });
+      };
+      wrap(document.getElementById("headline"));
+      tl.to("#glow", { opacity: 1, duration: 0.8, ease: "power2.out" }, 0)
+        .to("#glow", { "--a": "360deg", duration: 3.2, ease: "none" }, 0)
+        .from("#headline .ch", { opacity: 0, y: 30, filter: "blur(14px)", duration: 0.6, ease: "power3.out", stagger: 0.04 }, 0.3);
+      window.__timelines["edge-glow-headline"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,318 @@
+<title>AI Motion Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout：剪輯室素材架 — 左側篩選、右側素材卡；矩陣視圖＝效果 × 工具拆解表 */
+:root {
+  --bg: #f3f4f8;
+  --surface: #ffffff;
+  --ink: #171a26;
+  --muted: #5d6378;
+  --line: #dde0ea;
+  --accent: #5b4cf0;
+  --accent-soft: #ebe8ff;
+  --cyan: #0a8fb8;
+  --ok: #1d7a4e; --ok-soft: #e1f4ea;
+  --warn: #9a5a00; --warn-soft: #fbefd9;
+  --asset: #8a3d74; --asset-soft: #f8e6f2;
+  --display: "Familjen Grotesk", "Noto Sans TC", system-ui, sans-serif;
+  --body: "Noto Sans TC", system-ui, -apple-system, "PingFang TC", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d0f16; --surface: #161a25; --ink: #eceef5; --muted: #9aa0b6; --line: #262b3b;
+  --accent: #9d93ff; --accent-soft: #262248; --cyan: #56c8ec;
+  --ok: #6fd7a2; --ok-soft: #173326; --warn: #f0b566; --warn-soft: #3a2a12; --asset: #ee9bd3; --asset-soft: #3a1a30; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0d0f16; --surface: #161a25; --ink: #eceef5; --muted: #9aa0b6; --line: #262b3b;
+  --accent: #9d93ff; --accent-soft: #262248; --cyan: #56c8ec;
+  --ok: #6fd7a2; --ok-soft: #173326; --warn: #f0b566; --warn-soft: #3a2a12; --asset: #ee9bd3; --asset-soft: #3a1a30; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 14px; line-height: 1.6; margin: 0; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1320px; margin: 0 auto; padding-inline: 20px; padding-block: 0 48px; }
+
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.top-inner { max-width: 1320px; margin: 0 auto; padding: 14px 20px; display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; }
+.brand { display: flex; align-items: baseline; gap: 10px; }
+.brand h1 { font-family: var(--display); font-size: 22px; letter-spacing: -0.01em; margin: 0; }
+.brand .tc { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+nav.tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+nav.tabs button { font: 500 13px var(--body); color: var(--muted); background: none; border: 1px solid transparent; border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); background: var(--surface); border-color: var(--line); }
+nav.tabs .count { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-left: 4px; }
+.search { margin-left: auto; flex: 1 1 220px; max-width: 320px; }
+.search input { width: 100%; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; }
+
+.intro { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 32px; align-items: end; padding-block: 28px 20px; }
+.intro h2 { font-family: var(--display); font-size: clamp(24px, 3.4vw, 36px); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 8px; text-wrap: balance; max-width: 22ch; }
+.intro p { margin: 0; color: var(--muted); max-width: 64ch; }
+.picks { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.picks .n { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.btn { font: 500 13px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+
+.layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 28px; align-items: start; }
+aside.filters { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 76px); display: grid; gap: 20px; }
+.fgroup h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 12px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card.picked { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+.card-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: start; }
+.card h4 { font-family: var(--display); font-size: 18px; line-height: 1.25; margin: 0; text-wrap: balance; }
+.id { font-family: var(--mono); font-size: 11px; color: var(--cyan); word-break: break-all; }
+.star { font-size: 18px; line-height: 1; background: none; border: 1px solid var(--line); border-radius: 6px; width: 34px; height: 34px; cursor: pointer; color: var(--muted); }
+.star[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+.msg { margin: 0; font-weight: 500; }
+.recipe { margin: 0; color: var(--muted); font-size: 13px; }
+.row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.tag { font-size: 11px; border-radius: 4px; padding: 2px 7px; background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.pill { font-size: 11px; font-weight: 600; border-radius: 999px; padding: 2px 9px; }
+.pill.yes { background: var(--ok-soft); color: var(--ok); }
+.pill.adapt { background: var(--warn-soft); color: var(--warn); }
+.pill.asset { background: var(--asset-soft); color: var(--asset); }
+.pill.todo { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.pill.reviewed { background: var(--ok-soft); color: var(--ok); }
+dl.impl { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 10px; font-size: 12.5px; }
+dl.impl dt { font-family: var(--mono); font-size: 11.5px; color: var(--ink); font-weight: 600; }
+dl.impl dd { margin: 0; color: var(--muted); }
+.links { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12.5px; }
+details summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
+.meta-line { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.empty { padding: 32px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 10px; }
+
+.note { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--warn); border-radius: 6px; padding: 10px 14px; font-size: 13px; }
+.notes { display: grid; gap: 10px; margin-bottom: 16px; }
+
+.matrix-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+table.matrix { border-collapse: collapse; font-size: 12px; min-width: 900px; width: 100%; }
+.matrix th, .matrix td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: center; }
+.matrix thead th { position: sticky; top: 0; background: var(--surface); font-family: var(--mono); font-size: 11px; font-weight: 600; white-space: nowrap; }
+.matrix tbody th { text-align: left; font-weight: 500; white-space: nowrap; }
+.matrix tbody th .id { display: block; }
+.matrix td.hit { background: var(--accent-soft); color: var(--accent); font-weight: 700; cursor: help; }
+.matrix td.demo { background: var(--accent); color: var(--surface); }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin: 10px 0 0; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 4px; }
+
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 6px; font-size: 13px; }
+textarea.export { width: 100%; min-height: 160px; font: 12px var(--mono); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px; }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  aside.filters { position: static; }
+  .intro { grid-template-columns: minmax(0, 1fr); }
+  .search { max-width: none; margin-left: 0; }
+  header.top { position: static; }
+  .brand .tc { display: none; }
+}
+details.fbox > summary { display: none; }
+@media (max-width: 860px) {
+  details.fbox > summary { display: list-item; font-weight: 600; font-size: 13px; padding: 8px 0; cursor: pointer; }
+  details.fbox[open] > summary { margin-bottom: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand"><h1>AI Motion Atlas</h1><span class="tc" id="stamp"></span></div>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+    <label class="search"><input id="q" type="search" placeholder="搜尋：光球、降噪、GSAP、Galaxy…" aria-label="搜尋"></label>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <div>
+      <h2 id="introTitle"></h2>
+      <p id="introText"></p>
+    </div>
+    <div class="picks">
+      <span class="n" id="pickCount">已挑選 0</span>
+      <button class="btn" id="onlyPicked" aria-pressed="false">只看已挑選</button>
+      <button class="btn primary" id="exportBtn">匯出挑選清單</button>
+    </div>
+  </section>
+  <div id="exportBox" hidden>
+    <textarea class="export" id="exportText" readonly aria-label="挑選清單 JSON"></textarea>
+    <p class="meta-line">已複製到剪貼簿；若沒有，請全選上方文字手動複製，貼回 Claude Code 即可更新 data/*.json 的 status。</p>
+  </div>
+  <div class="layout">
+    <aside class="filters" id="filters"></aside>
+    <div id="view"></div>
+  </div>
+</main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const DATA = {"effects":{"_meta":{"updated":"2026-09-29","note":"動態效果分類法。每個效果 = 一個「AI 賣點 → 視覺語言」的對應，拆成：想傳達的訊息、動態配方（可調參數）、12 個 JS 工具的實作路線、能否進影片渲染管線（Remotion / HyperFrames）。","categories":{"ai-state":"AI 狀態：聆聽／思考／回應","generate":"生成與轉換","perceive":"辨識與理解","data":"數據與規格","hardware":"產品與硬體","narrative":"敘事與字卡"},"video_ready_values":{"yes":"時間可 seek（純函式 of t），直接搬進 Remotion useCurrentFrame 或 HyperFrames GSAP timeline","adapt":"需把模擬（物理／粒子／CA）改成固定 seed＋逐幀步進，或預先錄製成影片素材","asset":"建議輸出成素材（mp4 / png sequence / Lottie）再進剪輯，不直接在渲染管線裡跑"}},"effects":[{"id":"ai-edge-glow","name":"螢幕邊緣流光","category":"ai-state","message":"AI 已啟動、正在理解你；整台裝置都「活」了","seen_in":["Apple Intelligence Siri","Galaxy AI（推測）","Gemini 漸層"],"recipe":"圓角矩形 SDF 距離 → exp 衰減光暈；色相由邊緣角度決定並隨時間旋轉；思考時寬度 ×3、流速 ×5；四色盤：青藍、紫、粉、琥珀","implementations":{"GLSL Shader":"全螢幕 fragment shader：sdRoundRect + atan 角度色相 + noise 閃爍（demo）","Canvas 2D":"沿邊框切 20 段各自上色，外層 filter: blur()，lineDashOffset 做流動","GSAP":"CSS conic-gradient 邊框 + @property 角度變數，用 gsap.to 旋轉 --angle","Three.js":"把 GLSL 做成 ShaderMaterial 貼在手機螢幕平面上，與 3D 手機模型合成"},"demo":"demos/glsl.html","video_ready":"yes","refs":["https://dev.to/vector4wang/i-recreated-iphones-apple-intelligence-edge-glow-effect-on-mac-57f5","https://github.com/jacobamobin/AppleIntelligenceGlowEffect","https://codepen.io/quintenm/pen/NPGYRgj"]},{"id":"ai-orb","name":"AI 光球","category":"ai-state","message":"AI 助理的「臉」：聆聽時呼吸、思考時旋轉加速","seen_in":["Gemini Live","Siri（iOS 18 以前）","Dribbble AI orb 大量作品"],"recipe":"3 個加色混合模糊圓互繞（2D）或 noise 位移球體＋fresnel 邊緣光（3D）；狀態切換用 lerp 平滑 0→1","implementations":{"PixiJS":"Graphics 圓 + BlurFilter + blendMode add，Ticker 驅動（demo）","Three.js":"IcosahedronGeometry + ShaderMaterial（noise 位移 + fresnel）+ AdditiveBlending（demo）","GLSL Shader":"raymarch 球體或 2D metaball","p5.js":"WEBGL 模式 sphere + shader，或 2D drawingContext.filter blur","Tone.js":"用 Meter / FFT 的音量驅動光球縮放 → 聲音反應"},"demo":"demos/pixi.html","video_ready":"yes","refs":["https://tympanus.net/codrops/2025/06/18/coding-a-3d-audio-visualizer-with-three-js-gsap-web-audio-api/","https://dribbble.com/search/ai-orb","https://dribbble.com/shots/3546148-Apple-iOS11-Siri-visual-effect-motion"]},{"id":"particle-swarm","name":"粒子繞行","category":"ai-state","message":"大量資料在裝置內流動、被即時處理","seen_in":["各品牌 NPU / AI 晶片段落（推測）"],"recipe":"數百點極座標繞行，半徑、角速度、傾斜各自隨機；思考時半徑收縮 45%、速度 ×4","implementations":{"PixiJS":"ParticleContainer（v8 為 Particle）可到上萬顆（demo 用 Graphics）","Three.js":"Points + BufferGeometry，位置在 vertex shader 算","p5.js":"陣列＋circle()，千顆以內即可","Canvas 2D":"fillRect 點陣＋globalCompositeOperation lighter"},"demo":"demos/pixi.html","video_ready":"yes","refs":[]},{"id":"text-generate","name":"文字逐字生成","category":"generate","message":"AI 正在為你寫：摘要、改寫、翻譯","seen_in":["Apple Writing Tools","Copilot","HP AI Companion（推測）"],"recipe":"逐字 stagger 0.03–0.05s；每字從 blur(12px)+y18 → 清晰；可加游標閃爍與漸層色掃過","implementations":{"GSAP":"SplitText.create + from(chars, {filter:'blur()', stagger})（demo）","Anime.js v4":"v4 splitText + stagger","Canvas 2D":"逐字 fillText + globalAlpha，打字機效果","D3.js":"selection.transition().textTween() 做數字或字串內插"},"demo":"demos/gsap.html","video_ready":"yes","refs":["https://gsap.com/blog/3-13/","https://tympanus.net/codrops/2025/05/14/from-splittext-to-morphsvg-5-creative-demos-using-free-gsap-plugins/"]},{"id":"sketch-to-image","name":"手繪變成品","category":"generate","message":"隨手一畫，AI 幫你完成","seen_in":["Microsoft Cocreator","Apple Image Wand","Galaxy Sketch to Image"],"recipe":"手繪線條描出（stroke-dashoffset）→ 停頓 0.3s → 閃光 / 溶解 crossfade 到成品圖","implementations":{"Rough.js":"rough.svg 產生手繪路徑 + dashoffset 描線（demo 的圈選部分）","GLSL Shader":"noise 門檻溶解 transition：mix(sketch, render, step(noise, progress))","GSAP":"DrawSVGPlugin 描線 + clip-path 揭露","p5.js":"noise 抖動線條模擬鉛筆"},"demo":"demos/rough.html","video_ready":"yes","refs":["https://tympanus.net/codrops/2025/01/22/webgl-shader-techniques-for-dynamic-image-transitions/"]},{"id":"object-erase-dissolve","name":"物件消除化為粒子","category":"generate","message":"一鍵移除干擾物，背景自動補完","seen_in":["Apple Clean Up","Google Magic Eraser","Galaxy Object Eraser"],"recipe":"選取框閃一下 → 物件由上而下崩解成沙／粒子落下 → 背景 inpaint 淡入","implementations":{"Falling Sand":"細胞自動機：固體逐列轉成沙，沙依規則下落後蒸發（demo）","GLSL Shader":"noise 溶解邊緣 + 發光邊（burn edge）","Three.js":"把物件貼圖拆成 Points，往下加速度並淡出","Matter.js":"物件切成碎塊剛體，受重力散落"},"demo":"demos/falling-sand.html","video_ready":"adapt","refs":["https://sandspiel.club/"]},{"id":"before-after-wipe","name":"前後對比擦除","category":"generate","message":"AI 開啟前／後，差異一眼看懂","seen_in":["視訊增強、降噪、修圖類廣告（推測）"],"recipe":"垂直分割線從左掃到右，線上帶光暈；可停在 50% 讓觀眾比較","implementations":{"GSAP":"clip-path: inset(0 X% 0 0) 補間，或 Draggable 手動拖曳","GLSL Shader":"step(uv.x, progress) 混合兩張貼圖 + 邊緣 glow","Canvas 2D":"drawImage 兩次，第二次用 clip() 裁切"},"demo":null,"video_ready":"yes","refs":[]},{"id":"scan-detect","name":"掃描線＋辨識框","category":"perceive","message":"AI 看得懂畫面：辨識、建議、拍照教練","seen_in":["Pixel Camera Coach","Click to Do","Circle to Search"],"recipe":"高光掃描帶 1.4s 由上往下 → 四角括號從外收攏 0.6s（逐物件錯開 0.25s）→ 標籤膠囊＋信心值跳動","implementations":{"Canvas 2D":"createLinearGradient 掃描帶 + 四角 path + setLineDash 流動虛線（demo）","GSAP":"DOM 框 + scale/opacity stagger","D3.js":"資料綁定 bounding boxes，enter transition","Three.js":"3D 空間中的 billboard 標籤"},"demo":"demos/canvas2d.html","video_ready":"yes","refs":[]},{"id":"circle-to-search","name":"手繪圈選","category":"perceive","message":"圈一下就搜尋：AI 理解你指的東西","seen_in":["Google / Samsung Circle to Search"],"recipe":"帶手感的不完美橢圓（roughness 2、bowing 3）快速描出 0.5s → 結果卡片從下彈入","implementations":{"Rough.js":"generator.ellipse + stroke-dashoffset（demo）","GSAP":"DrawSVGPlugin 描手繪 SVG path","Canvas 2D":"記錄真實手勢座標後回放","p5.js":"noise 抖動的 beginShape 曲線"},"demo":"demos/rough.html","video_ready":"yes","refs":["https://roughjs.com/"]},{"id":"audio-denoise","name":"AI 降噪聲波","category":"perceive","message":"嘈雜環境中，只留下你的聲音","seen_in":["Acer PurifiedVoice","Galaxy Audio Eraser","Windows Studio Effects"],"recipe":"毛躁聲波（噪音）→ 開關切換 → 雜訊平滑消失、只留乾淨波形；可加色彩由灰轉品牌色","implementations":{"Tone.js":"Noise → Filter → Gain.rampTo 做真實的聲音對比，Waveform 取樣畫圖（demo）","Canvas 2D":"繪製波形 path","D3.js":"d3.line + curveBasis 做平滑曲線過渡","GLSL Shader":"SDF 線條 + noise 振幅"},"demo":"demos/tone.html","video_ready":"adapt","refs":["https://www.acer.com/us-en/ai/acer-intelligence-space"]},{"id":"audio-reactive","name":"聲音驅動畫面","category":"ai-state","message":"AI 在聽／在說：即時翻譯、語音助理","seen_in":["Gemini Live","Live Translation"],"recipe":"FFT 低頻驅動縮放、高頻驅動亮度；配樂節拍對齊剪輯點","implementations":{"Tone.js":"FFT / Meter / Waveform 取值；Transport 做節拍時間軸","Three.js":"音量 uniform 驅動 vertex 位移","PixiJS":"音量驅動 scale 與 filter 強度"},"demo":"demos/tone.html","video_ready":"adapt","refs":["https://tympanus.net/codrops/2025/06/18/coding-a-3d-audio-visualizer-with-three-js-gsap-web-audio-api/"]},{"id":"data-counter","name":"規格數字跳動","category":"data","message":"硬實力：50 TOPS、22 小時續航","seen_in":["幾乎所有 AI PC 發表片"],"recipe":"0 → 目標值 1.8s easeOutExpo，四捨五入到整數；單位字距 0.2em；可配網格波","implementations":{"Anime.js v4":"animate(obj, {v, modifier: utils.round(0)})（demo）","GSAP":"gsap.to(obj, {v, snap:{v:1}, onUpdate})","D3.js":"transition().textTween(interpolateNumber)"},"demo":"demos/anime.html","video_ready":"yes","refs":[]},{"id":"stagger-grid-wave","name":"網格擴散波","category":"data","message":"NPU 平行運算、AI 全面啟動","seen_in":["Nothing 點陣視覺","晶片段落（推測）"],"recipe":"16×16 網格，從中心 stagger 40ms 擴散；色彩青→紫→暗；之後隨機閃爍 idle","implementations":{"Anime.js v4":"stagger(40, {grid:[16,16], from:'center'})（demo）","GSAP":"stagger: {grid:[16,16], from:'center', each:0.04}","p5.js":"距離中心的距離 − t 決定亮度","GLSL Shader":"length(uv-0.5) - time 做 ring"},"demo":"demos/anime.html","video_ready":"yes","refs":[]},{"id":"data-viz-grow","name":"長條／圖表生長","category":"data","message":"AI 開啟前後的效能、續航對比","seen_in":["Copilot+ PC 發表會投影片","OEM 規格影片"],"recipe":"先長灰色基準條 0.7s，再長品牌漸層條 1.2s，數值標籤跟著推進","implementations":{"D3.js":"scaleBand + transition().delay(i*) + textTween（demo）","GSAP":"scaleX from 0 + transformOrigin left","Anime.js v4":"width / scaleX stagger"},"demo":"demos/d3.html","video_ready":"yes","refs":[]},{"id":"physics-sort","name":"物理掉落自動整理","category":"generate","message":"AI 幫你整理：檔案、照片、待辦","seen_in":["整理類功能（推測）"],"recipe":"雜亂物件受重力堆疊 → 按下 AI → 隔板落下、物件按類別落入欄位","implementations":{"Matter.js":"Engine + Bodies + 自繪 Canvas（demo）","PixiJS":"Matter 算物理、Pixi 畫面","Three.js":"搭配 cannon-es / rapier 做 3D 版本"},"demo":"demos/matter.html","video_ready":"adapt","refs":["https://brm.io/matter-js/"]},{"id":"particle-assemble","name":"粒子聚合成形","category":"narrative","message":"混亂資料 → 有意義的結果；也適合品牌 Logo 收尾","seen_in":["品牌片 Logo 收尾（常見手法）"],"recipe":"離屏畫布寫字 → 取樣像素當目標點 → 彈簧（k=0.012，阻尼 0.88）回位；打散時沿 noise 流場漂移","implementations":{"p5.js":"createGraphics 取樣 + noise 流場（demo）","Three.js":"Points，在 vertex shader 用 mix(random, target, progress)","PixiJS":"大量 Sprite + 相同彈簧公式","GSAP":"每顆粒子一個 tween，stagger from random"},"demo":"demos/p5.html","video_ready":"adapt","refs":[]},{"id":"ui-float-cards","name":"浮動 UI 卡片","category":"narrative","message":"一台裝置上同時跑很多 AI 功能","seen_in":["Galaxy AI launch film","Magic Cue","OEM 功能總覽"],"recipe":"裝置 3D 傾斜轉正 1.1s expo.out → 卡片 z:-200、blur 6px 依序彈出 → sine yoyo 漂浮","implementations":{"GSAP":"timeline + from(z, blur) + random yoyo（demo）","Three.js":"CSS3DRenderer 或平面 Mesh 貼 UI 截圖，真實景深","Anime.js v4":"createTimeline + stagger","PixiJS":"Sprite 卡片 + DisplacementFilter"},"demo":"demos/gsap.html","video_ready":"yes","refs":["https://motion.dev/examples"]},{"id":"exploded-view","name":"晶片／機身爆炸圖","category":"hardware","message":"AI 來自真正的硬體：NPU、散熱、電池","seen_in":["Copilot+ PC keynote","ASUS / Surface 發表片（推測）"],"recipe":"層疊物件沿法線拉開，上層位移最大；NPU 層加自發光；鏡頭緩慢繞行","implementations":{"Three.js":"Group 內各 Mesh 依層級 lerp y（demo）；正式片載入 GLTF 產品模型","GSAP":"ScrollTrigger 控制爆炸進度（網頁版）"},"demo":"demos/three.html","video_ready":"yes","refs":[]},{"id":"device-reveal","name":"產品登場","category":"hardware","message":"產品本身的美感與工藝","seen_in":["所有 launch film"],"recipe":"暗場 → 輪廓光掃過邊緣 → 開蓋／轉台 → 定格＋品名；鏡頭運動一律 ease-in-out、無抖動","implementations":{"Three.js":"GLTFLoader + HDRI 環境光 + 相機路徑","GSAP":"ScrollTrigger + canvas 影格序列（Apple 產品頁手法）"},"demo":null,"video_ready":"asset","refs":[]},{"id":"kinetic-type-mask","name":"大字標語遮罩","category":"narrative","message":"一句話記住：Your PC, now intelligent.","seen_in":["品牌 spot 收尾、章節字卡"],"recipe":"逐行 overflow:hidden 遮罩，字由下往上推入 0.8s power4.out；關鍵字換色或漸層","implementations":{"GSAP":"SplitText type:'lines' + mask:'lines'","Anime.js v4":"splitText + translateY stagger","Canvas 2D":"clip() 矩形遮罩 + fillText"},"demo":"demos/gsap.html","video_ready":"yes","refs":["https://gsap.com/blog/3-13/"]}]},"videos":{"_meta":{"updated":"2026-09-29","note":"URL 皆來自 2026-09-29 的網路搜尋結果（見 source）。motifs 是依影片類型與功能推測的「預期視覺母題」，status=to-watch 代表尚未逐格觀看確認；看過後請把 status 改成 reviewed 並修正 motifs / notes。","status_values":["to-watch","reviewed","picked"],"type_values":["launch-film","feature-ad","guided-demo","keynote","brand-spot","explainer"]},"videos":[{"id":"acer-swift14-video-presence","brand":"Acer","device":"laptop","product":"Swift 14 AI (Copilot+ PC)","title":"AI Enhanced Video Presence | Swift 14 AI Copilot+ PC","url":"https://www.youtube.com/watch?v=5d3CpUS1Xto","date":"2024-12-23","type":"feature-ad","ai_features":["Windows Studio Effects","視訊畫面 AI 增強"],"motifs":["before-after-wipe","ui-float-cards"],"watch_focus":"單一功能怎麼在 15–30 秒內講清楚：開場痛點 → 開啟 AI → 對比結果","source":"WebSearch: Acer AI PC commercial video YouTube","status":"to-watch"},{"id":"acer-swift14-we-got-you","brand":"Acer","device":"laptop","product":"Swift 14 AI (Copilot+ PC)","title":"Swift 14 AI Copilot+ PC | We Got You | Acer","url":"https://www.youtube.com/watch?v=wb79p9szy9Q","date":null,"type":"brand-spot","ai_features":["Copilot+ PC 體驗總覽"],"motifs":["kinetic-type-mask","device-reveal"],"watch_focus":"情境敘事（人）與產品特寫（物）的比例；標語如何收尾","source":"WebSearch: Acer AI PC commercial video YouTube","status":"to-watch"},{"id":"acer-acersense","brand":"Acer","device":"laptop","product":"AcerSense（Acer AI Solutions）","title":"Acer AI Solutions | AcerSense™ | Acer","url":"https://www.youtube.com/watch?v=Lffj-v1P2Y8","date":null,"type":"explainer","ai_features":["系統診斷與最佳化","PurifiedView / PurifiedVoice"],"motifs":["scan-detect","data-viz-grow","audio-denoise"],"watch_focus":"自家預載軟體（非 Microsoft 功能）怎麼被包裝；UI 錄屏與動態圖形的混合方式","source":"WebSearch: Acer Intelligence Space AcerSense AI video 2026","status":"to-watch"},{"id":"apple-genmoji","brand":"Apple","device":"phone","product":"iPhone 16 · Apple Intelligence","title":"Apple Intelligence | Imagine it. Genmoji it. | iPhone 16","url":"https://www.youtube.com/watch?v=XROs4K67Y9Q","date":null,"type":"feature-ad","ai_features":["Genmoji"],"motifs":["text-generate","ai-edge-glow"],"watch_focus":"生成式功能的「輸入 → 等待 → 結果」節奏；等待瞬間用什麼視覺表示 AI 在思考","source":"WebSearch: Apple Intelligence iPhone commercial ad YouTube","status":"to-watch"},{"id":"apple-clean-up-flex","brand":"Apple","device":"phone","product":"iPhone 16 · Apple Intelligence","title":"Apple Intelligence | Clean Up Photos: Flex | iPhone 16","url":"https://www.youtube.com/watch?v=iL88A5F9V3k","date":"2025-04-21","type":"feature-ad","ai_features":["Clean Up（物件消除）"],"motifs":["object-erase-dissolve","before-after-wipe"],"watch_focus":"喜劇短片結構：功能是故事的笑點而不是規格；物件消除的過場效果","source":"WebSearch + AppleInsider 2025-04-21","status":"to-watch"},{"id":"apple-write-smarter","brand":"Apple","device":"phone","product":"iPhone 16 Pro · Apple Intelligence","title":"Write Smarter（Apple Intelligence Writing Tools）","url":"https://www.thedrum.com/news/2024/10/30/ad-the-day-apple-promotes-ai-powered-intelligence-tool-two-sharp-spots","date":"2024-10-30","type":"feature-ad","ai_features":["Writing Tools（改寫成專業語氣）"],"motifs":["text-generate"],"watch_focus":"文字類 AI 功能的畫面化：文字改寫的過場。連結為 The Drum 報導，影片本體請從報導內嵌觀看","source":"The Drum 2024-10-30","status":"to-watch"},{"id":"samsung-s25u-intro","brand":"Samsung","device":"phone","product":"Galaxy S25 Ultra · Galaxy AI","title":"Introducing Galaxy S25 Ultra | Galaxy AI | Samsung","url":"https://www.youtube.com/watch?v=3i1OB6wKYms","date":"2025-01-22","type":"launch-film","ai_features":["Now Brief","Cross-app actions","Audio Eraser"],"motifs":["device-reveal","ai-edge-glow","ui-float-cards","audio-denoise"],"watch_focus":"旗艦 launch film 的章節切分；硬體材質鏡頭與 AI 功能段落如何交錯","source":"WebSearch: Samsung Galaxy AI Galaxy S25 official introduction film","status":"to-watch"},{"id":"samsung-s25-guided-demo","brand":"Samsung","device":"phone","product":"Galaxy S25 Series · Galaxy AI","title":"A Guided Demo of Galaxy AI | Galaxy S25 Series | Samsung","url":"https://www.youtube.com/watch?v=mAUdVyXEJ2M","date":"2025-02-07","type":"guided-demo","ai_features":["Galaxy AI 多項功能實機示範"],"motifs":["ui-float-cards","circle-to-search","scan-detect"],"watch_focus":"實機錄屏的包裝：手部、放大鏡、焦點框；適合當作「功能教學影片」模板","source":"WebSearch: Samsung Galaxy AI Galaxy S25 official introduction film","status":"to-watch"},{"id":"samsung-s26u-intro","brand":"Samsung","device":"phone","product":"Galaxy S26 Ultra · Galaxy AI","title":"Introducing Galaxy S26 Ultra | Galaxy AI | Samsung","url":"https://www.youtube.com/watch?v=sUMjugzsZsA","date":"2026-03-05","type":"launch-film","ai_features":["Galaxy AI","Privacy Display"],"motifs":["device-reveal","before-after-wipe","ai-edge-glow"],"watch_focus":"硬體功能（Privacy Display）與 AI 功能同片呈現時的比重；與 S25 版比較一年間的視覺語言演進","source":"WebSearch: Galaxy S26 Ultra introduction film Galaxy AI","status":"to-watch"},{"id":"samsung-s26u-guided-demo","brand":"Samsung","device":"phone","product":"Galaxy S26 Ultra · Galaxy AI","title":"A Guided Demo of Galaxy AI | Galaxy S26 Ultra | Samsung","url":"https://www.youtube.com/watch?v=aSzej7a_gUI","date":null,"type":"guided-demo","ai_features":["Galaxy AI 實機示範"],"motifs":["ui-float-cards","scan-detect"],"watch_focus":"與 S25 guided demo 對照：模板化程度、字卡設計、節奏","source":"WebSearch: Galaxy S26 Ultra introduction film Galaxy AI","status":"to-watch"},{"id":"google-pixel10-magic-cue","brand":"Google","device":"phone","product":"Pixel 10 · Gemini","title":"Google Pixel 10 With Magic Cue | Answers","url":"https://www.youtube.com/watch?v=Dniq4Vfbrbs","date":null,"type":"feature-ad","ai_features":["Magic Cue（主動浮出資訊）"],"motifs":["ui-float-cards","text-generate"],"watch_focus":"「主動式 AI」的視覺化：資訊在對的時機自己出現。對 Acer 的 Smart/Agent 類功能很有參考價值","source":"WebSearch: Pixel 10 ad campaign Gemini","status":"to-watch"},{"id":"google-pixel10-spectacular","brand":"Google","device":"phone","product":"Pixel 10 · Gemini","title":"Meet Google Pixel 10 With Gemini | Do Spectacular Things, Every Day","url":"https://www.youtube.com/watch?v=vL5Lxsh1GUM","date":"2025-08","type":"launch-film","ai_features":["Gemini Live","Camera Coach","Magic Cue"],"motifs":["ai-orb","scan-detect","kinetic-type-mask"],"watch_focus":"Google 的色彩系統與 Gemini 漸層光；日常生活情境剪輯的節奏","source":"WebSearch: Pixel 10 ad campaign Gemini","status":"to-watch"},{"id":"google-gemini-new-home-2026","brand":"Google","device":"multi","product":"Gemini","title":"New Home | Google Gemini Super Bowl Commercial 2026","url":"https://www.youtube.com/watch?v=Z1yGy9fELtE","date":"2026-02","type":"brand-spot","ai_features":["Gemini"],"motifs":["kinetic-type-mask"],"watch_focus":"大型品牌廣告如何只講情感不講規格；AI 在敘事裡的角色定位","source":"WebSearch: Google Pixel Gemini ad YouTube","status":"to-watch"},{"id":"google-pixel9-dream-job","brand":"Google","device":"phone","product":"Pixel 9 · Gemini Live","title":"Dream Job（Pixel 9 × Gemini Live）","url":"https://blog.google/products-and-platforms/devices/pixel/pixel-ad-dream-job-gemini-live/","date":"2025-02","type":"brand-spot","ai_features":["Gemini Live（語音對話）"],"motifs":["ai-orb","audio-reactive"],"watch_focus":"語音 AI 助理的畫面表現：對話波形、光球、字幕。Super Bowl 2025 檔期","source":"blog.google + 9to5Google 2025-02-06","status":"to-watch"},{"id":"microsoft-copilot-pc-keynote","brand":"Microsoft","device":"laptop","product":"Copilot+ PC","title":"Full Keynote: Introducing Copilot+ PCs","url":"https://www.youtube.com/watch?v=aZbHd4suAnQ","date":"2024-05-20","type":"keynote","ai_features":["Recall","Cocreator","Live Captions","Windows Studio Effects"],"motifs":["exploded-view","data-viz-grow","sketch-to-image","ui-float-cards"],"watch_focus":"發表會中插播的 sizzle / 產品短片（非演講段落）；NPU TOPS 的數據視覺化","source":"WebSearch: Microsoft Copilot+ PC introduction video","status":"to-watch"},{"id":"microsoft-surface-copilot-pc","brand":"Microsoft","device":"laptop","product":"Surface Pro / Surface Laptop","title":"Meet the new Surface Copilot+ PCs","url":"https://www.youtube.com/watch?v=_0u0fQuzikA","date":null,"type":"launch-film","ai_features":["Copilot 鍵","Click to Do"],"motifs":["device-reveal","kinetic-type-mask"],"watch_focus":"筆電的鏡頭語言：開蓋、側邊輪廓、鍵盤特寫（Copilot 鍵）","source":"WebSearch: Surface Laptop Copilot+ PC ad YouTube","status":"to-watch"},{"id":"asus-zenbook-does-more","brand":"ASUS","device":"laptop","product":"Zenbook Series (Copilot+ PC)","title":"ASUS Zenbook Series - Zenbook Does More","url":"https://www.youtube.com/watch?v=p-_gzYSI-kQ","date":"2025-02-11","type":"launch-film","ai_features":["Copilot+ PC","ASUS AI 應用"],"motifs":["device-reveal","exploded-view"],"watch_focus":"台廠直接競品：材質（Ceraluminum）鏡頭與 AI 段落的比例，和 Acer 對照","source":"WebSearch: ASUS Zenbook AI PC official video YouTube","status":"to-watch"},{"id":"asus-zenbook14-2026","brand":"ASUS","device":"laptop","product":"Zenbook 14 (UX3480) 2026","title":"ASUS Zenbook 14 (UX3480) | 2026","url":"https://www.youtube.com/watch?v=dZ4-0WCkaKc","date":"2026-07-16","type":"launch-film","ai_features":["smart AI"],"motifs":["device-reveal"],"watch_focus":"2026 年最新競品片：AI 訊息是否比 2025 年更低調（見 Copilot+ 品牌淡化趨勢）","source":"WebSearch: ASUS Zenbook AI PC official video YouTube 2026","status":"to-watch"},{"id":"hp-ai-companion","brand":"HP","device":"laptop","product":"HP AI Companion（OmniBook 等）","title":"HP AI Companion","url":"https://www.youtube.com/watch?v=qL7kr1ckgDE","date":null,"type":"explainer","ai_features":["HP AI Companion（本地文件分析、PC 設定助理）"],"motifs":["text-generate","ui-float-cards"],"watch_focus":"OEM 自家 AI 助理怎麼和 Copilot 做出區隔；對 Acer Intelligence Space 最直接的對照組","source":"WebSearch: HP OmniBook AI PC commercial HP AI Companion","status":"to-watch"},{"id":"lenovo-aura-smart-modes","brand":"Lenovo","device":"laptop","product":"Yoga · Lenovo Aura Edition","title":"Using Smart Modes - Lenovo Aura Edition","url":"https://pcsupport.lenovo.com/us/en/products/laptops-and-netbooks/yoga-series/yoga-7-2-in-1-14iph11/videos/ytv104642","date":null,"type":"explainer","ai_features":["Smart Modes（Attention / Wellness / Collaboration / Shield / Power）"],"motifs":["ui-float-cards","scan-detect"],"watch_focus":"「情境自動切換」類功能的畫面化；Lenovo × Intel 聯名包裝方式","source":"WebSearch: Lenovo Aura Edition Yoga AI PC video Smart Modes","status":"to-watch"},{"id":"nothing-essential","brand":"Nothing","device":"phone","product":"Nothing OS · Essential","title":"Nothing Essential（AI 生成 mini app）發表影片","url":"https://9to5google.com/2025/09/30/nothing-essential-ai-app-generator-promises/","date":"2025-09-30","type":"launch-film","ai_features":["Essential Space","Essential Apps（prompt 生成 app）"],"motifs":["particle-assemble","stagger-grid-wave"],"watch_focus":"小品牌的強烈視覺識別（點陣字、黑白紅）如何套用到 AI 敘事。影片內嵌於 9to5Google 報導","source":"9to5Google 2025-09-30","status":"to-watch"}],"context_notes":[{"title":"Microsoft 淡化「Copilot+ PC」品牌","text":"2026-09-25 有報導指出 Microsoft 正逐步停用 Copilot+ PC 標示。對 Acer 的影響：影片不宜以 Copilot+ 為主訴求，應讓 Acer 自家 AI（Intelligence Space、AcerSense、PurifiedVoice 等）成為主角。","source":"https://9to5google.com/2026/09/25/microsoft-quietly-ending-copilot-pc-branding-for-windows-laptops/"},{"title":"AI 廣告的法規風險","text":"美國廣告自律機構 NAD 認為 Apple 宣傳尚未推出的 Apple Intelligence 功能過度，建議避免暗示功能已可使用。Google Pixel 10 廣告也拿「coming soon」嘲諷對手。影片中每個 AI 功能都要標清楚是否已上市、需要哪些硬體條件。","source":"https://www.cnbc.com/2025/04/23/apple-ai-ads-went-too-far-watchdog-says.html ; https://www.phonearena.com/news/new-google-pixel-10-ad-calls-out-vague-timing-on-coming-soon-featureswas-that-a-shot-at-apple_id172886"}]},"libraries":{"_meta":{"updated":"2026-09-29","note":"12 個 JS 視覺工具的動態效果拆解。version 取自 npm registry（2026-09-29）。primitives = 這個工具最擅長、可以拆出來重複使用的「動態原子」。","layers":{"timeline":"時間軸／補間：決定『什麼時候、怎麼動』","render-2d":"2D 繪製：畫面怎麼被畫出來","render-3d":"3D／GPU：空間、光影、shader","simulation":"模擬：讓電腦算出運動（物理、粒子、細胞自動機）","data":"資料驅動：數據 → 形狀","audio":"聲音：產生聲音或用聲音驅動畫面","style":"風格化：改變線條筆觸質感"}},"libraries":[{"id":"gsap","name":"GSAP","npm":"gsap","version":"3.15.0","layer":"timeline","license":"免費，含商用與所有外掛（2025-04 起由 Webflow 開放）","one_liner":"業界標準的時間軸補間引擎；影片化首選（HyperFrames 直接用它當時間軸）","primitives":[{"name":"Timeline 編排","api":"gsap.timeline() / position 參數 '-=0.4' '\u003c'","use":"整支影片的分鏡時間軸"},{"name":"Stagger 錯開","api":"stagger: {each, from:'center'|'random', grid}","use":"卡片、字、網格依序出場"},{"name":"文字拆解","api":"SplitText.create(el, {type:'chars,words,lines', mask:'lines'})","use":"逐字生成、遮罩上推標語"},{"name":"描線","api":"DrawSVGPlugin","use":"手繪圈選、電路流光"},{"name":"形狀變形","api":"MorphSVGPlugin","use":"圖示變形、Logo 變形"},{"name":"捲動驅動","api":"ScrollTrigger","use":"產品頁捲動敘事（非影片）"},{"name":"FLIP 版面轉場","api":"Flip.getState / Flip.from","use":"UI 重新排列的平滑過渡"},{"name":"自訂曲線","api":"CustomEase / CustomWiggle / CustomBounce","use":"品牌專屬的動態節奏"}],"video_fit":"最佳。timeline 可 seek / pause，渲染器可逐幀控制","demo":"demos/gsap.html","docs":"https://gsap.com/docs/v3/","learn":["https://gsap.com/resources/get-started/","https://tympanus.net/codrops/2025/05/14/from-splittext-to-morphsvg-5-creative-demos-using-free-gsap-plugins/"]},{"id":"anime","name":"Anime.js v4","npm":"animejs","version":"4.5.0","layer":"timeline","license":"MIT","one_liner":"輕量（約 10KB gzip）ESM 動畫引擎；v4 重寫後 API 為 animate(targets, params)","primitives":[{"name":"網格 Stagger","api":"stagger(40, {grid:[16,16], from:'center'})","use":"NPU 運算擴散波"},{"name":"Timeline","api":"createTimeline().add(targets, params, position)","use":"分鏡編排"},{"name":"文字拆解","api":"splitText / scrambleText","use":"逐字、亂碼解碼效果"},{"name":"SVG 描線","api":"svg.createDrawable","use":"線條描繪"},{"name":"SVG 變形","api":"svg.morphTo","use":"形狀變形"},{"name":"路徑運動","api":"svg.createMotionPath","use":"物件沿路徑移動"},{"name":"彈簧","api":"spring / createSpring","use":"物理感回彈"},{"name":"版面動畫","api":"createLayout","use":"DOM 版面變化自動補間"},{"name":"可重現亂數","api":"createSeededRandom","use":"影片渲染需要每次結果一致"}],"video_fit":"佳。timeline.seek(ms) 可逐幀；createSeededRandom 讓隨機可重現","demo":"demos/anime.html","docs":"https://animejs.com/documentation/","learn":["https://github.com/juliangarnier/anime/wiki/Migrating-from-v3-to-v4","https://github.com/juliangarnier/anime/releases/tag/v4.0.0"]},{"id":"d3","name":"D3.js","npm":"d3","version":"7.9.0","layer":"data","license":"ISC","one_liner":"資料 → SVG / Canvas 的綁定與轉場；規格、續航、效能對比畫面","primitives":[{"name":"資料綁定","api":"selection.data().join()","use":"資料驅動 enter / update / exit"},{"name":"比例尺","api":"scaleLinear / scaleBand / scaleTime","use":"數值 → 像素"},{"name":"轉場","api":"transition().duration().delay((d,i)=>i*120)","use":"長條生長、點位移動"},{"name":"內插","api":"interpolateNumber / interpolateRgb / textTween","use":"數字跳動、顏色過渡"},{"name":"形狀產生器","api":"d3.line / d3.arc / curveBasis","use":"平滑波形、環狀圖"},{"name":"力導向","api":"forceSimulation","use":"知識圖譜、AI 關聯網路"}],"video_fit":"中。轉場以真實時間跑；影片化時改用 scale + 自訂 t 直接算屬性","demo":"demos/d3.html","docs":"https://d3js.org/","learn":["https://observablehq.com/@d3/gallery"]},{"id":"pixi","name":"PixiJS","npm":"pixi.js","version":"8.21.0","layer":"render-2d","license":"MIT","one_liner":"WebGL / WebGPU 2D 渲染器；大量 sprite、濾鏡、加色混合","primitives":[{"name":"非同步初始化","api":"await app.init({resizeTo, background})","use":"v8 起的新初始化方式"},{"name":"向量繪圖","api":"new Graphics().circle().fill()","use":"光球、形狀"},{"name":"濾鏡","api":"BlurFilter / DisplacementFilter / ColorMatrixFilter","use":"光暈、玻璃扭曲"},{"name":"混合模式","api":"blendMode = 'add'","use":"發光疊加"},{"name":"大量粒子","api":"ParticleContainer + Particle","use":"上萬顆粒子"},{"name":"逐幀更新","api":"app.ticker.add(tk => …)","use":"動畫迴圈"}],"video_fit":"中。需改成以 frame 計算狀態（不要依賴 deltaTime 累加）","demo":"demos/pixi.html","docs":"https://pixijs.com/8.x/guides","learn":["https://pixijs.com/8.x/examples"]},{"id":"matter","name":"Matter.js","npm":"matter-js","version":"0.20.0","layer":"simulation","license":"MIT","one_liner":"2D 剛體物理；物件掉落、堆疊、碰撞","primitives":[{"name":"世界與步進","api":"Engine.create / Engine.update(engine, 1000/60)","use":"固定步長 = 可重現"},{"name":"剛體","api":"Bodies.rectangle / circle / fromVertices","use":"檔案、圖示、字母剛體"},{"name":"直接操控","api":"Body.setPosition / setVelocity / setAngle","use":"導演式控制物理"},{"name":"約束","api":"Constraint / Composites.chain","use":"繩索、彈簧連結"},{"name":"碰撞事件","api":"Events.on(engine, 'collisionStart')","use":"碰撞觸發音效或特效"}],"video_fit":"需改造。影片中從第 0 幀開始逐幀 Engine.update，並固定亂數 seed","demo":"demos/matter.html","docs":"https://brm.io/matter-js/docs/","learn":["https://brm.io/matter-js/"]},{"id":"falling-sand","name":"Falling Sand","npm":null,"version":null,"layer":"simulation","license":"技法（非套件）","one_liner":"粉末遊戲式細胞自動機：每格依鄰居規則更新；崩解、流體、堆積","primitives":[{"name":"格子狀態","api":"Uint8Array(W*H) 存材質種類","use":"沙、水、固體、空"},{"name":"下落規則","api":"下 → 左下／右下 → 靜止","use":"沙堆、崩解"},{"name":"掃描順序","api":"由下往上、左右隨機交替","use":"避免偏向與一幀多格"},{"name":"點火／轉換","api":"條件式改變材質（固體 → 沙）","use":"物件消除、燃燒"},{"name":"像素輸出","api":"ImageData / putImageData 或 GPU texture","use":"快速繪製"}],"video_fit":"需改造。固定 seed 的亂數，逐幀步進；或預先輸出素材","demo":"demos/falling-sand.html","docs":"https://sandspiel.club/","learn":["https://sandspiel.club/","https://github.com/MaxBittker/sandspiel"]},{"id":"three","name":"Three.js","npm":"three","version":"0.186.1","layer":"render-3d","license":"MIT","one_liner":"Web 3D 標準；產品模型、光影、shader 材質、WebGPU","primitives":[{"name":"產品模型","api":"GLTFLoader + 環境貼圖 (RGBELoader / PMREM)","use":"筆電、手機實體渲染"},{"name":"自訂 shader","api":"ShaderMaterial / TSL (three/tsl)","use":"fresnel 光球、溶解、流光"},{"name":"加色混合","api":"AdditiveBlending + depthWrite:false","use":"發光層"},{"name":"粒子","api":"Points + BufferGeometry","use":"上萬顆 3D 粒子"},{"name":"後製","api":"EffectComposer + UnrealBloomPass","use":"bloom 光暈"},{"name":"逐幀渲染","api":"renderer.setAnimationLoop(ms => …)","use":"以時間 t 驅動（可改成 frame）"}],"video_fit":"佳。Remotion 有 @remotion/three；HyperFrames 有 Three.js adapter","demo":"demos/three.html","docs":"https://threejs.org/docs/","learn":["https://threejs-journey.com/","https://threejs.org/examples/"]},{"id":"glsl","name":"GLSL Shader","npm":null,"version":"GLSL ES 1.0 / 3.0","layer":"render-3d","license":"語言（非套件）","one_liner":"直接寫 GPU 片段著色器；所有「光」「流動」「溶解」質感的根源","primitives":[{"name":"SDF 距離場","api":"sdCircle / sdRoundBox","use":"邊緣光、形狀遮罩"},{"name":"雜訊","api":"value / simplex / fbm noise","use":"有機流動、閃爍、溶解門檻"},{"name":"色盤函式","api":"cosine palette (Inigo Quilez)","use":"平滑循環漸層"},{"name":"指數光暈","api":"exp(d / width)","use":"柔和發光"},{"name":"Fresnel","api":"pow(1 - dot(N, V), p)","use":"球體邊緣光"},{"name":"轉場混合","api":"mix(a, b, step(noise, progress))","use":"前後對比、溶解轉場"}],"video_fit":"最佳。shader 本來就是 f(uv, t)，給定 t 就能精準重現","demo":"demos/glsl.html","docs":"https://thebookofshaders.com/","learn":["https://thebookofshaders.com/","https://iquilezles.org/articles/","https://www.shadertoy.com/"]},{"id":"canvas2d","name":"Canvas 2D","npm":null,"version":"瀏覽器原生","layer":"render-2d","license":"Web 標準","one_liner":"零依賴的即時繪圖；最適合 HUD、掃描框、波形、像素效果","primitives":[{"name":"漸層","api":"createLinearGradient / createRadialGradient","use":"掃描光帶、光暈"},{"name":"合成模式","api":"globalCompositeOperation = 'lighter'","use":"發光疊加"},{"name":"虛線流動","api":"setLineDash + lineDashOffset","use":"辨識框、流光邊"},{"name":"裁切","api":"clip()","use":"遮罩、前後對比"},{"name":"像素操作","api":"getImageData / putImageData","use":"falling sand、故障效果"},{"name":"殘影","api":"每幀畫半透明底色","use":"拖尾"}],"video_fit":"佳。畫面是 f(t) 就能直接逐幀渲染","demo":"demos/canvas2d.html","docs":"https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API","learn":["https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial"]},{"id":"rough","name":"Rough.js","npm":"roughjs","version":"4.6.6","layer":"style","license":"MIT","one_liner":"手繪／素描風格圖形產生器；讓 AI 影片有「人味」的標註","primitives":[{"name":"手繪形狀","api":"rc.ellipse / rectangle / linearPath / curve","use":"圈選、箭頭、標註"},{"name":"手感參數","api":"roughness / bowing / seed","use":"控制手抖程度，seed 固定則可重現"},{"name":"填充風格","api":"fillStyle: 'hachure' | 'cross-hatch' | 'zigzag'","use":"素描陰影"},{"name":"描線動畫","api":"SVG path + stroke-dashoffset","use":"即時畫出來的感覺"}],"video_fit":"佳。固定 seed，描線進度 = f(t)","demo":"demos/rough.html","docs":"https://github.com/rough-stuff/rough/wiki","learn":["https://roughjs.com/"]},{"id":"p5","name":"p5.js","npm":"p5","version":"2.3.4","layer":"render-2d","license":"LGPL-2.1","one_liner":"創意編程入門首選；快速做生成式原型（p5 2.x 有 API 變動）","primitives":[{"name":"Perlin noise","api":"noise(x, y, t)","use":"流場、有機運動"},{"name":"離屏畫布","api":"createGraphics + loadPixels","use":"文字／Logo 取樣成粒子目標"},{"name":"顏色內插","api":"lerpColor","use":"漸層粒子"},{"name":"WEBGL 模式","api":"createCanvas(w, h, WEBGL) + shader","use":"3D 與 shader 原型"},{"name":"逐幀輸出","api":"saveGif / frameCount","use":"快速匯出素材"}],"video_fit":"中。適合原型與素材輸出，正式片再移植到 Canvas / Three","demo":"demos/p5.html","docs":"https://p5js.org/reference/","learn":["https://thecodingtrain.com/","https://natureofcode.com/"]},{"id":"tone","name":"Tone.js","npm":"tone","version":"15.1.22","layer":"audio","license":"MIT","one_liner":"Web Audio 音樂框架；做音效、配樂，並用聲音驅動畫面","primitives":[{"name":"音訊啟動","api":"await Tone.start()（需使用者手勢）","use":"瀏覽器限制"},{"name":"合成器","api":"Synth / FMSynth / Noise","use":"UI 音效、嗶聲、噪音"},{"name":"效果鏈","api":"chain(Filter, Reverb, Gain)","use":"降噪對比、空間感"},{"name":"參數自動化","api":"param.rampTo(v, sec)","use":"平滑開關"},{"name":"分析器","api":"Waveform / FFT / Meter","use":"聲音 → 視覺數值"},{"name":"節拍時間軸","api":"Transport + Loop + Part","use":"音畫同步、剪輯點對拍"},{"name":"離線渲染","api":"Tone.Offline(() => …, duration)","use":"輸出音檔給影片用"}],"video_fit":"需改造。影片中用 Tone.Offline 先算出音軌，再把 FFT 數據預先存成陣列驅動畫面","demo":"demos/tone.html","docs":"https://tonejs.github.io/docs/","learn":["https://tonejs.github.io/examples/"]}]},"sources":{"_meta":{"updated":"2026-09-29","note":"動態效果靈感來源。kind=search 的連結是站內搜尋頁（內容會變動）；kind=item 是單一作品或教學。Pinterest 無法登入抓取，請把自己的 board 網址補進 items。"},"sources":[{"id":"dribbble-ai-orb","platform":"Dribbble","kind":"search","title":"AI Orb 搜尋","url":"https://dribbble.com/search/ai-orb","effects":["ai-orb"]},{"id":"dribbble-ai-orb-motion","platform":"Dribbble","kind":"search","title":"AI Orb Motion Animation Design","url":"https://dribbble.com/search/ai%20orb%20motion%20animation%20design","effects":["ai-orb","particle-swarm"]},{"id":"dribbble-ai-assistant","platform":"Dribbble","kind":"search","title":"AI Assistant 搜尋","url":"https://dribbble.com/search/ai-assistant","effects":["ai-orb","ui-float-cards"]},{"id":"dribbble-siri-animation","platform":"Dribbble","kind":"search","title":"Siri Animation 搜尋","url":"https://dribbble.com/search/siri-animation","effects":["ai-orb","ai-edge-glow"]},{"id":"dribbble-orb-agentic","platform":"Dribbble","kind":"item","title":"Orb - Agentic AI Motion Design（AmazingUI）","url":"https://dribbble.com/shots/27465848-Orb-Agentic-AI-Motion-Design-by-AmazingUI","effects":["ai-orb"]},{"id":"dribbble-siri-ios11","platform":"Dribbble","kind":"item","title":"Apple iOS11 Siri visual effect motion（Gleb Kuznetsov / Milkinside）","url":"https://dribbble.com/shots/3546148-Apple-iOS11-Siri-visual-effect-motion","effects":["ai-orb","audio-reactive"]},{"id":"pinterest-ai-motion","platform":"Pinterest","kind":"search","title":"AI motion graphics 搜尋","url":"https://www.pinterest.com/search/pins/?q=ai%20motion%20graphics","effects":[]},{"id":"pinterest-ai-orb","platform":"Pinterest","kind":"search","title":"AI orb animation 搜尋","url":"https://www.pinterest.com/search/pins/?q=ai%20orb%20animation","effects":["ai-orb"]},{"id":"pinterest-product-3d","platform":"Pinterest","kind":"search","title":"Laptop product animation 搜尋","url":"https://www.pinterest.com/search/pins/?q=laptop%20product%20animation%203d","effects":["device-reveal","exploded-view"]},{"id":"pinterest-ui-motion","platform":"Pinterest","kind":"search","title":"AI UI motion design 搜尋","url":"https://www.pinterest.com/search/pins/?q=ai%20ui%20motion%20design","effects":["ui-float-cards","text-generate"]},{"id":"motion-dev-examples","platform":"Motion (motion.dev)","kind":"search","title":"Motion 官方範例庫（React / JS / Vue）","url":"https://motion.dev/examples","effects":["ui-float-cards"]},{"id":"motion-dev-layout","platform":"Motion (motion.dev)","kind":"item","title":"Shared layout animation","url":"https://examples.motion.dev/react/shared-layout-animation","effects":["ui-float-cards"]},{"id":"codrops-audio-orb","platform":"Codrops","kind":"item","title":"3D Audio Visualizer with Three.js, GSAP & Web Audio API","url":"https://tympanus.net/codrops/2025/06/18/coding-a-3d-audio-visualizer-with-three-js-gsap-web-audio-api/","effects":["ai-orb","audio-reactive"]},{"id":"codrops-shader-gsap","platform":"Codrops","kind":"item","title":"How to Animate WebGL Shaders with GSAP","url":"https://tympanus.net/codrops/2025/10/08/how-to-animate-webgl-shaders-with-gsap-ripples-reveals-and-dynamic-blur-effects/","effects":["before-after-wipe","sketch-to-image"]},{"id":"codrops-image-transitions","platform":"Codrops","kind":"item","title":"WebGL Shader Techniques for Dynamic Image Transitions","url":"https://tympanus.net/codrops/2025/01/22/webgl-shader-techniques-for-dynamic-image-transitions/","effects":["sketch-to-image","object-erase-dissolve"]},{"id":"codrops-gsap-free-plugins","platform":"Codrops","kind":"item","title":"From SplitText to MorphSVG: 5 Creative Demos","url":"https://tympanus.net/codrops/2025/05/14/from-splittext-to-morphsvg-5-creative-demos-using-free-gsap-plugins/","effects":["text-generate","kinetic-type-mask"]},{"id":"codepen-siri-css","platform":"CodePen","kind":"item","title":"Siri Intelligence CSS animation","url":"https://codepen.io/quintenm/pen/NPGYRgj","effects":["ai-edge-glow"]},{"id":"gh-apple-glow","platform":"GitHub","kind":"item","title":"AppleIntelligenceGlowEffect","url":"https://github.com/jacobamobin/AppleIntelligenceGlowEffect","effects":["ai-edge-glow"]},{"id":"shadertoy","platform":"Shadertoy","kind":"search","title":"Shadertoy（GLSL 範例海）","url":"https://www.shadertoy.com/","effects":["ai-edge-glow","ai-orb","object-erase-dissolve"]},{"id":"sandspiel","platform":"Sandspiel","kind":"item","title":"Sandspiel（Falling sand 代表作）","url":"https://sandspiel.club/","effects":["object-erase-dissolve"]}]}};
+const BASE = "../";  // demo 相對路徑前綴：repo 內為 "../"，artifact 內為 ""
+const E = DATA.effects.effects, V = DATA.videos.videos, L = DATA.libraries.libraries, S = DATA.sources.sources;
+const CAT = DATA.effects._meta.categories;
+const READY = { yes: "可直接渲染", adapt: "需改造", asset: "做成素材" };
+const effById = Object.fromEntries(E.map(e => [e.id, e]));
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// 每位觀看者自己的挑選紀錄，只存在瀏覽器
+let picks = new Set();
+try { picks = new Set(JSON.parse(localStorage.getItem("atlas-picks") || "[]")); } catch (e) {}
+const savePicks = () => { try { localStorage.setItem("atlas-picks", JSON.stringify([...picks])); } catch (e) {} };
+
+const TABS = [
+  { id: "effects", label: "動態效果", n: E.length, title: "20 種把 AI 變得看得見的動態", text: "每個效果對應一個 AI 賣點，拆成訊息、動態配方、12 個 JS 工具的實作路線，並標註能否直接進 Claude Code 影片管線。按 ☆ 挑選，最後匯出清單。" },
+  { id: "matrix", label: "工具拆解矩陣", n: L.length, title: "效果 × 工具：誰能做什麼", text: "橫軸是 12 個 JS 視覺工具，縱軸是動態效果。深色格＝本 repo 有可執行 demo；淺色格＝有實作路線（滑鼠停留看做法）。" },
+  { id: "libs", label: "12 個工具", n: L.length, title: "12 個工具的動態原子", text: "每個工具最擅長、可拆出來重複使用的動態原子（primitives），附關鍵 API 與影片化適合度。" },
+  { id: "videos", label: "品牌影片", n: V.length, title: "AI 裝置影片參考庫", text: "Acer、Apple、Samsung、Google、Microsoft、ASUS、HP、Lenovo、Nothing 的 AI 功能影片。預期母題為推測，看完後請把狀態改成「已看」。" },
+  { id: "sources", label: "靈感來源", n: S.length, title: "動態靈感來源", text: "Dribbble、Pinterest、motion.dev、Codrops、CodePen 的搜尋頁與單一作品，已對應到效果 id。" },
+];
+let tab = "effects", q = "", onlyPicked = false, filtersOpen = false;
+const filt = {};
+try { const t = location.hash.slice(1); if (TABS.some(x => x.id === t)) tab = t; } catch (e) {}
+
+function renderTabs() {
+  $("#tabs").innerHTML = TABS.map(t => `<button role="tab" aria-selected="${t.id === tab}" data-tab="${t.id}">${t.label}<span class="count">${t.n}</span></button>`).join("");
+  const t = TABS.find(x => x.id === tab);
+  $("#introTitle").textContent = t.title; $("#introText").textContent = t.text;
+}
+function chipGroup(key, title, options) {
+  const sel = filt[key] || new Set();
+  return `<div class="fgroup"><h3>${title}</h3><div class="chips">${options.map(([v, label]) =>
+    `<button class="chip" data-f="${key}" data-v="${esc(v)}" aria-pressed="${sel.has(v)}">${esc(label)}</button>`).join("")}</div></div>`;
+}
+function renderFilters() {
+  let html = "";
+  if (tab === "effects" || tab === "matrix") {
+    html += chipGroup("cat", "類別", Object.entries(CAT).map(([k, v]) => [k, v.split("：")[0]]));
+    html += chipGroup("ready", "影片化", Object.entries(READY));
+    html += chipGroup("lib", "用到的工具", L.map(l => [l.name, l.name]));
+  } else if (tab === "videos") {
+    html += chipGroup("brand", "品牌", [...new Set(V.map(v => v.brand))].map(b => [b, b]));
+    html += chipGroup("device", "裝置", [["laptop", "筆電"], ["phone", "手機"], ["multi", "跨裝置"]]);
+    html += chipGroup("type", "影片類型", [["launch-film", "發表形象片"], ["feature-ad", "功能廣告"], ["guided-demo", "實機示範"], ["brand-spot", "品牌廣告"], ["keynote", "發表會"], ["explainer", "功能說明"]]);
+    html += chipGroup("motif", "預期母題", E.map(e => [e.id, e.name]));
+  } else if (tab === "libs") {
+    html += chipGroup("layer", "層", Object.entries(DATA.libraries._meta.layers).map(([k, v]) => [k, v.split("：")[0]]));
+  } else if (tab === "sources") {
+    html += chipGroup("platform", "平台", [...new Set(S.map(s => s.platform))].map(p => [p, p]));
+  }
+  const narrow = matchMedia("(max-width: 860px)").matches;
+  const n = Object.values(filt).reduce((a, f) => a + f.size, 0);
+  $("#filters").innerHTML = `<details class="fbox" ${narrow && !filtersOpen ? "" : "open"}><summary>篩選${n ? `（${n}）` : ""}</summary><div style="display:grid;gap:20px">${html}</div></details>`;
+  $("#filters details").addEventListener("toggle", ev => { filtersOpen = ev.target.open; });
+}
+const pass = (key, vals) => { const f = filt[key]; if (!f || !f.size) return true; return vals.some(v => f.has(v)); };
+const hitQ = obj => !q || JSON.stringify(obj).toLowerCase().includes(q);
+const pickOk = id => !onlyPicked || picks.has(id);
+const star = (id, label) => `<button class="star" data-pick="${esc(id)}" aria-pressed="${picks.has(id)}" aria-label="挑選 ${esc(label)}" title="挑選">${picks.has(id) ? "★" : "☆"}</button>`;
+const empty = `<div class="empty">沒有符合條件的項目。清除篩選或換個關鍵字試試。</div>`;
+
+function effectCard(e) {
+  const vids = V.filter(v => v.motifs.includes(e.id));
+  const srcs = S.filter(s => s.effects.includes(e.id));
+  return `<article class="card ${picks.has(e.id) ? "picked" : ""}">
+    <div class="card-head"><div><h4>${esc(e.name)}</h4><span class="id">${e.id}</span></div>${star(e.id, e.name)}</div>
+    <div class="row"><span class="tag">${esc(CAT[e.category].split("：")[0])}</span><span class="pill ${e.video_ready}">${READY[e.video_ready]}</span>${e.demo ? `<a href="${BASE + e.demo}" target="_blank" rel="noopener">開 demo ↗</a>` : ""}</div>
+    <p class="msg">${esc(e.message)}</p>
+    <p class="recipe">${esc(e.recipe)}</p>
+    <dl class="impl">${Object.entries(e.implementations).map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
+    ${vids.length || srcs.length || e.refs.length ? `<details><summary>出現在 ${vids.length} 支影片 · ${srcs.length + e.refs.length} 個參考</summary>
+      <div class="links">${vids.map(v => `<a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.brand)}：${esc(v.title)}</a>`).join("")}
+      ${srcs.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.platform)}：${esc(s.title)}</a>`).join("")}
+      ${e.refs.map(r => `<a href="${esc(r)}" target="_blank" rel="noopener">${esc(new URL(r).hostname)}</a>`).join("")}</div></details>` : ""}
+  </article>`;
+}
+function filteredEffects() {
+  return E.filter(e => pass("cat", [e.category]) && pass("ready", [e.video_ready]) && pass("lib", Object.keys(e.implementations)) && hitQ(e) && pickOk(e.id));
+}
+function renderEffects() { const list = filteredEffects(); return list.length ? `<div class="grid">${list.map(effectCard).join("")}</div>` : empty; }
+
+function renderMatrix() {
+  const list = filteredEffects();
+  if (!list.length) return empty;
+  const libName = l => l.name.replace(" v4", "").replace(" Shader", "").replace(".js", "");
+  return `<div class="matrix-wrap"><table class="matrix"><thead><tr><th scope="col">效果</th>${L.map(l => `<th scope="col">${esc(libName(l))}</th>`).join("")}</tr></thead><tbody>
+    ${list.map(e => `<tr><th scope="row">${esc(e.name)}<span class="id">${e.id}</span></th>${L.map(l => {
+      const how = e.implementations[l.name];
+      if (!how) return "<td></td>";
+      const isDemo = e.demo && e.demo === l.demo;
+      return `<td class="hit ${isDemo ? "demo" : ""}" title="${esc(how)}">${isDemo ? "▶" : "●"}</td>`;
+    }).join("")}</tr>`).join("")}
+  </tbody></table></div>
+  <p class="legend"><span><i style="background:var(--accent)"></i>有 demo</span><span><i style="background:var(--accent-soft)"></i>有實作路線</span><span>滑鼠停在格子上看做法</span></p>`;
+}
+function renderLibs() {
+  const list = L.filter(l => pass("layer", [l.layer]) && hitQ(l) && pickOk(l.id));
+  if (!list.length) return empty;
+  return `<div class="grid">${list.map(l => {
+    const effs = E.filter(e => e.implementations[l.name]);
+    return `<article class="card ${picks.has(l.id) ? "picked" : ""}">
+      <div class="card-head"><div><h4>${esc(l.name)}</h4><span class="id">${l.npm ? `${l.npm}@${l.version}` : l.version}</span></div>${star(l.id, l.name)}</div>
+      <div class="row"><span class="tag">${esc(DATA.libraries._meta.layers[l.layer].split("：")[0])}</span><span class="tag">${esc(l.license)}</span></div>
+      <p class="msg">${esc(l.one_liner)}</p>
+      <dl class="impl">${l.primitives.map(p => `<dt>${esc(p.name)}</dt><dd><code class="id">${esc(p.api)}</code><br>${esc(p.use)}</dd>`).join("")}</dl>
+      <p class="recipe"><b>影片化：</b>${esc(l.video_fit)}</p>
+      <div class="links">${l.demo ? `<a href="${BASE + l.demo}" target="_blank" rel="noopener">demo ↗</a>` : ""}<a href="${esc(l.docs)}" target="_blank" rel="noopener">文件 ↗</a>${l.learn.map(u => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(new URL(u).hostname)}</a>`).join("")}</div>
+      <p class="meta-line">可實作 ${effs.length} 個效果：${effs.map(e => e.id).join(" · ")}</p>
+    </article>`;
+  }).join("")}</div>`;
+}
+const TYPE = { "launch-film": "發表形象片", "feature-ad": "功能廣告", "guided-demo": "實機示範", "brand-spot": "品牌廣告", keynote: "發表會", explainer: "功能說明" };
+function renderVideos() {
+  const list = V.filter(v => pass("brand", [v.brand]) && pass("device", [v.device]) && pass("type", [v.type]) && pass("motif", v.motifs) && hitQ(v) && pickOk(v.id));
+  const notes = DATA.videos.context_notes.map(n => `<div class="note"><b>${esc(n.title)}</b>　${esc(n.text)}</div>`).join("");
+  if (!list.length) return `<div class="notes">${notes}</div>` + empty;
+  return `<div class="notes">${notes}</div><div class="grid">${list.map(v => `<article class="card ${picks.has(v.id) ? "picked" : ""}">
+    <div class="card-head"><div><span class="meta-line">${esc(v.brand)} · ${esc(v.product)}</span><h4>${esc(v.title)}</h4></div>${star(v.id, v.title)}</div>
+    <div class="row"><span class="tag">${TYPE[v.type] || v.type}</span><span class="tag">${v.date || "日期未知"}</span><span class="pill ${v.status === "reviewed" ? "reviewed" : "todo"}">${v.status === "reviewed" ? "已看" : "待看"}</span></div>
+    <p class="recipe"><b>AI 功能：</b>${v.ai_features.map(esc).join("、")}</p>
+    <p class="msg">${esc(v.watch_focus)}</p>
+    <div class="row">${v.motifs.map(m => `<span class="tag" title="${esc(effById[m]?.name || "")}">${esc(effById[m]?.name || m)}</span>`).join("")}</div>
+    <div class="links"><a href="${esc(v.url)}" target="_blank" rel="noopener">觀看 ↗</a><span class="meta-line">${esc(v.source)}</span></div>
+  </article>`).join("")}</div>`;
+}
+function renderSources() {
+  const list = S.filter(s => pass("platform", [s.platform]) && hitQ(s) && pickOk(s.id));
+  if (!list.length) return empty;
+  return `<div class="grid">${list.map(s => `<article class="card ${picks.has(s.id) ? "picked" : ""}">
+    <div class="card-head"><div><span class="meta-line">${esc(s.platform)} · ${s.kind === "search" ? "搜尋頁" : "單一作品"}</span><h4>${esc(s.title)}</h4></div>${star(s.id, s.title)}</div>
+    <div class="row">${s.effects.map(m => `<span class="tag">${esc(effById[m]?.name || m)}</span>`).join("") || `<span class="tag">未分類</span>`}</div>
+    <div class="links"><a href="${esc(s.url)}" target="_blank" rel="noopener">開啟 ↗</a></div>
+  </article>`).join("")}</div>`;
+}
+function render() {
+  renderTabs(); renderFilters();
+  $("#view").innerHTML = { effects: renderEffects, matrix: renderMatrix, libs: renderLibs, videos: renderVideos, sources: renderSources }[tab]();
+  $("#pickCount").textContent = `已挑選 ${picks.size}`;
+  $("#onlyPicked").setAttribute("aria-pressed", onlyPicked);
+  $("#onlyPicked").textContent = onlyPicked ? "顯示全部" : "只看已挑選";
+}
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => t.hidden = true, 1800); }
+
+document.addEventListener("click", ev => {
+  const b = ev.target.closest("button"); if (!b) return;
+  if (b.dataset.tab) { tab = b.dataset.tab; for (const k in filt) delete filt[k]; try { history.replaceState(null, "", "#" + tab); } catch (e) {} render(); }
+  else if (b.dataset.f) { const s = filt[b.dataset.f] ||= new Set(); s.has(b.dataset.v) ? s.delete(b.dataset.v) : s.add(b.dataset.v); render(); }
+  else if (b.dataset.pick) { const id = b.dataset.pick; picks.has(id) ? picks.delete(id) : picks.add(id); savePicks(); render(); toast(picks.has(id) ? "已加入挑選" : "已移出挑選"); }
+  else if (b.id === "onlyPicked") { onlyPicked = !onlyPicked; render(); }
+  else if (b.id === "exportBtn") {
+    const byType = { effects: E.filter(x => picks.has(x.id)).map(x => x.id), videos: V.filter(x => picks.has(x.id)).map(x => x.id), libraries: L.filter(x => picks.has(x.id)).map(x => x.id), sources: S.filter(x => picks.has(x.id)).map(x => x.id) };
+    const text = JSON.stringify({ picked_at: new Date().toISOString().slice(0, 10), ...byType }, null, 2);
+    $("#exportBox").hidden = false; $("#exportText").value = text;
+    const fallback = () => { $("#exportText").select(); toast("請手動複製"); };
+    try { navigator.clipboard.writeText(text).then(() => toast("已複製挑選清單"), fallback); } catch (e) { fallback(); }
+  }
+});
+$("#q").addEventListener("input", ev => { q = ev.target.value.trim().toLowerCase(); $("#view").innerHTML = { effects: renderEffects, matrix: renderMatrix, libs: renderLibs, videos: renderVideos, sources: renderSources }[tab](); });
+$("#stamp").textContent = `DATA ${DATA.effects._meta.updated} · ${E.length} FX · ${V.length} FILMS`;
+render();
+</script>

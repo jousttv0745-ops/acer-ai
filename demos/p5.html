@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>p5.js · 粒子聚合成字</title>
+<link rel="stylesheet" href="_demo.css">
+</head>
+<body>
+<div class="frame">
+  <div class="stage" id="stage"></div>
+  <div class="meta">
+    <span><b>p5.js 2.3</b> · 效果：<code>particle-assemble</code> · API：<code>createGraphics</code> 取樣文字像素 → 粒子目標點、<code>noise()</code> 擾動、<code>lerp</code> 彈簧回位</span>
+    <button id="scatter">打散 / 聚合</button>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/p5@2.3.4/lib/p5.min.js"></script>
+<script>
+  const W = 1280, H = 720, WORD = "AI PC";
+  let pts = [], assembled = true;
+  function setup() {
+    const cnv = createCanvas(W, H);
+    cnv.parent("stage");
+    pixelDensity(1);
+    // 1. 在離屏畫布寫字，掃描像素取得字形上的點
+    const g = createGraphics(W, H);
+    g.pixelDensity(1); g.background(0); g.fill(255); g.textStyle(BOLD);
+    g.textAlign(CENTER, CENTER); g.textSize(300); g.text(WORD, W / 2, H / 2);
+    g.loadPixels();
+    for (let y = 0; y < H; y += 7) for (let x = 0; x < W; x += 7) {
+      if (g.pixels[(y * W + x) * 4] > 128) pts.push({ tx: x, ty: y, x: random(W), y: random(H), vx: 0, vy: 0, hue: x / W });
+    }
+    g.remove();
+    noStroke();
+  }
+  function draw() {
+    background(7, 8, 12, 60); // 半透明底 → 殘影拖尾
+    const t = millis() / 1000;
+    for (const p of pts) {
+      let gx, gy;
+      if (assembled) { gx = p.tx; gy = p.ty; }
+      else { // 打散：沿 Perlin noise 流場漂移
+        const a = noise(p.x * 0.003, p.y * 0.003, t * 0.2) * TWO_PI * 2;
+        gx = p.x + cos(a) * 40; gy = p.y + sin(a) * 40;
+      }
+      // 2. 彈簧：加速度 ∝ 距離，再加阻尼
+      p.vx = (p.vx + (gx - p.x) * 0.012) * 0.88;
+      p.vy = (p.vy + (gy - p.y) * 0.012) * 0.88;
+      p.x += p.vx; p.y += p.vy;
+      if (!assembled) { p.x = (p.x + W) % W; p.y = (p.y + H) % H; }
+      const c = lerpColor(color(79, 209, 255), color(255, 111, 177), p.hue);
+      fill(c); circle(p.x, p.y, 3.2);
+    }
+  }
+  document.getElementById("scatter").onclick = () => { assembled = !assembled; };
+</script>
+</body>
+</html>

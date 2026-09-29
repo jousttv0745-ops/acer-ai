@@ -1,0 +1,253 @@
+{
+  "_meta": {
+    "updated": "2026-09-29",
+    "note": "URL 皆來自 2026-09-29 的網路搜尋結果（見 source）。motifs 是依影片類型與功能推測的「預期視覺母題」，status=to-watch 代表尚未逐格觀看確認；看過後請把 status 改成 reviewed 並修正 motifs / notes。",
+    "status_values": ["to-watch", "reviewed", "picked"],
+    "type_values": ["launch-film", "feature-ad", "guided-demo", "keynote", "brand-spot", "explainer"]
+  },
+  "videos": [
+    {
+      "id": "acer-swift14-video-presence",
+      "brand": "Acer", "device": "laptop", "product": "Swift 14 AI (Copilot+ PC)",
+      "title": "AI Enhanced Video Presence | Swift 14 AI Copilot+ PC",
+      "url": "https://www.youtube.com/watch?v=5d3CpUS1Xto",
+      "date": "2024-12-23", "type": "feature-ad",
+      "ai_features": ["Windows Studio Effects", "視訊畫面 AI 增強"],
+      "motifs": ["before-after-wipe", "ui-float-cards"],
+      "watch_focus": "單一功能怎麼在 15–30 秒內講清楚：開場痛點 → 開啟 AI → 對比結果",
+      "source": "WebSearch: Acer AI PC commercial video YouTube", "status": "to-watch"
+    },
+    {
+      "id": "acer-swift14-we-got-you",
+      "brand": "Acer", "device": "laptop", "product": "Swift 14 AI (Copilot+ PC)",
+      "title": "Swift 14 AI Copilot+ PC | We Got You | Acer",
+      "url": "https://www.youtube.com/watch?v=wb79p9szy9Q",
+      "date": null, "type": "brand-spot",
+      "ai_features": ["Copilot+ PC 體驗總覽"],
+      "motifs": ["kinetic-type-mask", "device-reveal"],
+      "watch_focus": "情境敘事（人）與產品特寫（物）的比例；標語如何收尾",
+      "source": "WebSearch: Acer AI PC commercial video YouTube", "status": "to-watch"
+    },
+    {
+      "id": "acer-acersense",
+      "brand": "Acer", "device": "laptop", "product": "AcerSense（Acer AI Solutions）",
+      "title": "Acer AI Solutions | AcerSense™ | Acer",
+      "url": "https://www.youtube.com/watch?v=Lffj-v1P2Y8",
+      "date": null, "type": "explainer",
+      "ai_features": ["系統診斷與最佳化", "PurifiedView / PurifiedVoice"],
+      "motifs": ["scan-detect", "data-viz-grow", "audio-denoise"],
+      "watch_focus": "自家預載軟體（非 Microsoft 功能）怎麼被包裝；UI 錄屏與動態圖形的混合方式",
+      "source": "WebSearch: Acer Intelligence Space AcerSense AI video 2026", "status": "to-watch"
+    },
+    {
+      "id": "apple-genmoji",
+      "brand": "Apple", "device": "phone", "product": "iPhone 16 · Apple Intelligence",
+      "title": "Apple Intelligence | Imagine it. Genmoji it. | iPhone 16",
+      "url": "https://www.youtube.com/watch?v=XROs4K67Y9Q",
+      "date": null, "type": "feature-ad",
+      "ai_features": ["Genmoji"],
+      "motifs": ["text-generate", "ai-edge-glow"],
+      "watch_focus": "生成式功能的「輸入 → 等待 → 結果」節奏；等待瞬間用什麼視覺表示 AI 在思考",
+      "source": "WebSearch: Apple Intelligence iPhone commercial ad YouTube", "status": "to-watch"
+    },
+    {
+      "id": "apple-clean-up-flex",
+      "brand": "Apple", "device": "phone", "product": "iPhone 16 · Apple Intelligence",
+      "title": "Apple Intelligence | Clean Up Photos: Flex | iPhone 16",
+      "url": "https://www.youtube.com/watch?v=iL88A5F9V3k",
+      "date": "2025-04-21", "type": "feature-ad",
+      "ai_features": ["Clean Up（物件消除）"],
+      "motifs": ["object-erase-dissolve", "before-after-wipe"],
+      "watch_focus": "喜劇短片結構：功能是故事的笑點而不是規格；物件消除的過場效果",
+      "source": "WebSearch + AppleInsider 2025-04-21", "status": "to-watch"
+    },
+    {
+      "id": "apple-write-smarter",
+      "brand": "Apple", "device": "phone", "product": "iPhone 16 Pro · Apple Intelligence",
+      "title": "Write Smarter（Apple Intelligence Writing Tools）",
+      "url": "https://www.thedrum.com/news/2024/10/30/ad-the-day-apple-promotes-ai-powered-intelligence-tool-two-sharp-spots",
+      "date": "2024-10-30", "type": "feature-ad",
+      "ai_features": ["Writing Tools（改寫成專業語氣）"],
+      "motifs": ["text-generate"],
+      "watch_focus": "文字類 AI 功能的畫面化：文字改寫的過場。連結為 The Drum 報導，影片本體請從報導內嵌觀看",
+      "source": "The Drum 2024-10-30", "status": "to-watch"
+    },
+    {
+      "id": "samsung-s25u-intro",
+      "brand": "Samsung", "device": "phone", "product": "Galaxy S25 Ultra · Galaxy AI",
+      "title": "Introducing Galaxy S25 Ultra | Galaxy AI | Samsung",
+      "url": "https://www.youtube.com/watch?v=3i1OB6wKYms",
+      "date": "2025-01-22", "type": "launch-film",
+      "ai_features": ["Now Brief", "Cross-app actions", "Audio Eraser"],
+      "motifs": ["device-reveal", "ai-edge-glow", "ui-float-cards", "audio-denoise"],
+      "watch_focus": "旗艦 launch film 的章節切分；硬體材質鏡頭與 AI 功能段落如何交錯",
+      "source": "WebSearch: Samsung Galaxy AI Galaxy S25 official introduction film", "status": "to-watch"
+    },
+    {
+      "id": "samsung-s25-guided-demo",
+      "brand": "Samsung", "device": "phone", "product": "Galaxy S25 Series · Galaxy AI",
+      "title": "A Guided Demo of Galaxy AI | Galaxy S25 Series | Samsung",
+      "url": "https://www.youtube.com/watch?v=mAUdVyXEJ2M",
+      "date": "2025-02-07", "type": "guided-demo",
+      "ai_features": ["Galaxy AI 多項功能實機示範"],
+      "motifs": ["ui-float-cards", "circle-to-search", "scan-detect"],
+      "watch_focus": "實機錄屏的包裝：手部、放大鏡、焦點框；適合當作「功能教學影片」模板",
+      "source": "WebSearch: Samsung Galaxy AI Galaxy S25 official introduction film", "status": "to-watch"
+    },
+    {
+      "id": "samsung-s26u-intro",
+      "brand": "Samsung", "device": "phone", "product": "Galaxy S26 Ultra · Galaxy AI",
+      "title": "Introducing Galaxy S26 Ultra | Galaxy AI | Samsung",
+      "url": "https://www.youtube.com/watch?v=sUMjugzsZsA",
+      "date": "2026-03-05", "type": "launch-film",
+      "ai_features": ["Galaxy AI", "Privacy Display"],
+      "motifs": ["device-reveal", "before-after-wipe", "ai-edge-glow"],
+      "watch_focus": "硬體功能（Privacy Display）與 AI 功能同片呈現時的比重；與 S25 版比較一年間的視覺語言演進",
+      "source": "WebSearch: Galaxy S26 Ultra introduction film Galaxy AI", "status": "to-watch"
+    },
+    {
+      "id": "samsung-s26u-guided-demo",
+      "brand": "Samsung", "device": "phone", "product": "Galaxy S26 Ultra · Galaxy AI",
+      "title": "A Guided Demo of Galaxy AI | Galaxy S26 Ultra | Samsung",
+      "url": "https://www.youtube.com/watch?v=aSzej7a_gUI",
+      "date": null, "type": "guided-demo",
+      "ai_features": ["Galaxy AI 實機示範"],
+      "motifs": ["ui-float-cards", "scan-detect"],
+      "watch_focus": "與 S25 guided demo 對照：模板化程度、字卡設計、節奏",
+      "source": "WebSearch: Galaxy S26 Ultra introduction film Galaxy AI", "status": "to-watch"
+    },
+    {
+      "id": "google-pixel10-magic-cue",
+      "brand": "Google", "device": "phone", "product": "Pixel 10 · Gemini",
+      "title": "Google Pixel 10 With Magic Cue | Answers",
+      "url": "https://www.youtube.com/watch?v=Dniq4Vfbrbs",
+      "date": null, "type": "feature-ad",
+      "ai_features": ["Magic Cue（主動浮出資訊）"],
+      "motifs": ["ui-float-cards", "text-generate"],
+      "watch_focus": "「主動式 AI」的視覺化：資訊在對的時機自己出現。對 Acer 的 Smart/Agent 類功能很有參考價值",
+      "source": "WebSearch: Pixel 10 ad campaign Gemini", "status": "to-watch"
+    },
+    {
+      "id": "google-pixel10-spectacular",
+      "brand": "Google", "device": "phone", "product": "Pixel 10 · Gemini",
+      "title": "Meet Google Pixel 10 With Gemini | Do Spectacular Things, Every Day",
+      "url": "https://www.youtube.com/watch?v=vL5Lxsh1GUM",
+      "date": "2025-08", "type": "launch-film",
+      "ai_features": ["Gemini Live", "Camera Coach", "Magic Cue"],
+      "motifs": ["ai-orb", "scan-detect", "kinetic-type-mask"],
+      "watch_focus": "Google 的色彩系統與 Gemini 漸層光；日常生活情境剪輯的節奏",
+      "source": "WebSearch: Pixel 10 ad campaign Gemini", "status": "to-watch"
+    },
+    {
+      "id": "google-gemini-new-home-2026",
+      "brand": "Google", "device": "multi", "product": "Gemini",
+      "title": "New Home | Google Gemini Super Bowl Commercial 2026",
+      "url": "https://www.youtube.com/watch?v=Z1yGy9fELtE",
+      "date": "2026-02", "type": "brand-spot",
+      "ai_features": ["Gemini"],
+      "motifs": ["kinetic-type-mask"],
+      "watch_focus": "大型品牌廣告如何只講情感不講規格；AI 在敘事裡的角色定位",
+      "source": "WebSearch: Google Pixel Gemini ad YouTube", "status": "to-watch"
+    },
+    {
+      "id": "google-pixel9-dream-job",
+      "brand": "Google", "device": "phone", "product": "Pixel 9 · Gemini Live",
+      "title": "Dream Job（Pixel 9 × Gemini Live）",
+      "url": "https://blog.google/products-and-platforms/devices/pixel/pixel-ad-dream-job-gemini-live/",
+      "date": "2025-02", "type": "brand-spot",
+      "ai_features": ["Gemini Live（語音對話）"],
+      "motifs": ["ai-orb", "audio-reactive"],
+      "watch_focus": "語音 AI 助理的畫面表現：對話波形、光球、字幕。Super Bowl 2025 檔期",
+      "source": "blog.google + 9to5Google 2025-02-06", "status": "to-watch"
+    },
+    {
+      "id": "microsoft-copilot-pc-keynote",
+      "brand": "Microsoft", "device": "laptop", "product": "Copilot+ PC",
+      "title": "Full Keynote: Introducing Copilot+ PCs",
+      "url": "https://www.youtube.com/watch?v=aZbHd4suAnQ",
+      "date": "2024-05-20", "type": "keynote",
+      "ai_features": ["Recall", "Cocreator", "Live Captions", "Windows Studio Effects"],
+      "motifs": ["exploded-view", "data-viz-grow", "sketch-to-image", "ui-float-cards"],
+      "watch_focus": "發表會中插播的 sizzle / 產品短片（非演講段落）；NPU TOPS 的數據視覺化",
+      "source": "WebSearch: Microsoft Copilot+ PC introduction video", "status": "to-watch"
+    },
+    {
+      "id": "microsoft-surface-copilot-pc",
+      "brand": "Microsoft", "device": "laptop", "product": "Surface Pro / Surface Laptop",
+      "title": "Meet the new Surface Copilot+ PCs",
+      "url": "https://www.youtube.com/watch?v=_0u0fQuzikA",
+      "date": null, "type": "launch-film",
+      "ai_features": ["Copilot 鍵", "Click to Do"],
+      "motifs": ["device-reveal", "kinetic-type-mask"],
+      "watch_focus": "筆電的鏡頭語言：開蓋、側邊輪廓、鍵盤特寫（Copilot 鍵）",
+      "source": "WebSearch: Surface Laptop Copilot+ PC ad YouTube", "status": "to-watch"
+    },
+    {
+      "id": "asus-zenbook-does-more",
+      "brand": "ASUS", "device": "laptop", "product": "Zenbook Series (Copilot+ PC)",
+      "title": "ASUS Zenbook Series - Zenbook Does More",
+      "url": "https://www.youtube.com/watch?v=p-_gzYSI-kQ",
+      "date": "2025-02-11", "type": "launch-film",
+      "ai_features": ["Copilot+ PC", "ASUS AI 應用"],
+      "motifs": ["device-reveal", "exploded-view"],
+      "watch_focus": "台廠直接競品：材質（Ceraluminum）鏡頭與 AI 段落的比例，和 Acer 對照",
+      "source": "WebSearch: ASUS Zenbook AI PC official video YouTube", "status": "to-watch"
+    },
+    {
+      "id": "asus-zenbook14-2026",
+      "brand": "ASUS", "device": "laptop", "product": "Zenbook 14 (UX3480) 2026",
+      "title": "ASUS Zenbook 14 (UX3480) | 2026",
+      "url": "https://www.youtube.com/watch?v=dZ4-0WCkaKc",
+      "date": "2026-07-16", "type": "launch-film",
+      "ai_features": ["smart AI"],
+      "motifs": ["device-reveal"],
+      "watch_focus": "2026 年最新競品片：AI 訊息是否比 2025 年更低調（見 Copilot+ 品牌淡化趨勢）",
+      "source": "WebSearch: ASUS Zenbook AI PC official video YouTube 2026", "status": "to-watch"
+    },
+    {
+      "id": "hp-ai-companion",
+      "brand": "HP", "device": "laptop", "product": "HP AI Companion（OmniBook 等）",
+      "title": "HP AI Companion",
+      "url": "https://www.youtube.com/watch?v=qL7kr1ckgDE",
+      "date": null, "type": "explainer",
+      "ai_features": ["HP AI Companion（本地文件分析、PC 設定助理）"],
+      "motifs": ["text-generate", "ui-float-cards"],
+      "watch_focus": "OEM 自家 AI 助理怎麼和 Copilot 做出區隔；對 Acer Intelligence Space 最直接的對照組",
+      "source": "WebSearch: HP OmniBook AI PC commercial HP AI Companion", "status": "to-watch"
+    },
+    {
+      "id": "lenovo-aura-smart-modes",
+      "brand": "Lenovo", "device": "laptop", "product": "Yoga · Lenovo Aura Edition",
+      "title": "Using Smart Modes - Lenovo Aura Edition",
+      "url": "https://pcsupport.lenovo.com/us/en/products/laptops-and-netbooks/yoga-series/yoga-7-2-in-1-14iph11/videos/ytv104642",
+      "date": null, "type": "explainer",
+      "ai_features": ["Smart Modes（Attention / Wellness / Collaboration / Shield / Power）"],
+      "motifs": ["ui-float-cards", "scan-detect"],
+      "watch_focus": "「情境自動切換」類功能的畫面化；Lenovo × Intel 聯名包裝方式",
+      "source": "WebSearch: Lenovo Aura Edition Yoga AI PC video Smart Modes", "status": "to-watch"
+    },
+    {
+      "id": "nothing-essential",
+      "brand": "Nothing", "device": "phone", "product": "Nothing OS · Essential",
+      "title": "Nothing Essential（AI 生成 mini app）發表影片",
+      "url": "https://9to5google.com/2025/09/30/nothing-essential-ai-app-generator-promises/",
+      "date": "2025-09-30", "type": "launch-film",
+      "ai_features": ["Essential Space", "Essential Apps（prompt 生成 app）"],
+      "motifs": ["particle-assemble", "stagger-grid-wave"],
+      "watch_focus": "小品牌的強烈視覺識別（點陣字、黑白紅）如何套用到 AI 敘事。影片內嵌於 9to5Google 報導",
+      "source": "9to5Google 2025-09-30", "status": "to-watch"
+    }
+  ],
+  "context_notes": [
+    {
+      "title": "Microsoft 淡化「Copilot+ PC」品牌",
+      "text": "2026-09-25 有報導指出 Microsoft 正逐步停用 Copilot+ PC 標示。對 Acer 的影響：影片不宜以 Copilot+ 為主訴求，應讓 Acer 自家 AI（Intelligence Space、AcerSense、PurifiedVoice 等）成為主角。",
+      "source": "https://9to5google.com/2026/09/25/microsoft-quietly-ending-copilot-pc-branding-for-windows-laptops/"
+    },
+    {
+      "title": "AI 廣告的法規風險",
+      "text": "美國廣告自律機構 NAD 認為 Apple 宣傳尚未推出的 Apple Intelligence 功能過度，建議避免暗示功能已可使用。Google Pixel 10 廣告也拿「coming soon」嘲諷對手。影片中每個 AI 功能都要標清楚是否已上市、需要哪些硬體條件。",
+      "source": "https://www.cnbc.com/2025/04/23/apple-ai-ads-went-too-far-watchdog-says.html ; https://www.phonearena.com/news/new-google-pixel-10-ad-calls-out-vague-timing-on-coming-soon-featureswas-that-a-shot-at-apple_id172886"
+    }
+  ]
+}

@@ -1,0 +1,318 @@
+<title>AI Motion Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout：剪輯室素材架 — 左側篩選、右側素材卡；矩陣視圖＝效果 × 工具拆解表 */
+:root {
+  --bg: #f3f4f8;
+  --surface: #ffffff;
+  --ink: #171a26;
+  --muted: #5d6378;
+  --line: #dde0ea;
+  --accent: #5b4cf0;
+  --accent-soft: #ebe8ff;
+  --cyan: #0a8fb8;
+  --ok: #1d7a4e; --ok-soft: #e1f4ea;
+  --warn: #9a5a00; --warn-soft: #fbefd9;
+  --asset: #8a3d74; --asset-soft: #f8e6f2;
+  --display: "Familjen Grotesk", "Noto Sans TC", system-ui, sans-serif;
+  --body: "Noto Sans TC", system-ui, -apple-system, "PingFang TC", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d0f16; --surface: #161a25; --ink: #eceef5; --muted: #9aa0b6; --line: #262b3b;
+  --accent: #9d93ff; --accent-soft: #262248; --cyan: #56c8ec;
+  --ok: #6fd7a2; --ok-soft: #173326; --warn: #f0b566; --warn-soft: #3a2a12; --asset: #ee9bd3; --asset-soft: #3a1a30; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0d0f16; --surface: #161a25; --ink: #eceef5; --muted: #9aa0b6; --line: #262b3b;
+  --accent: #9d93ff; --accent-soft: #262248; --cyan: #56c8ec;
+  --ok: #6fd7a2; --ok-soft: #173326; --warn: #f0b566; --warn-soft: #3a2a12; --asset: #ee9bd3; --asset-soft: #3a1a30; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 14px; line-height: 1.6; margin: 0; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1320px; margin: 0 auto; padding-inline: 20px; padding-block: 0 48px; }
+
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.top-inner { max-width: 1320px; margin: 0 auto; padding: 14px 20px; display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; }
+.brand { display: flex; align-items: baseline; gap: 10px; }
+.brand h1 { font-family: var(--display); font-size: 22px; letter-spacing: -0.01em; margin: 0; }
+.brand .tc { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+nav.tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+nav.tabs button { font: 500 13px var(--body); color: var(--muted); background: none; border: 1px solid transparent; border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); background: var(--surface); border-color: var(--line); }
+nav.tabs .count { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-left: 4px; }
+.search { margin-left: auto; flex: 1 1 220px; max-width: 320px; }
+.search input { width: 100%; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; }
+
+.intro { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 32px; align-items: end; padding-block: 28px 20px; }
+.intro h2 { font-family: var(--display); font-size: clamp(24px, 3.4vw, 36px); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 8px; text-wrap: balance; max-width: 22ch; }
+.intro p { margin: 0; color: var(--muted); max-width: 64ch; }
+.picks { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.picks .n { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.btn { font: 500 13px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+
+.layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 28px; align-items: start; }
+aside.filters { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 76px); display: grid; gap: 20px; }
+.fgroup h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 12px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card.picked { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+.card-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: start; }
+.card h4 { font-family: var(--display); font-size: 18px; line-height: 1.25; margin: 0; text-wrap: balance; }
+.id { font-family: var(--mono); font-size: 11px; color: var(--cyan); word-break: break-all; }
+.star { font-size: 18px; line-height: 1; background: none; border: 1px solid var(--line); border-radius: 6px; width: 34px; height: 34px; cursor: pointer; color: var(--muted); }
+.star[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+.msg { margin: 0; font-weight: 500; }
+.recipe { margin: 0; color: var(--muted); font-size: 13px; }
+.row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.tag { font-size: 11px; border-radius: 4px; padding: 2px 7px; background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.pill { font-size: 11px; font-weight: 600; border-radius: 999px; padding: 2px 9px; }
+.pill.yes { background: var(--ok-soft); color: var(--ok); }
+.pill.adapt { background: var(--warn-soft); color: var(--warn); }
+.pill.asset { background: var(--asset-soft); color: var(--asset); }
+.pill.todo { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.pill.reviewed { background: var(--ok-soft); color: var(--ok); }
+dl.impl { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 10px; font-size: 12.5px; }
+dl.impl dt { font-family: var(--mono); font-size: 11.5px; color: var(--ink); font-weight: 600; }
+dl.impl dd { margin: 0; color: var(--muted); }
+.links { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12.5px; }
+details summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
+.meta-line { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.empty { padding: 32px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 10px; }
+
+.note { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--warn); border-radius: 6px; padding: 10px 14px; font-size: 13px; }
+.notes { display: grid; gap: 10px; margin-bottom: 16px; }
+
+.matrix-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+table.matrix { border-collapse: collapse; font-size: 12px; min-width: 900px; width: 100%; }
+.matrix th, .matrix td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: center; }
+.matrix thead th { position: sticky; top: 0; background: var(--surface); font-family: var(--mono); font-size: 11px; font-weight: 600; white-space: nowrap; }
+.matrix tbody th { text-align: left; font-weight: 500; white-space: nowrap; }
+.matrix tbody th .id { display: block; }
+.matrix td.hit { background: var(--accent-soft); color: var(--accent); font-weight: 700; cursor: help; }
+.matrix td.demo { background: var(--accent); color: var(--surface); }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin: 10px 0 0; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 4px; }
+
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 6px; font-size: 13px; }
+textarea.export { width: 100%; min-height: 160px; font: 12px var(--mono); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px; }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  aside.filters { position: static; }
+  .intro { grid-template-columns: minmax(0, 1fr); }
+  .search { max-width: none; margin-left: 0; }
+  header.top { position: static; }
+  .brand .tc { display: none; }
+}
+details.fbox > summary { display: none; }
+@media (max-width: 860px) {
+  details.fbox > summary { display: list-item; font-weight: 600; font-size: 13px; padding: 8px 0; cursor: pointer; }
+  details.fbox[open] > summary { margin-bottom: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand"><h1>AI Motion Atlas</h1><span class="tc" id="stamp"></span></div>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+    <label class="search"><input id="q" type="search" placeholder="搜尋：光球、降噪、GSAP、Galaxy…" aria-label="搜尋"></label>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <div>
+      <h2 id="introTitle"></h2>
+      <p id="introText"></p>
+    </div>
+    <div class="picks">
+      <span class="n" id="pickCount">已挑選 0</span>
+      <button class="btn" id="onlyPicked" aria-pressed="false">只看已挑選</button>
+      <button class="btn primary" id="exportBtn">匯出挑選清單</button>
+    </div>
+  </section>
+  <div id="exportBox" hidden>
+    <textarea class="export" id="exportText" readonly aria-label="挑選清單 JSON"></textarea>
+    <p class="meta-line">已複製到剪貼簿；若沒有，請全選上方文字手動複製，貼回 Claude Code 即可更新 data/*.json 的 status。</p>
+  </div>
+  <div class="layout">
+    <aside class="filters" id="filters"></aside>
+    <div id="view"></div>
+  </div>
+</main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const BASE = /*__BASE__*/"";  // demo 相對路徑前綴：repo 內為 "../"，artifact 內為 ""
+const E = DATA.effects.effects, V = DATA.videos.videos, L = DATA.libraries.libraries, S = DATA.sources.sources;
+const CAT = DATA.effects._meta.categories;
+const READY = { yes: "可直接渲染", adapt: "需改造", asset: "做成素材" };
+const effById = Object.fromEntries(E.map(e => [e.id, e]));
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// 每位觀看者自己的挑選紀錄，只存在瀏覽器
+let picks = new Set();
+try { picks = new Set(JSON.parse(localStorage.getItem("atlas-picks") || "[]")); } catch (e) {}
+const savePicks = () => { try { localStorage.setItem("atlas-picks", JSON.stringify([...picks])); } catch (e) {} };
+
+const TABS = [
+  { id: "effects", label: "動態效果", n: E.length, title: "20 種把 AI 變得看得見的動態", text: "每個效果對應一個 AI 賣點，拆成訊息、動態配方、12 個 JS 工具的實作路線，並標註能否直接進 Claude Code 影片管線。按 ☆ 挑選，最後匯出清單。" },
+  { id: "matrix", label: "工具拆解矩陣", n: L.length, title: "效果 × 工具：誰能做什麼", text: "橫軸是 12 個 JS 視覺工具，縱軸是動態效果。深色格＝本 repo 有可執行 demo；淺色格＝有實作路線（滑鼠停留看做法）。" },
+  { id: "libs", label: "12 個工具", n: L.length, title: "12 個工具的動態原子", text: "每個工具最擅長、可拆出來重複使用的動態原子（primitives），附關鍵 API 與影片化適合度。" },
+  { id: "videos", label: "品牌影片", n: V.length, title: "AI 裝置影片參考庫", text: "Acer、Apple、Samsung、Google、Microsoft、ASUS、HP、Lenovo、Nothing 的 AI 功能影片。預期母題為推測，看完後請把狀態改成「已看」。" },
+  { id: "sources", label: "靈感來源", n: S.length, title: "動態靈感來源", text: "Dribbble、Pinterest、motion.dev、Codrops、CodePen 的搜尋頁與單一作品，已對應到效果 id。" },
+];
+let tab = "effects", q = "", onlyPicked = false, filtersOpen = false;
+const filt = {};
+try { const t = location.hash.slice(1); if (TABS.some(x => x.id === t)) tab = t; } catch (e) {}
+
+function renderTabs() {
+  $("#tabs").innerHTML = TABS.map(t => `<button role="tab" aria-selected="${t.id === tab}" data-tab="${t.id}">${t.label}<span class="count">${t.n}</span></button>`).join("");
+  const t = TABS.find(x => x.id === tab);
+  $("#introTitle").textContent = t.title; $("#introText").textContent = t.text;
+}
+function chipGroup(key, title, options) {
+  const sel = filt[key] || new Set();
+  return `<div class="fgroup"><h3>${title}</h3><div class="chips">${options.map(([v, label]) =>
+    `<button class="chip" data-f="${key}" data-v="${esc(v)}" aria-pressed="${sel.has(v)}">${esc(label)}</button>`).join("")}</div></div>`;
+}
+function renderFilters() {
+  let html = "";
+  if (tab === "effects" || tab === "matrix") {
+    html += chipGroup("cat", "類別", Object.entries(CAT).map(([k, v]) => [k, v.split("：")[0]]));
+    html += chipGroup("ready", "影片化", Object.entries(READY));
+    html += chipGroup("lib", "用到的工具", L.map(l => [l.name, l.name]));
+  } else if (tab === "videos") {
+    html += chipGroup("brand", "品牌", [...new Set(V.map(v => v.brand))].map(b => [b, b]));
+    html += chipGroup("device", "裝置", [["laptop", "筆電"], ["phone", "手機"], ["multi", "跨裝置"]]);
+    html += chipGroup("type", "影片類型", [["launch-film", "發表形象片"], ["feature-ad", "功能廣告"], ["guided-demo", "實機示範"], ["brand-spot", "品牌廣告"], ["keynote", "發表會"], ["explainer", "功能說明"]]);
+    html += chipGroup("motif", "預期母題", E.map(e => [e.id, e.name]));
+  } else if (tab === "libs") {
+    html += chipGroup("layer", "層", Object.entries(DATA.libraries._meta.layers).map(([k, v]) => [k, v.split("：")[0]]));
+  } else if (tab === "sources") {
+    html += chipGroup("platform", "平台", [...new Set(S.map(s => s.platform))].map(p => [p, p]));
+  }
+  const narrow = matchMedia("(max-width: 860px)").matches;
+  const n = Object.values(filt).reduce((a, f) => a + f.size, 0);
+  $("#filters").innerHTML = `<details class="fbox" ${narrow && !filtersOpen ? "" : "open"}><summary>篩選${n ? `（${n}）` : ""}</summary><div style="display:grid;gap:20px">${html}</div></details>`;
+  $("#filters details").addEventListener("toggle", ev => { filtersOpen = ev.target.open; });
+}
+const pass = (key, vals) => { const f = filt[key]; if (!f || !f.size) return true; return vals.some(v => f.has(v)); };
+const hitQ = obj => !q || JSON.stringify(obj).toLowerCase().includes(q);
+const pickOk = id => !onlyPicked || picks.has(id);
+const star = (id, label) => `<button class="star" data-pick="${esc(id)}" aria-pressed="${picks.has(id)}" aria-label="挑選 ${esc(label)}" title="挑選">${picks.has(id) ? "★" : "☆"}</button>`;
+const empty = `<div class="empty">沒有符合條件的項目。清除篩選或換個關鍵字試試。</div>`;
+
+function effectCard(e) {
+  const vids = V.filter(v => v.motifs.includes(e.id));
+  const srcs = S.filter(s => s.effects.includes(e.id));
+  return `<article class="card ${picks.has(e.id) ? "picked" : ""}">
+    <div class="card-head"><div><h4>${esc(e.name)}</h4><span class="id">${e.id}</span></div>${star(e.id, e.name)}</div>
+    <div class="row"><span class="tag">${esc(CAT[e.category].split("：")[0])}</span><span class="pill ${e.video_ready}">${READY[e.video_ready]}</span>${e.demo ? `<a href="${BASE + e.demo}" target="_blank" rel="noopener">開 demo ↗</a>` : ""}</div>
+    <p class="msg">${esc(e.message)}</p>
+    <p class="recipe">${esc(e.recipe)}</p>
+    <dl class="impl">${Object.entries(e.implementations).map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
+    ${vids.length || srcs.length || e.refs.length ? `<details><summary>出現在 ${vids.length} 支影片 · ${srcs.length + e.refs.length} 個參考</summary>
+      <div class="links">${vids.map(v => `<a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.brand)}：${esc(v.title)}</a>`).join("")}
+      ${srcs.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.platform)}：${esc(s.title)}</a>`).join("")}
+      ${e.refs.map(r => `<a href="${esc(r)}" target="_blank" rel="noopener">${esc(new URL(r).hostname)}</a>`).join("")}</div></details>` : ""}
+  </article>`;
+}
+function filteredEffects() {
+  return E.filter(e => pass("cat", [e.category]) && pass("ready", [e.video_ready]) && pass("lib", Object.keys(e.implementations)) && hitQ(e) && pickOk(e.id));
+}
+function renderEffects() { const list = filteredEffects(); return list.length ? `<div class="grid">${list.map(effectCard).join("")}</div>` : empty; }
+
+function renderMatrix() {
+  const list = filteredEffects();
+  if (!list.length) return empty;
+  const libName = l => l.name.replace(" v4", "").replace(" Shader", "").replace(".js", "");
+  return `<div class="matrix-wrap"><table class="matrix"><thead><tr><th scope="col">效果</th>${L.map(l => `<th scope="col">${esc(libName(l))}</th>`).join("")}</tr></thead><tbody>
+    ${list.map(e => `<tr><th scope="row">${esc(e.name)}<span class="id">${e.id}</span></th>${L.map(l => {
+      const how = e.implementations[l.name];
+      if (!how) return "<td></td>";
+      const isDemo = e.demo && e.demo === l.demo;
+      return `<td class="hit ${isDemo ? "demo" : ""}" title="${esc(how)}">${isDemo ? "▶" : "●"}</td>`;
+    }).join("")}</tr>`).join("")}
+  </tbody></table></div>
+  <p class="legend"><span><i style="background:var(--accent)"></i>有 demo</span><span><i style="background:var(--accent-soft)"></i>有實作路線</span><span>滑鼠停在格子上看做法</span></p>`;
+}
+function renderLibs() {
+  const list = L.filter(l => pass("layer", [l.layer]) && hitQ(l) && pickOk(l.id));
+  if (!list.length) return empty;
+  return `<div class="grid">${list.map(l => {
+    const effs = E.filter(e => e.implementations[l.name]);
+    return `<article class="card ${picks.has(l.id) ? "picked" : ""}">
+      <div class="card-head"><div><h4>${esc(l.name)}</h4><span class="id">${l.npm ? `${l.npm}@${l.version}` : l.version}</span></div>${star(l.id, l.name)}</div>
+      <div class="row"><span class="tag">${esc(DATA.libraries._meta.layers[l.layer].split("：")[0])}</span><span class="tag">${esc(l.license)}</span></div>
+      <p class="msg">${esc(l.one_liner)}</p>
+      <dl class="impl">${l.primitives.map(p => `<dt>${esc(p.name)}</dt><dd><code class="id">${esc(p.api)}</code><br>${esc(p.use)}</dd>`).join("")}</dl>
+      <p class="recipe"><b>影片化：</b>${esc(l.video_fit)}</p>
+      <div class="links">${l.demo ? `<a href="${BASE + l.demo}" target="_blank" rel="noopener">demo ↗</a>` : ""}<a href="${esc(l.docs)}" target="_blank" rel="noopener">文件 ↗</a>${l.learn.map(u => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(new URL(u).hostname)}</a>`).join("")}</div>
+      <p class="meta-line">可實作 ${effs.length} 個效果：${effs.map(e => e.id).join(" · ")}</p>
+    </article>`;
+  }).join("")}</div>`;
+}
+const TYPE = { "launch-film": "發表形象片", "feature-ad": "功能廣告", "guided-demo": "實機示範", "brand-spot": "品牌廣告", keynote: "發表會", explainer: "功能說明" };
+function renderVideos() {
+  const list = V.filter(v => pass("brand", [v.brand]) && pass("device", [v.device]) && pass("type", [v.type]) && pass("motif", v.motifs) && hitQ(v) && pickOk(v.id));
+  const notes = DATA.videos.context_notes.map(n => `<div class="note"><b>${esc(n.title)}</b>　${esc(n.text)}</div>`).join("");
+  if (!list.length) return `<div class="notes">${notes}</div>` + empty;
+  return `<div class="notes">${notes}</div><div class="grid">${list.map(v => `<article class="card ${picks.has(v.id) ? "picked" : ""}">
+    <div class="card-head"><div><span class="meta-line">${esc(v.brand)} · ${esc(v.product)}</span><h4>${esc(v.title)}</h4></div>${star(v.id, v.title)}</div>
+    <div class="row"><span class="tag">${TYPE[v.type] || v.type}</span><span class="tag">${v.date || "日期未知"}</span><span class="pill ${v.status === "reviewed" ? "reviewed" : "todo"}">${v.status === "reviewed" ? "已看" : "待看"}</span></div>
+    <p class="recipe"><b>AI 功能：</b>${v.ai_features.map(esc).join("、")}</p>
+    <p class="msg">${esc(v.watch_focus)}</p>
+    <div class="row">${v.motifs.map(m => `<span class="tag" title="${esc(effById[m]?.name || "")}">${esc(effById[m]?.name || m)}</span>`).join("")}</div>
+    <div class="links"><a href="${esc(v.url)}" target="_blank" rel="noopener">觀看 ↗</a><span class="meta-line">${esc(v.source)}</span></div>
+  </article>`).join("")}</div>`;
+}
+function renderSources() {
+  const list = S.filter(s => pass("platform", [s.platform]) && hitQ(s) && pickOk(s.id));
+  if (!list.length) return empty;
+  return `<div class="grid">${list.map(s => `<article class="card ${picks.has(s.id) ? "picked" : ""}">
+    <div class="card-head"><div><span class="meta-line">${esc(s.platform)} · ${s.kind === "search" ? "搜尋頁" : "單一作品"}</span><h4>${esc(s.title)}</h4></div>${star(s.id, s.title)}</div>
+    <div class="row">${s.effects.map(m => `<span class="tag">${esc(effById[m]?.name || m)}</span>`).join("") || `<span class="tag">未分類</span>`}</div>
+    <div class="links"><a href="${esc(s.url)}" target="_blank" rel="noopener">開啟 ↗</a></div>
+  </article>`).join("")}</div>`;
+}
+function render() {
+  renderTabs(); renderFilters();
+  $("#view").innerHTML = { effects: renderEffects, matrix: renderMatrix, libs: renderLibs, videos: renderVideos, sources: renderSources }[tab]();
+  $("#pickCount").textContent = `已挑選 ${picks.size}`;
+  $("#onlyPicked").setAttribute("aria-pressed", onlyPicked);
+  $("#onlyPicked").textContent = onlyPicked ? "顯示全部" : "只看已挑選";
+}
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => t.hidden = true, 1800); }
+
+document.addEventListener("click", ev => {
+  const b = ev.target.closest("button"); if (!b) return;
+  if (b.dataset.tab) { tab = b.dataset.tab; for (const k in filt) delete filt[k]; try { history.replaceState(null, "", "#" + tab); } catch (e) {} render(); }
+  else if (b.dataset.f) { const s = filt[b.dataset.f] ||= new Set(); s.has(b.dataset.v) ? s.delete(b.dataset.v) : s.add(b.dataset.v); render(); }
+  else if (b.dataset.pick) { const id = b.dataset.pick; picks.has(id) ? picks.delete(id) : picks.add(id); savePicks(); render(); toast(picks.has(id) ? "已加入挑選" : "已移出挑選"); }
+  else if (b.id === "onlyPicked") { onlyPicked = !onlyPicked; render(); }
+  else if (b.id === "exportBtn") {
+    const byType = { effects: E.filter(x => picks.has(x.id)).map(x => x.id), videos: V.filter(x => picks.has(x.id)).map(x => x.id), libraries: L.filter(x => picks.has(x.id)).map(x => x.id), sources: S.filter(x => picks.has(x.id)).map(x => x.id) };
+    const text = JSON.stringify({ picked_at: new Date().toISOString().slice(0, 10), ...byType }, null, 2);
+    $("#exportBox").hidden = false; $("#exportText").value = text;
+    const fallback = () => { $("#exportText").select(); toast("請手動複製"); };
+    try { navigator.clipboard.writeText(text).then(() => toast("已複製挑選清單"), fallback); } catch (e) { fallback(); }
+  }
+});
+$("#q").addEventListener("input", ev => { q = ev.target.value.trim().toLowerCase(); $("#view").innerHTML = { effects: renderEffects, matrix: renderMatrix, libs: renderLibs, videos: renderVideos, sources: renderSources }[tab](); });
+$("#stamp").textContent = `DATA ${DATA.effects._meta.updated} · ${E.length} FX · ${V.length} FILMS`;
+render();
+</script>

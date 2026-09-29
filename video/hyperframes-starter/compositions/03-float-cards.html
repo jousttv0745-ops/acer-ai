@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "UI CJK"; src: local("PingFang TC"), local("Noto Sans TC"), local("Noto Sans CJK TC"), local("Microsoft JhengHei"), local("WenQuanYi Zen Hei"); }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #07080c; }
+      #root { position: relative; width: 1920px; height: 1080px; font-family: "UI CJK", sans-serif; color: #eef0f6; }
+      .stage3 { position: absolute; inset: 0; perspective: 1600px; }
+      #laptop { position: absolute; left: 560px; top: 250px; width: 800px; height: 500px; border-radius: 20px; background: linear-gradient(160deg, #1d2130, #0e1018); border: 2px solid #2c3246; transform-style: preserve-3d; }
+      .card { position: absolute; padding: 20px 28px; border-radius: 22px; font-size: 30px; white-space: nowrap; background: rgba(24, 27, 40, 0.85); border: 2px solid rgba(139, 123, 255, 0.5); box-shadow: 0 20px 80px rgba(79, 209, 255, 0.18); }
+      .card small { display: block; font-size: 22px; color: #8a90a6; }
+    </style>
+  </head>
+  <body>
+    <!-- 效果：device tilt + ui-float-cards（漂浮位移寫死，確保確定性） -->
+    <div id="root" data-composition-id="float-cards" data-start="0" data-duration="3.5" data-width="1920" data-height="1080">
+      <div class="stage3">
+        <div id="laptop">
+          <div class="card" style="left: -200px; top: 60px"><small>Live Captions</small>即時字幕 EN → 中文</div>
+          <div class="card" style="left: 460px; top: -60px"><small>Voice</small>背景噪音已消除</div>
+          <div class="card" style="left: 60px; top: 330px"><small>Search</small>「上週那份簡報」找到 3 筆</div>
+          <div class="card" style="left: 520px; top: 380px"><small>Battery</small>AI 省電 +2.5 hr</div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // 只用確定性邏輯（不用 Math.random / Date.now），逐幀 seek 才能重現
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.from("#laptop", { rotateY: -28, rotateX: 12, opacity: 0, scale: 0.9, duration: 1.1, ease: "expo.out" }, 0)
+        .from(".card", { opacity: 0, scale: 0.6, z: -200, filter: "blur(6px)", duration: 0.7, ease: "back.out(1.6)", stagger: 0.18 }, 0.5)
+        .to(".card", { y: (i) => [-10, 8, -6, 12][i], x: (i) => [6, -8, 10, -4][i], duration: 1.2, ease: "sine.inOut", yoyo: true, repeat: 1 }, 1.1);
+      window.__timelines["float-cards"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

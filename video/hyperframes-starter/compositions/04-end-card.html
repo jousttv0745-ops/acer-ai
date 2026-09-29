@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "UI CJK"; src: local("PingFang TC"), local("Noto Sans TC"), local("Noto Sans CJK TC"), local("Microsoft JhengHei"), local("WenQuanYi Zen Hei"); }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #07080c; }
+      #root { position: relative; width: 1920px; height: 1080px; font-family: "UI CJK", sans-serif; color: #eef0f6; }
+      #end { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 24px; }
+      #end h2 { font-size: 120px; font-weight: 800; letter-spacing: -0.03em; }
+      #end p { font-size: 40px; color: #8a90a6; }
+    </style>
+  </head>
+  <body>
+    <!-- 效果：kinetic-type（收尾字卡）。把 AI Suite 換成你的產品名 -->
+    <div id="root" data-composition-id="end-card" data-start="0" data-duration="2" data-width="1920" data-height="1080">
+      <div id="end">
+        <h2 id="brand">AI Suite</h2>
+        <p id="tagline">把品牌名稱與標語換成你的</p>
+      </div>
+    </div>
+    <script>
+      // 只用確定性邏輯（不用 Math.random / Date.now），逐幀 seek 才能重現
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.from("#brand", { opacity: 0, y: 60, duration: 0.8, ease: "power4.out" }, 0.1)
+        .from("#tagline", { opacity: 0, y: 20, duration: 0.6, ease: "power3.out" }, 0.4);
+      window.__timelines["end-card"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

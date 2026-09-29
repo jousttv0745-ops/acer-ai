@@ -1,0 +1,222 @@
+{
+  "_meta": {
+    "updated": "2026-09-29",
+    "note": "12 個 JS 視覺工具的動態效果拆解。version 取自 npm registry（2026-09-29）。primitives = 這個工具最擅長、可以拆出來重複使用的「動態原子」。",
+    "layers": {
+      "timeline": "時間軸／補間：決定『什麼時候、怎麼動』",
+      "render-2d": "2D 繪製：畫面怎麼被畫出來",
+      "render-3d": "3D／GPU：空間、光影、shader",
+      "simulation": "模擬：讓電腦算出運動（物理、粒子、細胞自動機）",
+      "data": "資料驅動：數據 → 形狀",
+      "audio": "聲音：產生聲音或用聲音驅動畫面",
+      "style": "風格化：改變線條筆觸質感"
+    }
+  },
+  "libraries": [
+    {
+      "id": "gsap", "name": "GSAP", "npm": "gsap", "version": "3.15.0", "layer": "timeline",
+      "license": "免費，含商用與所有外掛（2025-04 起由 Webflow 開放）",
+      "one_liner": "業界標準的時間軸補間引擎；影片化首選（HyperFrames 直接用它當時間軸）",
+      "primitives": [
+        { "name": "Timeline 編排", "api": "gsap.timeline() / position 參數 '-=0.4' '<'", "use": "整支影片的分鏡時間軸" },
+        { "name": "Stagger 錯開", "api": "stagger: {each, from:'center'|'random', grid}", "use": "卡片、字、網格依序出場" },
+        { "name": "文字拆解", "api": "SplitText.create(el, {type:'chars,words,lines', mask:'lines'})", "use": "逐字生成、遮罩上推標語" },
+        { "name": "描線", "api": "DrawSVGPlugin", "use": "手繪圈選、電路流光" },
+        { "name": "形狀變形", "api": "MorphSVGPlugin", "use": "圖示變形、Logo 變形" },
+        { "name": "捲動驅動", "api": "ScrollTrigger", "use": "產品頁捲動敘事（非影片）" },
+        { "name": "FLIP 版面轉場", "api": "Flip.getState / Flip.from", "use": "UI 重新排列的平滑過渡" },
+        { "name": "自訂曲線", "api": "CustomEase / CustomWiggle / CustomBounce", "use": "品牌專屬的動態節奏" }
+      ],
+      "video_fit": "最佳。timeline 可 seek / pause，渲染器可逐幀控制",
+      "demo": "demos/gsap.html",
+      "docs": "https://gsap.com/docs/v3/",
+      "learn": ["https://gsap.com/resources/get-started/", "https://tympanus.net/codrops/2025/05/14/from-splittext-to-morphsvg-5-creative-demos-using-free-gsap-plugins/"]
+    },
+    {
+      "id": "anime", "name": "Anime.js v4", "npm": "animejs", "version": "4.5.0", "layer": "timeline",
+      "license": "MIT",
+      "one_liner": "輕量（約 10KB gzip）ESM 動畫引擎；v4 重寫後 API 為 animate(targets, params)",
+      "primitives": [
+        { "name": "網格 Stagger", "api": "stagger(40, {grid:[16,16], from:'center'})", "use": "NPU 運算擴散波" },
+        { "name": "Timeline", "api": "createTimeline().add(targets, params, position)", "use": "分鏡編排" },
+        { "name": "文字拆解", "api": "splitText / scrambleText", "use": "逐字、亂碼解碼效果" },
+        { "name": "SVG 描線", "api": "svg.createDrawable", "use": "線條描繪" },
+        { "name": "SVG 變形", "api": "svg.morphTo", "use": "形狀變形" },
+        { "name": "路徑運動", "api": "svg.createMotionPath", "use": "物件沿路徑移動" },
+        { "name": "彈簧", "api": "spring / createSpring", "use": "物理感回彈" },
+        { "name": "版面動畫", "api": "createLayout", "use": "DOM 版面變化自動補間" },
+        { "name": "可重現亂數", "api": "createSeededRandom", "use": "影片渲染需要每次結果一致" }
+      ],
+      "video_fit": "佳。timeline.seek(ms) 可逐幀；createSeededRandom 讓隨機可重現",
+      "demo": "demos/anime.html",
+      "docs": "https://animejs.com/documentation/",
+      "learn": ["https://github.com/juliangarnier/anime/wiki/Migrating-from-v3-to-v4", "https://github.com/juliangarnier/anime/releases/tag/v4.0.0"]
+    },
+    {
+      "id": "d3", "name": "D3.js", "npm": "d3", "version": "7.9.0", "layer": "data",
+      "license": "ISC",
+      "one_liner": "資料 → SVG / Canvas 的綁定與轉場；規格、續航、效能對比畫面",
+      "primitives": [
+        { "name": "資料綁定", "api": "selection.data().join()", "use": "資料驅動 enter / update / exit" },
+        { "name": "比例尺", "api": "scaleLinear / scaleBand / scaleTime", "use": "數值 → 像素" },
+        { "name": "轉場", "api": "transition().duration().delay((d,i)=>i*120)", "use": "長條生長、點位移動" },
+        { "name": "內插", "api": "interpolateNumber / interpolateRgb / textTween", "use": "數字跳動、顏色過渡" },
+        { "name": "形狀產生器", "api": "d3.line / d3.arc / curveBasis", "use": "平滑波形、環狀圖" },
+        { "name": "力導向", "api": "forceSimulation", "use": "知識圖譜、AI 關聯網路" }
+      ],
+      "video_fit": "中。轉場以真實時間跑；影片化時改用 scale + 自訂 t 直接算屬性",
+      "demo": "demos/d3.html",
+      "docs": "https://d3js.org/",
+      "learn": ["https://observablehq.com/@d3/gallery"]
+    },
+    {
+      "id": "pixi", "name": "PixiJS", "npm": "pixi.js", "version": "8.21.0", "layer": "render-2d",
+      "license": "MIT",
+      "one_liner": "WebGL / WebGPU 2D 渲染器；大量 sprite、濾鏡、加色混合",
+      "primitives": [
+        { "name": "非同步初始化", "api": "await app.init({resizeTo, background})", "use": "v8 起的新初始化方式" },
+        { "name": "向量繪圖", "api": "new Graphics().circle().fill()", "use": "光球、形狀" },
+        { "name": "濾鏡", "api": "BlurFilter / DisplacementFilter / ColorMatrixFilter", "use": "光暈、玻璃扭曲" },
+        { "name": "混合模式", "api": "blendMode = 'add'", "use": "發光疊加" },
+        { "name": "大量粒子", "api": "ParticleContainer + Particle", "use": "上萬顆粒子" },
+        { "name": "逐幀更新", "api": "app.ticker.add(tk => …)", "use": "動畫迴圈" }
+      ],
+      "video_fit": "中。需改成以 frame 計算狀態（不要依賴 deltaTime 累加）",
+      "demo": "demos/pixi.html",
+      "docs": "https://pixijs.com/8.x/guides",
+      "learn": ["https://pixijs.com/8.x/examples"]
+    },
+    {
+      "id": "matter", "name": "Matter.js", "npm": "matter-js", "version": "0.20.0", "layer": "simulation",
+      "license": "MIT",
+      "one_liner": "2D 剛體物理；物件掉落、堆疊、碰撞",
+      "primitives": [
+        { "name": "世界與步進", "api": "Engine.create / Engine.update(engine, 1000/60)", "use": "固定步長 = 可重現" },
+        { "name": "剛體", "api": "Bodies.rectangle / circle / fromVertices", "use": "檔案、圖示、字母剛體" },
+        { "name": "直接操控", "api": "Body.setPosition / setVelocity / setAngle", "use": "導演式控制物理" },
+        { "name": "約束", "api": "Constraint / Composites.chain", "use": "繩索、彈簧連結" },
+        { "name": "碰撞事件", "api": "Events.on(engine, 'collisionStart')", "use": "碰撞觸發音效或特效" }
+      ],
+      "video_fit": "需改造。影片中從第 0 幀開始逐幀 Engine.update，並固定亂數 seed",
+      "demo": "demos/matter.html",
+      "docs": "https://brm.io/matter-js/docs/",
+      "learn": ["https://brm.io/matter-js/"]
+    },
+    {
+      "id": "falling-sand", "name": "Falling Sand", "npm": null, "version": null, "layer": "simulation",
+      "license": "技法（非套件）",
+      "one_liner": "粉末遊戲式細胞自動機：每格依鄰居規則更新；崩解、流體、堆積",
+      "primitives": [
+        { "name": "格子狀態", "api": "Uint8Array(W*H) 存材質種類", "use": "沙、水、固體、空" },
+        { "name": "下落規則", "api": "下 → 左下／右下 → 靜止", "use": "沙堆、崩解" },
+        { "name": "掃描順序", "api": "由下往上、左右隨機交替", "use": "避免偏向與一幀多格" },
+        { "name": "點火／轉換", "api": "條件式改變材質（固體 → 沙）", "use": "物件消除、燃燒" },
+        { "name": "像素輸出", "api": "ImageData / putImageData 或 GPU texture", "use": "快速繪製" }
+      ],
+      "video_fit": "需改造。固定 seed 的亂數，逐幀步進；或預先輸出素材",
+      "demo": "demos/falling-sand.html",
+      "docs": "https://sandspiel.club/",
+      "learn": ["https://sandspiel.club/", "https://github.com/MaxBittker/sandspiel"]
+    },
+    {
+      "id": "three", "name": "Three.js", "npm": "three", "version": "0.186.1", "layer": "render-3d",
+      "license": "MIT",
+      "one_liner": "Web 3D 標準；產品模型、光影、shader 材質、WebGPU",
+      "primitives": [
+        { "name": "產品模型", "api": "GLTFLoader + 環境貼圖 (RGBELoader / PMREM)", "use": "筆電、手機實體渲染" },
+        { "name": "自訂 shader", "api": "ShaderMaterial / TSL (three/tsl)", "use": "fresnel 光球、溶解、流光" },
+        { "name": "加色混合", "api": "AdditiveBlending + depthWrite:false", "use": "發光層" },
+        { "name": "粒子", "api": "Points + BufferGeometry", "use": "上萬顆 3D 粒子" },
+        { "name": "後製", "api": "EffectComposer + UnrealBloomPass", "use": "bloom 光暈" },
+        { "name": "逐幀渲染", "api": "renderer.setAnimationLoop(ms => …)", "use": "以時間 t 驅動（可改成 frame）" }
+      ],
+      "video_fit": "佳。Remotion 有 @remotion/three；HyperFrames 有 Three.js adapter",
+      "demo": "demos/three.html",
+      "docs": "https://threejs.org/docs/",
+      "learn": ["https://threejs-journey.com/", "https://threejs.org/examples/"]
+    },
+    {
+      "id": "glsl", "name": "GLSL Shader", "npm": null, "version": "GLSL ES 1.0 / 3.0", "layer": "render-3d",
+      "license": "語言（非套件）",
+      "one_liner": "直接寫 GPU 片段著色器；所有「光」「流動」「溶解」質感的根源",
+      "primitives": [
+        { "name": "SDF 距離場", "api": "sdCircle / sdRoundBox", "use": "邊緣光、形狀遮罩" },
+        { "name": "雜訊", "api": "value / simplex / fbm noise", "use": "有機流動、閃爍、溶解門檻" },
+        { "name": "色盤函式", "api": "cosine palette (Inigo Quilez)", "use": "平滑循環漸層" },
+        { "name": "指數光暈", "api": "exp(d / width)", "use": "柔和發光" },
+        { "name": "Fresnel", "api": "pow(1 - dot(N, V), p)", "use": "球體邊緣光" },
+        { "name": "轉場混合", "api": "mix(a, b, step(noise, progress))", "use": "前後對比、溶解轉場" }
+      ],
+      "video_fit": "最佳。shader 本來就是 f(uv, t)，給定 t 就能精準重現",
+      "demo": "demos/glsl.html",
+      "docs": "https://thebookofshaders.com/",
+      "learn": ["https://thebookofshaders.com/", "https://iquilezles.org/articles/", "https://www.shadertoy.com/"]
+    },
+    {
+      "id": "canvas2d", "name": "Canvas 2D", "npm": null, "version": "瀏覽器原生", "layer": "render-2d",
+      "license": "Web 標準",
+      "one_liner": "零依賴的即時繪圖；最適合 HUD、掃描框、波形、像素效果",
+      "primitives": [
+        { "name": "漸層", "api": "createLinearGradient / createRadialGradient", "use": "掃描光帶、光暈" },
+        { "name": "合成模式", "api": "globalCompositeOperation = 'lighter'", "use": "發光疊加" },
+        { "name": "虛線流動", "api": "setLineDash + lineDashOffset", "use": "辨識框、流光邊" },
+        { "name": "裁切", "api": "clip()", "use": "遮罩、前後對比" },
+        { "name": "像素操作", "api": "getImageData / putImageData", "use": "falling sand、故障效果" },
+        { "name": "殘影", "api": "每幀畫半透明底色", "use": "拖尾" }
+      ],
+      "video_fit": "佳。畫面是 f(t) 就能直接逐幀渲染",
+      "demo": "demos/canvas2d.html",
+      "docs": "https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API",
+      "learn": ["https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial"]
+    },
+    {
+      "id": "rough", "name": "Rough.js", "npm": "roughjs", "version": "4.6.6", "layer": "style",
+      "license": "MIT",
+      "one_liner": "手繪／素描風格圖形產生器；讓 AI 影片有「人味」的標註",
+      "primitives": [
+        { "name": "手繪形狀", "api": "rc.ellipse / rectangle / linearPath / curve", "use": "圈選、箭頭、標註" },
+        { "name": "手感參數", "api": "roughness / bowing / seed", "use": "控制手抖程度，seed 固定則可重現" },
+        { "name": "填充風格", "api": "fillStyle: 'hachure' | 'cross-hatch' | 'zigzag'", "use": "素描陰影" },
+        { "name": "描線動畫", "api": "SVG path + stroke-dashoffset", "use": "即時畫出來的感覺" }
+      ],
+      "video_fit": "佳。固定 seed，描線進度 = f(t)",
+      "demo": "demos/rough.html",
+      "docs": "https://github.com/rough-stuff/rough/wiki",
+      "learn": ["https://roughjs.com/"]
+    },
+    {
+      "id": "p5", "name": "p5.js", "npm": "p5", "version": "2.3.4", "layer": "render-2d",
+      "license": "LGPL-2.1",
+      "one_liner": "創意編程入門首選；快速做生成式原型（p5 2.x 有 API 變動）",
+      "primitives": [
+        { "name": "Perlin noise", "api": "noise(x, y, t)", "use": "流場、有機運動" },
+        { "name": "離屏畫布", "api": "createGraphics + loadPixels", "use": "文字／Logo 取樣成粒子目標" },
+        { "name": "顏色內插", "api": "lerpColor", "use": "漸層粒子" },
+        { "name": "WEBGL 模式", "api": "createCanvas(w, h, WEBGL) + shader", "use": "3D 與 shader 原型" },
+        { "name": "逐幀輸出", "api": "saveGif / frameCount", "use": "快速匯出素材" }
+      ],
+      "video_fit": "中。適合原型與素材輸出，正式片再移植到 Canvas / Three",
+      "demo": "demos/p5.html",
+      "docs": "https://p5js.org/reference/",
+      "learn": ["https://thecodingtrain.com/", "https://natureofcode.com/"]
+    },
+    {
+      "id": "tone", "name": "Tone.js", "npm": "tone", "version": "15.1.22", "layer": "audio",
+      "license": "MIT",
+      "one_liner": "Web Audio 音樂框架；做音效、配樂，並用聲音驅動畫面",
+      "primitives": [
+        { "name": "音訊啟動", "api": "await Tone.start()（需使用者手勢）", "use": "瀏覽器限制" },
+        { "name": "合成器", "api": "Synth / FMSynth / Noise", "use": "UI 音效、嗶聲、噪音" },
+        { "name": "效果鏈", "api": "chain(Filter, Reverb, Gain)", "use": "降噪對比、空間感" },
+        { "name": "參數自動化", "api": "param.rampTo(v, sec)", "use": "平滑開關" },
+        { "name": "分析器", "api": "Waveform / FFT / Meter", "use": "聲音 → 視覺數值" },
+        { "name": "節拍時間軸", "api": "Transport + Loop + Part", "use": "音畫同步、剪輯點對拍" },
+        { "name": "離線渲染", "api": "Tone.Offline(() => …, duration)", "use": "輸出音檔給影片用" }
+      ],
+      "video_fit": "需改造。影片中用 Tone.Offline 先算出音軌，再把 FFT 數據預先存成陣列驅動畫面",
+      "demo": "demos/tone.html",
+      "docs": "https://tonejs.github.io/docs/",
+      "learn": ["https://tonejs.github.io/examples/"]
+    }
+  ]
+}

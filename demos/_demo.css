@@ -1,0 +1,24 @@
+/* 共用 demo 舞台樣式：16:9 暗場，模擬產品影片畫面 */
+:root {
+  --stage: #07080c;
+  --ink: #eef0f6;
+  --muted: #8a90a6;
+  --ai-1: #4fd1ff;
+  --ai-2: #8b7bff;
+  --ai-3: #ff6fb1;
+  --ai-4: #ffb86b;
+  --font: "Noto Sans TC", system-ui, -apple-system, "PingFang TC", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--stage); color: var(--ink); font-family: var(--font); }
+body { display: grid; place-items: center; padding: 16px; }
+.frame { width: min(100%, 1280px); display: grid; gap: 12px; }
+.stage { position: relative; width: 100%; aspect-ratio: 16 / 9; background: var(--stage); overflow: hidden; border-radius: 6px; outline: 1px solid #1c1f2b; }
+.stage > canvas, .stage > svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; font-size: 13px; color: var(--muted); }
+.meta b { color: var(--ink); font-weight: 600; }
+.meta code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--ai-1); }
+button { font: inherit; font-size: 13px; color: var(--ink); background: #161925; border: 1px solid #2a2f42; border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+button:hover { border-color: var(--ai-2); }
+button:focus-visible { outline: 2px solid var(--ai-1); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }

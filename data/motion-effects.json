@@ -1,0 +1,278 @@
+{
+  "_meta": {
+    "updated": "2026-09-29",
+    "note": "動態效果分類法。每個效果 = 一個「AI 賣點 → 視覺語言」的對應，拆成：想傳達的訊息、動態配方（可調參數）、12 個 JS 工具的實作路線、能否進影片渲染管線（Remotion / HyperFrames）。",
+    "categories": {
+      "ai-state": "AI 狀態：聆聽／思考／回應",
+      "generate": "生成與轉換",
+      "perceive": "辨識與理解",
+      "data": "數據與規格",
+      "hardware": "產品與硬體",
+      "narrative": "敘事與字卡"
+    },
+    "video_ready_values": {
+      "yes": "時間可 seek（純函式 of t），直接搬進 Remotion useCurrentFrame 或 HyperFrames GSAP timeline",
+      "adapt": "需把模擬（物理／粒子／CA）改成固定 seed＋逐幀步進，或預先錄製成影片素材",
+      "asset": "建議輸出成素材（mp4 / png sequence / Lottie）再進剪輯，不直接在渲染管線裡跑"
+    }
+  },
+  "effects": [
+    {
+      "id": "ai-edge-glow", "name": "螢幕邊緣流光", "category": "ai-state",
+      "message": "AI 已啟動、正在理解你；整台裝置都「活」了",
+      "seen_in": ["Apple Intelligence Siri", "Galaxy AI（推測）", "Gemini 漸層"],
+      "recipe": "圓角矩形 SDF 距離 → exp 衰減光暈；色相由邊緣角度決定並隨時間旋轉；思考時寬度 ×3、流速 ×5；四色盤：青藍、紫、粉、琥珀",
+      "implementations": {
+        "GLSL Shader": "全螢幕 fragment shader：sdRoundRect + atan 角度色相 + noise 閃爍（demo）",
+        "Canvas 2D": "沿邊框切 20 段各自上色，外層 filter: blur()，lineDashOffset 做流動",
+        "GSAP": "CSS conic-gradient 邊框 + @property 角度變數，用 gsap.to 旋轉 --angle",
+        "Three.js": "把 GLSL 做成 ShaderMaterial 貼在手機螢幕平面上，與 3D 手機模型合成"
+      },
+      "demo": "demos/glsl.html", "video_ready": "yes",
+      "refs": ["https://dev.to/vector4wang/i-recreated-iphones-apple-intelligence-edge-glow-effect-on-mac-57f5", "https://github.com/jacobamobin/AppleIntelligenceGlowEffect", "https://codepen.io/quintenm/pen/NPGYRgj"]
+    },
+    {
+      "id": "ai-orb", "name": "AI 光球", "category": "ai-state",
+      "message": "AI 助理的「臉」：聆聽時呼吸、思考時旋轉加速",
+      "seen_in": ["Gemini Live", "Siri（iOS 18 以前）", "Dribbble AI orb 大量作品"],
+      "recipe": "3 個加色混合模糊圓互繞（2D）或 noise 位移球體＋fresnel 邊緣光（3D）；狀態切換用 lerp 平滑 0→1",
+      "implementations": {
+        "PixiJS": "Graphics 圓 + BlurFilter + blendMode add，Ticker 驅動（demo）",
+        "Three.js": "IcosahedronGeometry + ShaderMaterial（noise 位移 + fresnel）+ AdditiveBlending（demo）",
+        "GLSL Shader": "raymarch 球體或 2D metaball",
+        "p5.js": "WEBGL 模式 sphere + shader，或 2D drawingContext.filter blur",
+        "Tone.js": "用 Meter / FFT 的音量驅動光球縮放 → 聲音反應"
+      },
+      "demo": "demos/pixi.html", "video_ready": "yes",
+      "refs": ["https://tympanus.net/codrops/2025/06/18/coding-a-3d-audio-visualizer-with-three-js-gsap-web-audio-api/", "https://dribbble.com/search/ai-orb", "https://dribbble.com/shots/3546148-Apple-iOS11-Siri-visual-effect-motion"]
+    },
+    {
+      "id": "particle-swarm", "name": "粒子繞行", "category": "ai-state",
+      "message": "大量資料在裝置內流動、被即時處理",
+      "seen_in": ["各品牌 NPU / AI 晶片段落（推測）"],
+      "recipe": "數百點極座標繞行，半徑、角速度、傾斜各自隨機；思考時半徑收縮 45%、速度 ×4",
+      "implementations": {
+        "PixiJS": "ParticleContainer（v8 為 Particle）可到上萬顆（demo 用 Graphics）",
+        "Three.js": "Points + BufferGeometry，位置在 vertex shader 算",
+        "p5.js": "陣列＋circle()，千顆以內即可",
+        "Canvas 2D": "fillRect 點陣＋globalCompositeOperation lighter"
+      },
+      "demo": "demos/pixi.html", "video_ready": "yes", "refs": []
+    },
+    {
+      "id": "text-generate", "name": "文字逐字生成", "category": "generate",
+      "message": "AI 正在為你寫：摘要、改寫、翻譯",
+      "seen_in": ["Apple Writing Tools", "Copilot", "HP AI Companion（推測）"],
+      "recipe": "逐字 stagger 0.03–0.05s；每字從 blur(12px)+y18 → 清晰；可加游標閃爍與漸層色掃過",
+      "implementations": {
+        "GSAP": "SplitText.create + from(chars, {filter:'blur()', stagger})（demo）",
+        "Anime.js v4": "v4 splitText + stagger",
+        "Canvas 2D": "逐字 fillText + globalAlpha，打字機效果",
+        "D3.js": "selection.transition().textTween() 做數字或字串內插"
+      },
+      "demo": "demos/gsap.html", "video_ready": "yes",
+      "refs": ["https://gsap.com/blog/3-13/", "https://tympanus.net/codrops/2025/05/14/from-splittext-to-morphsvg-5-creative-demos-using-free-gsap-plugins/"]
+    },
+    {
+      "id": "sketch-to-image", "name": "手繪變成品", "category": "generate",
+      "message": "隨手一畫，AI 幫你完成",
+      "seen_in": ["Microsoft Cocreator", "Apple Image Wand", "Galaxy Sketch to Image"],
+      "recipe": "手繪線條描出（stroke-dashoffset）→ 停頓 0.3s → 閃光 / 溶解 crossfade 到成品圖",
+      "implementations": {
+        "Rough.js": "rough.svg 產生手繪路徑 + dashoffset 描線（demo 的圈選部分）",
+        "GLSL Shader": "noise 門檻溶解 transition：mix(sketch, render, step(noise, progress))",
+        "GSAP": "DrawSVGPlugin 描線 + clip-path 揭露",
+        "p5.js": "noise 抖動線條模擬鉛筆"
+      },
+      "demo": "demos/rough.html", "video_ready": "yes",
+      "refs": ["https://tympanus.net/codrops/2025/01/22/webgl-shader-techniques-for-dynamic-image-transitions/"]
+    },
+    {
+      "id": "object-erase-dissolve", "name": "物件消除化為粒子", "category": "generate",
+      "message": "一鍵移除干擾物，背景自動補完",
+      "seen_in": ["Apple Clean Up", "Google Magic Eraser", "Galaxy Object Eraser"],
+      "recipe": "選取框閃一下 → 物件由上而下崩解成沙／粒子落下 → 背景 inpaint 淡入",
+      "implementations": {
+        "Falling Sand": "細胞自動機：固體逐列轉成沙，沙依規則下落後蒸發（demo）",
+        "GLSL Shader": "noise 溶解邊緣 + 發光邊（burn edge）",
+        "Three.js": "把物件貼圖拆成 Points，往下加速度並淡出",
+        "Matter.js": "物件切成碎塊剛體，受重力散落"
+      },
+      "demo": "demos/falling-sand.html", "video_ready": "adapt", "refs": ["https://sandspiel.club/"]
+    },
+    {
+      "id": "before-after-wipe", "name": "前後對比擦除", "category": "generate",
+      "message": "AI 開啟前／後，差異一眼看懂",
+      "seen_in": ["視訊增強、降噪、修圖類廣告（推測）"],
+      "recipe": "垂直分割線從左掃到右，線上帶光暈；可停在 50% 讓觀眾比較",
+      "implementations": {
+        "GSAP": "clip-path: inset(0 X% 0 0) 補間，或 Draggable 手動拖曳",
+        "GLSL Shader": "step(uv.x, progress) 混合兩張貼圖 + 邊緣 glow",
+        "Canvas 2D": "drawImage 兩次，第二次用 clip() 裁切"
+      },
+      "demo": null, "video_ready": "yes", "refs": []
+    },
+    {
+      "id": "scan-detect", "name": "掃描線＋辨識框", "category": "perceive",
+      "message": "AI 看得懂畫面：辨識、建議、拍照教練",
+      "seen_in": ["Pixel Camera Coach", "Click to Do", "Circle to Search"],
+      "recipe": "高光掃描帶 1.4s 由上往下 → 四角括號從外收攏 0.6s（逐物件錯開 0.25s）→ 標籤膠囊＋信心值跳動",
+      "implementations": {
+        "Canvas 2D": "createLinearGradient 掃描帶 + 四角 path + setLineDash 流動虛線（demo）",
+        "GSAP": "DOM 框 + scale/opacity stagger",
+        "D3.js": "資料綁定 bounding boxes，enter transition",
+        "Three.js": "3D 空間中的 billboard 標籤"
+      },
+      "demo": "demos/canvas2d.html", "video_ready": "yes", "refs": []
+    },
+    {
+      "id": "circle-to-search", "name": "手繪圈選", "category": "perceive",
+      "message": "圈一下就搜尋：AI 理解你指的東西",
+      "seen_in": ["Google / Samsung Circle to Search"],
+      "recipe": "帶手感的不完美橢圓（roughness 2、bowing 3）快速描出 0.5s → 結果卡片從下彈入",
+      "implementations": {
+        "Rough.js": "generator.ellipse + stroke-dashoffset（demo）",
+        "GSAP": "DrawSVGPlugin 描手繪 SVG path",
+        "Canvas 2D": "記錄真實手勢座標後回放",
+        "p5.js": "noise 抖動的 beginShape 曲線"
+      },
+      "demo": "demos/rough.html", "video_ready": "yes", "refs": ["https://roughjs.com/"]
+    },
+    {
+      "id": "audio-denoise", "name": "AI 降噪聲波", "category": "perceive",
+      "message": "嘈雜環境中，只留下你的聲音",
+      "seen_in": ["Acer PurifiedVoice", "Galaxy Audio Eraser", "Windows Studio Effects"],
+      "recipe": "毛躁聲波（噪音）→ 開關切換 → 雜訊平滑消失、只留乾淨波形；可加色彩由灰轉品牌色",
+      "implementations": {
+        "Tone.js": "Noise → Filter → Gain.rampTo 做真實的聲音對比，Waveform 取樣畫圖（demo）",
+        "Canvas 2D": "繪製波形 path",
+        "D3.js": "d3.line + curveBasis 做平滑曲線過渡",
+        "GLSL Shader": "SDF 線條 + noise 振幅"
+      },
+      "demo": "demos/tone.html", "video_ready": "adapt",
+      "refs": ["https://www.acer.com/us-en/ai/acer-intelligence-space"]
+    },
+    {
+      "id": "audio-reactive", "name": "聲音驅動畫面", "category": "ai-state",
+      "message": "AI 在聽／在說：即時翻譯、語音助理",
+      "seen_in": ["Gemini Live", "Live Translation"],
+      "recipe": "FFT 低頻驅動縮放、高頻驅動亮度；配樂節拍對齊剪輯點",
+      "implementations": {
+        "Tone.js": "FFT / Meter / Waveform 取值；Transport 做節拍時間軸",
+        "Three.js": "音量 uniform 驅動 vertex 位移",
+        "PixiJS": "音量驅動 scale 與 filter 強度"
+      },
+      "demo": "demos/tone.html", "video_ready": "adapt",
+      "refs": ["https://tympanus.net/codrops/2025/06/18/coding-a-3d-audio-visualizer-with-three-js-gsap-web-audio-api/"]
+    },
+    {
+      "id": "data-counter", "name": "規格數字跳動", "category": "data",
+      "message": "硬實力：50 TOPS、22 小時續航",
+      "seen_in": ["幾乎所有 AI PC 發表片"],
+      "recipe": "0 → 目標值 1.8s easeOutExpo，四捨五入到整數；單位字距 0.2em；可配網格波",
+      "implementations": {
+        "Anime.js v4": "animate(obj, {v, modifier: utils.round(0)})（demo）",
+        "GSAP": "gsap.to(obj, {v, snap:{v:1}, onUpdate})",
+        "D3.js": "transition().textTween(interpolateNumber)"
+      },
+      "demo": "demos/anime.html", "video_ready": "yes", "refs": []
+    },
+    {
+      "id": "stagger-grid-wave", "name": "網格擴散波", "category": "data",
+      "message": "NPU 平行運算、AI 全面啟動",
+      "seen_in": ["Nothing 點陣視覺", "晶片段落（推測）"],
+      "recipe": "16×16 網格，從中心 stagger 40ms 擴散；色彩青→紫→暗；之後隨機閃爍 idle",
+      "implementations": {
+        "Anime.js v4": "stagger(40, {grid:[16,16], from:'center'})（demo）",
+        "GSAP": "stagger: {grid:[16,16], from:'center', each:0.04}",
+        "p5.js": "距離中心的距離 − t 決定亮度",
+        "GLSL Shader": "length(uv-0.5) - time 做 ring"
+      },
+      "demo": "demos/anime.html", "video_ready": "yes", "refs": []
+    },
+    {
+      "id": "data-viz-grow", "name": "長條／圖表生長", "category": "data",
+      "message": "AI 開啟前後的效能、續航對比",
+      "seen_in": ["Copilot+ PC 發表會投影片", "OEM 規格影片"],
+      "recipe": "先長灰色基準條 0.7s，再長品牌漸層條 1.2s，數值標籤跟著推進",
+      "implementations": {
+        "D3.js": "scaleBand + transition().delay(i*) + textTween（demo）",
+        "GSAP": "scaleX from 0 + transformOrigin left",
+        "Anime.js v4": "width / scaleX stagger"
+      },
+      "demo": "demos/d3.html", "video_ready": "yes", "refs": []
+    },
+    {
+      "id": "physics-sort", "name": "物理掉落自動整理", "category": "generate",
+      "message": "AI 幫你整理：檔案、照片、待辦",
+      "seen_in": ["整理類功能（推測）"],
+      "recipe": "雜亂物件受重力堆疊 → 按下 AI → 隔板落下、物件按類別落入欄位",
+      "implementations": {
+        "Matter.js": "Engine + Bodies + 自繪 Canvas（demo）",
+        "PixiJS": "Matter 算物理、Pixi 畫面",
+        "Three.js": "搭配 cannon-es / rapier 做 3D 版本"
+      },
+      "demo": "demos/matter.html", "video_ready": "adapt", "refs": ["https://brm.io/matter-js/"]
+    },
+    {
+      "id": "particle-assemble", "name": "粒子聚合成形", "category": "narrative",
+      "message": "混亂資料 → 有意義的結果；也適合品牌 Logo 收尾",
+      "seen_in": ["品牌片 Logo 收尾（常見手法）"],
+      "recipe": "離屏畫布寫字 → 取樣像素當目標點 → 彈簧（k=0.012，阻尼 0.88）回位；打散時沿 noise 流場漂移",
+      "implementations": {
+        "p5.js": "createGraphics 取樣 + noise 流場（demo）",
+        "Three.js": "Points，在 vertex shader 用 mix(random, target, progress)",
+        "PixiJS": "大量 Sprite + 相同彈簧公式",
+        "GSAP": "每顆粒子一個 tween，stagger from random"
+      },
+      "demo": "demos/p5.html", "video_ready": "adapt", "refs": []
+    },
+    {
+      "id": "ui-float-cards", "name": "浮動 UI 卡片", "category": "narrative",
+      "message": "一台裝置上同時跑很多 AI 功能",
+      "seen_in": ["Galaxy AI launch film", "Magic Cue", "OEM 功能總覽"],
+      "recipe": "裝置 3D 傾斜轉正 1.1s expo.out → 卡片 z:-200、blur 6px 依序彈出 → sine yoyo 漂浮",
+      "implementations": {
+        "GSAP": "timeline + from(z, blur) + random yoyo（demo）",
+        "Three.js": "CSS3DRenderer 或平面 Mesh 貼 UI 截圖，真實景深",
+        "Anime.js v4": "createTimeline + stagger",
+        "PixiJS": "Sprite 卡片 + DisplacementFilter"
+      },
+      "demo": "demos/gsap.html", "video_ready": "yes", "refs": ["https://motion.dev/examples"]
+    },
+    {
+      "id": "exploded-view", "name": "晶片／機身爆炸圖", "category": "hardware",
+      "message": "AI 來自真正的硬體：NPU、散熱、電池",
+      "seen_in": ["Copilot+ PC keynote", "ASUS / Surface 發表片（推測）"],
+      "recipe": "層疊物件沿法線拉開，上層位移最大；NPU 層加自發光；鏡頭緩慢繞行",
+      "implementations": {
+        "Three.js": "Group 內各 Mesh 依層級 lerp y（demo）；正式片載入 GLTF 產品模型",
+        "GSAP": "ScrollTrigger 控制爆炸進度（網頁版）"
+      },
+      "demo": "demos/three.html", "video_ready": "yes", "refs": []
+    },
+    {
+      "id": "device-reveal", "name": "產品登場", "category": "hardware",
+      "message": "產品本身的美感與工藝",
+      "seen_in": ["所有 launch film"],
+      "recipe": "暗場 → 輪廓光掃過邊緣 → 開蓋／轉台 → 定格＋品名；鏡頭運動一律 ease-in-out、無抖動",
+      "implementations": {
+        "Three.js": "GLTFLoader + HDRI 環境光 + 相機路徑",
+        "GSAP": "ScrollTrigger + canvas 影格序列（Apple 產品頁手法）"
+      },
+      "demo": null, "video_ready": "asset", "refs": []
+    },
+    {
+      "id": "kinetic-type-mask", "name": "大字標語遮罩", "category": "narrative",
+      "message": "一句話記住：Your PC, now intelligent.",
+      "seen_in": ["品牌 spot 收尾、章節字卡"],
+      "recipe": "逐行 overflow:hidden 遮罩，字由下往上推入 0.8s power4.out；關鍵字換色或漸層",
+      "implementations": {
+        "GSAP": "SplitText type:'lines' + mask:'lines'",
+        "Anime.js v4": "splitText + translateY stagger",
+        "Canvas 2D": "clip() 矩形遮罩 + fillText"
+      },
+      "demo": "demos/gsap.html", "video_ready": "yes", "refs": ["https://gsap.com/blog/3-13/"]
+    }
+  ]
+}

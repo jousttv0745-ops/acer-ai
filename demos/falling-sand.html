@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Falling Sand · AI 物件消除化為沙</title>
+<link rel="stylesheet" href="_demo.css">
+<style>.stage canvas { image-rendering: pixelated; }</style>
+</head>
+<body>
+<div class="frame">
+  <div class="stage"><canvas id="c"></canvas></div>
+  <div class="meta">
+    <span><b>Falling Sand（細胞自動機，Canvas 2D ImageData）</b> · 效果：<code>object-erase-dissolve</code> · 規則：沙往下 → 左下/右下 → 靜止；由上而下逐列「點火」讓物件崩解</span>
+    <button id="replay">重播消除</button>
+  </div>
+</div>
+<script>
+  // 格子尺寸：320×180，每格 = 4×4 像素（1280×720）
+  const GW = 320, GH = 180;
+  const cv = document.getElementById("c"); cv.width = GW; cv.height = GH;
+  const ctx = cv.getContext("2d");
+  const img = ctx.createImageData(GW, GH);
+  const EMPTY = 0, SOLID = 1, SAND = 2;
+  let cell, color, bgColor, igniteRow;
+
+  function sky(x, y) { // 背景「照片」：天空漸層＋地平線，消除後會露出來
+    if (y > 130) return [38 + (x % 7), 52, 44];
+    const k = y / 130; return [20 + 40 * k, 30 + 50 * k, 70 + 60 * k];
+  }
+  function reset() {
+    cell = new Uint8Array(GW * GH); color = new Array(GW * GH); bgColor = new Array(GW * GH);
+    for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) bgColor[y * GW + x] = sky(x, y);
+    // 「路人」：頭＋身體（要被消除的物件）
+    const put = (x, y, c) => { const i = y * GW + x; cell[i] = SOLID; color[i] = c; };
+    for (let y = 40; y < 62; y++) for (let x = 150; x < 172; x++) if ((x - 161) ** 2 + (y - 51) ** 2 < 110) put(x, y, [255, 111, 177]);
+    for (let y = 62; y < 130; y++) for (let x = 138; x < 184; x++) if (Math.abs(x - 161) < 14 + (y - 62) * 0.15) put(x, y, [139, 123, 255]);
+    igniteRow = 30;
+  }
+  function step() {
+    // 1. 點火：固體由上往下逐列轉成沙（帶一點隨機，邊緣才自然）
+    if (igniteRow < 140) {
+      for (let x = 0; x < GW; x++) for (let dy = 0; dy < 2; dy++) {
+        const i = (igniteRow + dy) * GW + x;
+        if (cell[i] === SOLID && Math.random() < 0.85) { cell[i] = SAND; color[i] = color[i].map(v => Math.min(255, v + 60)); }
+      }
+      igniteRow += 1;
+    }
+    // 2. 沙的規則：從底部往上掃，避免同一顆一幀掉多格
+    for (let y = GH - 2; y >= 0; y--) {
+      const ltr = Math.random() < 0.5;
+      for (let k = 0; k < GW; k++) {
+        const x = ltr ? k : GW - 1 - k, i = y * GW + x;
+        if (cell[i] !== SAND) continue;
+        const below = i + GW, dir = Math.random() < 0.5 ? -1 : 1;
+        let to = -1;
+        if (cell[below] === EMPTY) to = below;
+        else if (x + dir >= 0 && x + dir < GW && cell[below + dir] === EMPTY) to = below + dir;
+        if (to >= 0) { cell[to] = SAND; color[to] = color[i]; cell[i] = EMPTY; }
+        // 3. 沙落地後逐漸「蒸發」＝ AI 補完背景
+        else if (y > 125 && Math.random() < 0.04) cell[i] = EMPTY;
+      }
+    }
+  }
+  function render() {
+    const d = img.data;
+    for (let i = 0; i < GW * GH; i++) {
+      const c = cell[i] === EMPTY ? bgColor[i] : color[i];
+      d[i * 4] = c[0]; d[i * 4 + 1] = c[1]; d[i * 4 + 2] = c[2]; d[i * 4 + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+  let hold = 0;
+  function frame() {
+    if (hold > 0) hold--; else step();
+    render(); requestAnimationFrame(frame);
+  }
+  reset(); hold = 60; frame();
+  document.getElementById("replay").onclick = () => { reset(); hold = 30; };
+</script>
+</body>
+</html>

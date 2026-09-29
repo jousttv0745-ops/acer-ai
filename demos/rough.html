@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rough.js · 手繪圈選 → 搜尋結果</title>
+<link rel="stylesheet" href="_demo.css">
+<style>
+  .result { position: absolute; right: 6%; top: 22%; width: 30%; padding: 16px 18px; border-radius: 14px; background: #141827; border: 1px solid #2a2f42; font-size: clamp(10px, 1.3vw, 16px); opacity: 0; transform: translateY(16px); transition: opacity .5s, transform .5s cubic-bezier(.2,.9,.3,1.2); }
+  .result.show { opacity: 1; transform: none; }
+  .result b { display: block; font-size: 1.25em; margin-bottom: 4px; }
+  .result span { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="stage">
+    <svg id="svg" viewBox="0 0 1280 720"></svg>
+    <div class="result" id="result"><b>Acer Swift 系列</b><span>找到 12 個相似商品 · 最低價 NT$ 32,900（示意）</span></div>
+  </div>
+  <div class="meta">
+    <span><b>Rough.js 4.6</b> · 效果：<code>circle-to-search</code> + <code>sketch-to-image</code> · API：<code>rough.svg</code> <code>generator.ellipse({roughness, bowing})</code> + <code>stroke-dashoffset</code> 描線動畫</span>
+    <button id="replay">重播</button>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+<script>
+  const svg = document.getElementById("svg");
+  const rc = rough.svg(svg);
+  const NS = "http://www.w3.org/2000/svg";
+  // 背景：一張「網頁截圖」的抽象版
+  const bg = document.createElementNS(NS, "g");
+  bg.innerHTML = `
+    <rect x="80" y="60" width="700" height="600" rx="16" fill="#121524"/>
+    <rect x="120" y="100" width="300" height="24" rx="6" fill="#262b40"/>
+    <rect x="120" y="140" width="520" height="14" rx="4" fill="#1d2133"/>
+    <rect x="120" y="164" width="460" height="14" rx="4" fill="#1d2133"/>
+    <g transform="translate(250,260)"><rect width="330" height="210" rx="10" fill="#2a3048"/><rect x="-24" y="210" width="378" height="20" rx="6" fill="#3d4666"/><rect x="20" y="20" width="290" height="170" rx="4" fill="#4fd1ff" opacity=".25"/></g>
+    <rect x="120" y="560" width="480" height="14" rx="4" fill="#1d2133"/>`;
+  svg.appendChild(bg);
+  let layer;
+  function play() {
+    layer && layer.remove();
+    document.getElementById("result").classList.remove("show");
+    layer = document.createElementNS(NS, "g"); svg.appendChild(layer);
+    // 手繪橢圓：roughness 越高越像手抖，bowing 控制彎曲
+    const circle = rc.ellipse(420, 360, 460, 330, { stroke: "#ff6fb1", strokeWidth: 5, roughness: 2.2, bowing: 3, seed: 7 });
+    const arrow = rc.linearPath([[650, 250], [820, 190], [900, 180]], { stroke: "#ffb86b", strokeWidth: 3, roughness: 1.5, seed: 3 });
+    layer.append(circle, arrow);
+    // 把每條 path 做成描線動畫
+    let delay = 0;
+    [...layer.querySelectorAll("path")].forEach(p => {
+      const len = p.getTotalLength();
+      p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+      p.getBoundingClientRect();
+      const dur = Math.max(0.25, len / 1400);
+      p.style.transition = `stroke-dashoffset ${dur}s cubic-bezier(.6,0,.3,1) ${delay}s`;
+      p.style.strokeDashoffset = 0;
+      delay += dur * 0.9;
+    });
+    setTimeout(() => document.getElementById("result").classList.add("show"), delay * 1000 + 150);
+  }
+  play();
+  document.getElementById("replay").onclick = play;
+</script>
+</body>
+</html>

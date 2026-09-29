@@ -1,0 +1,28 @@
+{
+  "_meta": {
+    "updated": "2026-09-29",
+    "note": "動態效果靈感來源。kind=search 的連結是站內搜尋頁（內容會變動）；kind=item 是單一作品或教學。Pinterest 無法登入抓取，請把自己的 board 網址補進 items。"
+  },
+  "sources": [
+    { "id": "dribbble-ai-orb", "platform": "Dribbble", "kind": "search", "title": "AI Orb 搜尋", "url": "https://dribbble.com/search/ai-orb", "effects": ["ai-orb"] },
+    { "id": "dribbble-ai-orb-motion", "platform": "Dribbble", "kind": "search", "title": "AI Orb Motion Animation Design", "url": "https://dribbble.com/search/ai%20orb%20motion%20animation%20design", "effects": ["ai-orb", "particle-swarm"] },
+    { "id": "dribbble-ai-assistant", "platform": "Dribbble", "kind": "search", "title": "AI Assistant 搜尋", "url": "https://dribbble.com/search/ai-assistant", "effects": ["ai-orb", "ui-float-cards"] },
+    { "id": "dribbble-siri-animation", "platform": "Dribbble", "kind": "search", "title": "Siri Animation 搜尋", "url": "https://dribbble.com/search/siri-animation", "effects": ["ai-orb", "ai-edge-glow"] },
+    { "id": "dribbble-orb-agentic", "platform": "Dribbble", "kind": "item", "title": "Orb - Agentic AI Motion Design（AmazingUI）", "url": "https://dribbble.com/shots/27465848-Orb-Agentic-AI-Motion-Design-by-AmazingUI", "effects": ["ai-orb"] },
+    { "id": "dribbble-siri-ios11", "platform": "Dribbble", "kind": "item", "title": "Apple iOS11 Siri visual effect motion（Gleb Kuznetsov / Milkinside）", "url": "https://dribbble.com/shots/3546148-Apple-iOS11-Siri-visual-effect-motion", "effects": ["ai-orb", "audio-reactive"] },
+    { "id": "pinterest-ai-motion", "platform": "Pinterest", "kind": "search", "title": "AI motion graphics 搜尋", "url": "https://www.pinterest.com/search/pins/?q=ai%20motion%20graphics", "effects": [] },
+    { "id": "pinterest-ai-orb", "platform": "Pinterest", "kind": "search", "title": "AI orb animation 搜尋", "url": "https://www.pinterest.com/search/pins/?q=ai%20orb%20animation", "effects": ["ai-orb"] },
+    { "id": "pinterest-product-3d", "platform": "Pinterest", "kind": "search", "title": "Laptop product animation 搜尋", "url": "https://www.pinterest.com/search/pins/?q=laptop%20product%20animation%203d", "effects": ["device-reveal", "exploded-view"] },
+    { "id": "pinterest-ui-motion", "platform": "Pinterest", "kind": "search", "title": "AI UI motion design 搜尋", "url": "https://www.pinterest.com/search/pins/?q=ai%20ui%20motion%20design", "effects": ["ui-float-cards", "text-generate"] },
+    { "id": "motion-dev-examples", "platform": "Motion (motion.dev)", "kind": "search", "title": "Motion 官方範例庫（React / JS / Vue）", "url": "https://motion.dev/examples", "effects": ["ui-float-cards"] },
+    { "id": "motion-dev-layout", "platform": "Motion (motion.dev)", "kind": "item", "title": "Shared layout animation", "url": "https://examples.motion.dev/react/shared-layout-animation", "effects": ["ui-float-cards"] },
+    { "id": "codrops-audio-orb", "platform": "Codrops", "kind": "item", "title": "3D Audio Visualizer with Three.js, GSAP & Web Audio API", "url": "https://tympanus.net/codrops/2025/06/18/coding-a-3d-audio-visualizer-with-three-js-gsap-web-audio-api/", "effects": ["ai-orb", "audio-reactive"] },
+    { "id": "codrops-shader-gsap", "platform": "Codrops", "kind": "item", "title": "How to Animate WebGL Shaders with GSAP", "url": "https://tympanus.net/codrops/2025/10/08/how-to-animate-webgl-shaders-with-gsap-ripples-reveals-and-dynamic-blur-effects/", "effects": ["before-after-wipe", "sketch-to-image"] },
+    { "id": "codrops-image-transitions", "platform": "Codrops", "kind": "item", "title": "WebGL Shader Techniques for Dynamic Image Transitions", "url": "https://tympanus.net/codrops/2025/01/22/webgl-shader-techniques-for-dynamic-image-transitions/", "effects": ["sketch-to-image", "object-erase-dissolve"] },
+    { "id": "codrops-gsap-free-plugins", "platform": "Codrops", "kind": "item", "title": "From SplitText to MorphSVG: 5 Creative Demos", "url": "https://tympanus.net/codrops/2025/05/14/from-splittext-to-morphsvg-5-creative-demos-using-free-gsap-plugins/", "effects": ["text-generate", "kinetic-type-mask"] },
+    { "id": "codepen-siri-css", "platform": "CodePen", "kind": "item", "title": "Siri Intelligence CSS animation", "url": "https://codepen.io/quintenm/pen/NPGYRgj", "effects": ["ai-edge-glow"] },
+    { "id": "gh-apple-glow", "platform": "GitHub", "kind": "item", "title": "AppleIntelligenceGlowEffect", "url": "https://github.com/jacobamobin/AppleIntelligenceGlowEffect", "effects": ["ai-edge-glow"] },
+    { "id": "shadertoy", "platform": "Shadertoy", "kind": "search", "title": "Shadertoy（GLSL 範例海）", "url": "https://www.shadertoy.com/", "effects": ["ai-edge-glow", "ai-orb", "object-erase-dissolve"] },
+    { "id": "sandspiel", "platform": "Sandspiel", "kind": "item", "title": "Sandspiel（Falling sand 代表作）", "url": "https://sandspiel.club/", "effects": ["object-erase-dissolve"] }
+  ]
+}

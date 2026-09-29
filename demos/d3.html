@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>D3.js · 規格數據長條生長＋對比</title>
+<link rel="stylesheet" href="_demo.css">
+</head>
+<body>
+<div class="frame">
+  <div class="stage"><svg id="chart" viewBox="0 0 1280 720"></svg></div>
+  <div class="meta">
+    <span><b>D3 7.9</b> · 效果：<code>data-viz-grow</code> · API：<code>scaleBand</code> <code>transition().delay(i*)</code> <code>textTween</code> <code>easeExpOut</code>（示意數據，非實測）</span>
+    <button id="replay">重播</button>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script>
+  // 示意數據：影片中常見的「AI 開啟前後」對比畫面
+  const data = [
+    { k: "影片會議", before: 9.5, after: 12.0 },
+    { k: "本地文件摘要", before: 6.0, after: 10.5 },
+    { k: "即時字幕", before: 7.0, after: 11.0 },
+    { k: "背景降噪", before: 8.0, after: 12.5 },
+  ];
+  const W = 1280, H = 720, M = { t: 140, r: 120, b: 80, l: 280 };
+  const svg = d3.select("#chart");
+  const x = d3.scaleLinear().domain([0, 14]).range([M.l, W - M.r]);
+  const y = d3.scaleBand().domain(data.map(d => d.k)).range([M.t, H - M.b]).padding(0.35);
+  const grad = svg.append("defs").append("linearGradient").attr("id", "g");
+  grad.append("stop").attr("offset", "0%").attr("stop-color", "#4fd1ff");
+  grad.append("stop").attr("offset", "100%").attr("stop-color", "#8b7bff");
+
+  svg.append("text").attr("x", M.l).attr("y", 80).attr("fill", "#eef0f6").attr("font-size", 40).attr("font-weight", 700).text("AI 省電，續航多一截");
+  svg.append("text").attr("x", M.l).attr("y", 112).attr("fill", "#8a90a6").attr("font-size", 18).text("電池續航（小時）· 示意數據");
+
+  const rows = svg.selectAll("g.row").data(data).join("g").attr("class", "row").attr("transform", d => `translate(0,${y(d.k)})`);
+  rows.append("text").attr("x", M.l - 20).attr("y", y.bandwidth() / 2).attr("dy", "0.35em").attr("text-anchor", "end").attr("fill", "#eef0f6").attr("font-size", 22).text(d => d.k);
+  const before = rows.append("rect").attr("x", M.l).attr("height", y.bandwidth() * 0.4).attr("y", 0).attr("rx", 3).attr("fill", "#3a3f55");
+  const after = rows.append("rect").attr("x", M.l).attr("height", y.bandwidth() * 0.55).attr("y", y.bandwidth() * 0.45).attr("rx", 3).attr("fill", "url(#g)");
+  const label = rows.append("text").attr("y", y.bandwidth() * 0.72).attr("dy", "0.35em").attr("fill", "#4fd1ff").attr("font-size", 22).attr("font-weight", 700).style("font-variant-numeric", "tabular-nums");
+
+  function play() {
+    before.interrupt().attr("width", 0).transition().duration(700).delay((d, i) => i * 120).ease(d3.easeCubicOut).attr("width", d => x(d.before) - M.l);
+    after.interrupt().attr("width", 0).transition().duration(1200).delay((d, i) => 600 + i * 160).ease(d3.easeExpOut).attr("width", d => x(d.after) - M.l);
+    label.interrupt().attr("x", M.l + 10).attr("opacity", 0)
+      .transition().duration(1200).delay((d, i) => 600 + i * 160).ease(d3.easeExpOut)
+      .attr("opacity", 1).attr("x", d => x(d.after) + 12)
+      .textTween(d => { const f = d3.interpolateNumber(0, d.after); return t => `${f(t).toFixed(1)} h`; });
+  }
+  play();
+  document.getElementById("replay").onclick = play;
+</script>
+</body>
+</html>

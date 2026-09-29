@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GSAP · 浮動 UI 卡片＋標語逐字浮現</title>
+<link rel="stylesheet" href="_demo.css">
+<style>
+  .stage { perspective: 1200px; }
+  .headline { position: absolute; left: 7%; top: 14%; font-size: clamp(22px, 4.6vw, 58px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; max-width: 60%; }
+  .headline .grad { color: var(--ai-2); }
+  .sub { position: absolute; left: 7%; top: 44%; color: var(--muted); font-size: clamp(12px, 1.5vw, 18px); }
+  .laptop { position: absolute; right: 6%; bottom: 10%; width: 44%; aspect-ratio: 16 / 10; border-radius: 10px; background: linear-gradient(160deg, #1d2130, #0e1018); border: 1px solid #2c3246; transform-style: preserve-3d; }
+  .card { position: absolute; padding: 10px 14px; border-radius: 12px; font-size: clamp(9px, 1.1vw, 14px); background: rgba(24, 27, 40, 0.72); border: 1px solid rgba(139, 123, 255, 0.45); backdrop-filter: blur(8px); box-shadow: 0 10px 40px rgba(79, 209, 255, 0.15); white-space: nowrap; }
+  .card small { display: block; color: var(--muted); font-size: 0.8em; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="stage" id="stage">
+    <div class="headline" id="headline">Your PC, now <span class="grad">intelligent.</span></div>
+    <div class="sub" id="sub">On-device AI · 50 TOPS NPU</div>
+    <div class="laptop" id="laptop">
+      <div class="card" style="left:-18%;top:12%"><small>Live Captions</small>即時字幕翻譯 EN → 中文</div>
+      <div class="card" style="left:52%;top:-10%"><small>PurifiedVoice</small>背景噪音已消除</div>
+      <div class="card" style="left:8%;top:62%"><small>Recall</small>「上週那份簡報」找到 3 筆</div>
+      <div class="card" style="left:60%;top:70%"><small>Battery</small>AI 省電 +2.5 hr</div>
+    </div>
+  </div>
+  <div class="meta">
+    <span><b>GSAP 3.15</b> · 效果：<code>ui-float-cards</code> + <code>text-generate</code> · API：<code>timeline</code> <code>SplitText</code> <code>stagger</code> <code>yoyo</code></span>
+    <button id="replay">重播</button>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script>
+  gsap.registerPlugin(SplitText);
+  const split = SplitText.create("#headline", { type: "chars,words" });
+  // SplitText 會把字拆成 inline-block，父層的 background-clip:text 會失效 → 改成逐字內插顏色
+  const gradChars = split.chars.filter(c => c.closest(".grad"));
+  const mix = gsap.utils.interpolate(["#4fd1ff", "#8b7bff", "#ff6fb1"]);
+  gradChars.forEach((c, i) => { c.style.color = mix(i / Math.max(1, gradChars.length - 1)); });
+  const tl = gsap.timeline();
+  // 1. 標語逐字：模糊 → 清晰，模擬「AI 正在生成」
+  tl.from(split.chars, { opacity: 0, filter: "blur(12px)", y: 18, stagger: 0.035, duration: 0.6, ease: "power3.out" })
+      .from("#sub", { opacity: 0, y: 10, duration: 0.5 }, "-=0.2")
+      // 2. 筆電從 3D 傾斜轉正
+      .from("#laptop", { rotateY: -28, rotateX: 12, opacity: 0, scale: 0.9, duration: 1.1, ease: "expo.out" }, 0.3)
+      // 3. 功能卡片依序浮出（景深：縮放＋模糊）
+      .from(".card", { opacity: 0, scale: 0.6, z: -200, filter: "blur(6px)", stagger: 0.18, duration: 0.7, ease: "back.out(1.6)" }, "-=0.4")
+      // 4. 持續漂浮 idle loop
+      .to(".card", { y: "random(-8, 8)", x: "random(-6, 6)", duration: 2.4, ease: "sine.inOut", repeat: -1, yoyo: true, stagger: { each: 0.3, from: "random" } });
+  document.getElementById("replay").onclick = () => tl.restart();
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three.js · Fresnel 光球＋晶片爆炸圖</title>
+<link rel="stylesheet" href="_demo.css">
+</head>
+<body>
+<div class="frame">
+  <div class="stage" id="stage"></div>
+  <div class="meta">
+    <span><b>Three.js r186</b> · 效果：<code>ai-orb</code> + <code>exploded-view</code> · API：<code>ShaderMaterial</code>（fresnel + noise 位移）<code>AdditiveBlending</code> <code>BoxGeometry</code> 分層 lerp</span>
+    <button id="explode">展開 / 收合晶片層</button>
+  </div>
+</div>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js" } }</script>
+<script type="module">
+  import * as THREE from "three";
+  const stage = document.getElementById("stage");
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  stage.appendChild(renderer.domElement);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 16 / 9, 0.1, 100);
+  camera.position.set(0, 1.2, 9);
+
+  // --- AI 光球：頂點用 noise 起伏，片段用 fresnel 做邊緣發光 ---
+  const orbMat = new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 } },
+    transparent: true, blending: THREE.AdditiveBlending, depthWrite: false,
+    vertexShader: `
+      uniform float uTime; varying vec3 vN; varying vec3 vV;
+      float h(vec3 p){ return sin(p.x*3.1+uTime*1.3)*sin(p.y*2.7+uTime*1.1)*sin(p.z*3.3+uTime*0.9); }
+      void main(){
+        vec3 p = position + normal * h(position) * 0.12;
+        vec4 mv = modelViewMatrix * vec4(p,1.0);
+        vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz);
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: `
+      uniform float uTime; varying vec3 vN; varying vec3 vV;
+      void main(){
+        float f = pow(1.0 - max(dot(vN, vV), 0.0), 2.2);
+        vec3 a = vec3(0.31,0.82,1.0), b = vec3(0.55,0.48,1.0), c = vec3(1.0,0.44,0.69);
+        float m = 0.5 + 0.5 * sin(vN.y * 3.0 + uTime);
+        vec3 col = mix(mix(a,b,m), c, f);
+        gl_FragColor = vec4(col * (f * 1.6 + 0.08), f + 0.05);
+      }`,
+  });
+  const orb = new THREE.Mesh(new THREE.IcosahedronGeometry(1.2, 64), orbMat);
+  orb.position.set(-2.2, 0.4, 0);
+  scene.add(orb);
+
+  // --- 晶片爆炸圖：五層板件，展開時沿 Y 軸拉開 ---
+  const layers = new THREE.Group();
+  layers.position.set(2.1, 0.5, 0); layers.scale.setScalar(0.8); layers.rotation.set(0.55, -0.6, 0);
+  scene.add(layers);
+  const labels = ["散熱片", "封裝蓋", "NPU", "CPU / GPU", "基板"];
+  const cols = [0x9aa3b8, 0x3a4058, 0x8b7bff, 0x4fd1ff, 0x1f7a5a];
+  const slabs = labels.map((_, i) => {
+    const m = new THREE.Mesh(
+      new THREE.BoxGeometry(2.2 - i * 0.05, 0.12, 2.2 - i * 0.05),
+      new THREE.MeshStandardMaterial({ color: cols[i], metalness: 0.6, roughness: 0.35, emissive: i === 2 ? 0x2a1f80 : 0x000000 })
+    );
+    m.userData.base = -i * 0.14; m.position.y = m.userData.base;
+    layers.add(m); return m;
+  });
+  scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+  const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(3, 5, 4); scene.add(key);
+  const rim = new THREE.PointLight(0x8b7bff, 30, 12); rim.position.set(-1, 1, -2); scene.add(rim);
+
+  let open = 0, target = 1;
+  document.getElementById("explode").onclick = () => { target = target ? 0 : 1; };
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(stage); resize();
+  renderer.setAnimationLoop((ms) => {
+    const t = ms / 1000;
+    orbMat.uniforms.uTime.value = t;
+    orb.rotation.y = t * 0.3;
+    open += (target - open) * 0.04;
+    slabs.forEach((s, i) => { s.position.y = s.userData.base + (2 - i) * open * 0.55; });
+    layers.rotation.y = -0.6 + Math.sin(t * 0.4) * 0.15;
+    renderer.render(scene, camera);
+  });
+</script>
+</body>
+</html>

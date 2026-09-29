@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tone.js · AI 降噪前後聲波</title>
+<link rel="stylesheet" href="_demo.css">
+<style>
+  .hud { position: absolute; left: 6%; top: 10%; font-size: clamp(14px, 2.4vw, 30px); font-weight: 700; }
+  .hud small { display: block; font-size: 0.5em; color: var(--muted); font-weight: 400; margin-top: 6px; }
+  .pill { display: inline-block; margin-left: 10px; padding: 2px 12px; border-radius: 999px; font-size: 0.55em; vertical-align: middle; background: #2a2f42; }
+  .pill.on { background: var(--ai-2); }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="stage"><canvas id="c" width="1280" height="720"></canvas>
+    <div class="hud">AI 降噪 <span class="pill" id="pill">OFF</span><small>合成人聲 ＋ 環境噪音 → 濾掉噪音頻段、壓低音量</small></div>
+  </div>
+  <div class="meta">
+    <span><b>Tone.js 15.1</b> · 效果：<code>audio-denoise</code> + <code>audio-reactive</code> · API：<code>Tone.start</code> <code>Noise</code> <code>Filter</code> <code>Param.rampTo</code> <code>Waveform</code> <code>Loop</code> <code>Transport</code></span>
+    <span><button id="play">▶ 播放（需點擊才能出聲）</button> <button id="nc">切換降噪</button></span>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/tone@15.1.22/build/Tone.js"></script>
+<script>
+  const ctx = document.getElementById("c").getContext("2d");
+  const W = 1280, H = 720;
+  // 音訊圖：人聲（FM 合成模擬母音）＋噪音 → 降噪濾波器 → 輸出＆分析器
+  const wave = new Tone.Waveform(1024);
+  const noiseFilter = new Tone.Filter({ type: "lowpass", frequency: 8000 });
+  const noiseGain = new Tone.Gain(0.35);
+  const bus = new Tone.Gain(1).connect(wave).toDestination();
+  const voice = new Tone.FMSynth({ harmonicity: 1.5, modulationIndex: 4, envelope: { attack: 0.05, release: 0.3 } }).connect(bus);
+  const noise = new Tone.Noise("pink").chain(noiseFilter, noiseGain);
+  noiseGain.connect(bus);
+  let nc = false;
+  const phrase = ["A3", "C4", "E4", "D4", "C4", "A3", "G3", "A3"];
+  let step = 0;
+  const loop = new Tone.Loop(time => { voice.triggerAttackRelease(phrase[step++ % phrase.length], "8n", time); }, "8n");
+  function setNC(on) {
+    nc = on;
+    // 「降噪」＝噪音頻段被濾掉＋音量壓低；人聲路徑不受影響
+    noiseFilter.frequency.rampTo(on ? 200 : 8000, 0.4);
+    noiseGain.gain.rampTo(on ? 0.03 : 0.35, 0.4);
+    document.getElementById("pill").textContent = on ? "ON" : "OFF";
+    document.getElementById("pill").classList.toggle("on", on);
+  }
+  document.getElementById("play").onclick = async () => {
+    await Tone.start();
+    if (Tone.getTransport().state === "started") { Tone.getTransport().stop(); noise.stop(); return; }
+    noise.start(); loop.start(0); Tone.getTransport().bpm.value = 110; Tone.getTransport().start();
+  };
+  document.getElementById("nc").onclick = () => setNC(!nc);
+
+  // 視覺：沒按播放時用假資料，讓畫面在靜止狀態也完整
+  function fake(t) { const a = new Float32Array(1024); for (let i = 0; i < 1024; i++) { const v = Math.sin(i * 0.05 + t * 6) * 0.35 * Math.sin(i * 0.004 + t); a[i] = v + (nc ? 0.01 : 0.25) * (Math.random() - 0.5); } return a; }
+  function draw(ms) {
+    const running = Tone.getTransport().state === "started";
+    const data = running ? wave.getValue() : fake(ms / 1000);
+    ctx.fillStyle = "rgba(7,8,12,0.35)"; ctx.fillRect(0, 0, W, H);
+    const g = ctx.createLinearGradient(0, 0, W, 0);
+    g.addColorStop(0, "#4fd1ff"); g.addColorStop(0.5, "#8b7bff"); g.addColorStop(1, "#ff6fb1");
+    ctx.strokeStyle = g; ctx.lineWidth = 3; ctx.beginPath();
+    for (let i = 0; i < data.length; i++) { const x = (i / (data.length - 1)) * W, y = H * 0.58 + data[i] * H * 0.45; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    ctx.stroke();
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+</script>
+</body>
+</html>
