@@ -84,7 +84,9 @@ pre.file .k{color:var(--accent);font-weight:600}
 /* closing */
 .close{margin-top:56px;padding-top:40px;border-top:1px solid var(--line);display:grid;gap:18px}
 .close h2{font-size:clamp(24px,4vw,32px);font-weight:900}
-.tpl{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.tpl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:720px){.tpl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:440px){.tpl{grid-template-columns:1fr}}
 .tpl .block b{font-size:15px;color:var(--ink)}
 .principles{margin:0;padding:0;list-style:none;display:grid;gap:10px}
 .principles li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:baseline}
@@ -291,29 +293,29 @@ html{scroll-behavior:smooth}
 <section class="ch" id="spec">
   <div class="ch-head">
     <div class="ch-num">05 · REVERSE SPEC</div>
-    <h2>逆向工程：從安裝檔拆回規格文件</h2>
-    <p class="pain">既有的 app 常常沒有完整的規格文件，但安裝檔裡其實都有：功能模組、設定、介面文字、系統需求。我請 Claude 拆開安裝檔，把裡面的東西整理回規格。</p>
+    <h2>逆向工程：從安裝檔重建產品需求文件</h2>
+    <p class="pain">Qubi 已經上市，卻沒有一份完整的規格文件，產品是從 Acer AI Agent 演變來的，很多決定沒有留下紀錄。我請 Claude 拆解 Qubi 的安裝檔，把程式裡看得到的東西整理成一份 PRD，並且誠實標出哪些是證據、哪些是推論。</p>
   </div>
 
   <div>
     <div class="label">工作流程</div>
     <ol class="flow">
-      <li><div><b>拆開安裝檔</b><span>解開安裝檔，列出裡面的檔案結構：程式、元件、設定檔、語系檔、圖片資源。</span></div></li>
-      <li><div><b>讀設定和資源</b><span>從設定檔、語系字串、資源檔找出功能清單、畫面文字、支援的語言，以及系統需求。</span></div></li>
-      <li><div><b>整理成功能地圖</b><span>把找到的模組和字串對應到功能，畫出功能和畫面之間的關係。</span></div></li>
-      <li><div><b>寫成規格和需求文件</b><span>按固定格式寫：功能說明、使用流程、系統需求、限制條件。每一條都註明是從哪個檔案讀出來的。</span></div></li>
-      <li><div><b>找人確認缺口</b><span>安裝檔看不出來的規則（例如後端邏輯、例外狀況）列成問題清單，找負責的人確認後補上。</span></div></li>
+      <li><div><b>拆開兩個版本的安裝檔</b><span>以 1.9.1000 為基準，另外拆 1.8.2000 來比對。從執行檔名、通訊管道、登錄檔路徑、語系字串、產品目錄文字、介面元件，找出功能和設定。</span></div></li>
+      <li><div><b>每條發現都登錄成證據</b><span>每個發現都編號（E001、E002…）記進 <code>qubi-evidence.csv</code>，寫清楚出自哪個檔案。例如執行檔名仍叫 <code>Acer_AI_Agent_Widget.exe</code>，證明它的前身是 Acer AI Agent。</span></div></li>
+      <li><div><b>整理成功能矩陣</b><span>拆出 95 項功能，每一項都寫上觸發入口、相依模組和證據編號，存成 <code>qubi-feature-matrix.xlsx</code>。</span></div></li>
+      <li><div><b>用四種證據等級寫 PRD</b><span>每一章都標等級：【事實】有程式或檔案證據、【產品團隊確認】、【推論】由設計取捨推得、【待確認】需要產品團隊補。「為什麼做、為誰做」讀不出來，就老實標成推論。</span></div></li>
+      <li><div><b>比對版本，列出待確認清單</b><span>比較 1.8 和 1.9 的差異，推出產品的兩條演進方向。沒有反編譯的元件、查不到證據的流程，全部列成待確認清單，交給產品團隊校正。</span></div></li>
     </ol>
   </div>
 
-  <div class="tools"><span>安裝檔解包</span><span>設定檔／語系字串</span><span>功能地圖</span><span>規格文件</span></div>
+  <div class="tools"><span>安裝檔拆解</span><span>版本比對</span><span>qubi-evidence.csv</span><span>qubi-feature-matrix.xlsx</span><span>qubi-spec.md</span></div>
 
-  <p class="evidence">成品：<code>qubi-reverse-spec</code>，從 Qubi 安裝檔回推出來的規格與需求文件。</p>
+  <p class="evidence">成品：《Acer Qubi 產品需求文件》工作版，共 10 章：概述、問題、目標使用者、使用場景、功能需求（FR-1～FR-12）、非功能需求、法規符合性、使用者旅程、與其他 Acer AI 產品的關係、版本演進。另附系統規格、功能矩陣、證據對照三份檔案。</p>
 
   <div class="take">
     <div class="label">Take away</div>
-    <p>規格文件裡的每一條，都要能指回安裝檔裡的某個檔案。</p>
-    <p>有來源的描述才能被驗證。AI 負責拆解和整理，安裝檔看不出來的規則交給人判斷。</p>
+    <p>逆向工程最重要的不是讀出多少東西，而是分清楚哪些是事實、哪些是推論。</p>
+    <p>每一句都標證據等級，並且能追回證據編號。這樣產品團隊只要校正【推論】和【待確認】的段落，不用從頭檢查整份文件。</p>
   </div>
 </section>
 
@@ -352,9 +354,11 @@ html{scroll-behavior:smooth}
   <p class="pain">上面六個流程有一個共通點：做第一次時順手留下可以重複用的東西，第二次就從範本開始。</p>
   <div class="tpl">
     <div class="block"><b>CLAUDE.md</b><p>對話規則的範本。每次開新對話都自動套用。</p></div>
-    <div class="block"><b>線上簡報引擎</b><p>提案的範本。換專案時只換設定檔和內容。</p></div>
     <div class="block"><b>拆片表</b><p>影片競品分析的範本。固定 10 個比較項，新影片照填。</p></div>
     <div class="block"><b>Input → Output 對照表</b><p>推薦機制的範本。商城或需求一變，重跑比對就更新。</p></div>
+    <div class="block"><b>線上簡報引擎</b><p>提案的範本。換專案時只換設定檔和內容。</p></div>
+    <div class="block"><b>證據等級 PRD</b><p>規格文件的範本。分四個證據等級，每一句都能追回證據編號。</p></div>
+    <div class="block"><b>共用資料夾</b><p>新訊查核的範本。兩個模型讀寫同一批檔案。</p></div>
   </div>
   <ul class="principles">
     <li><span class="mono">01</span><span>每次要重新交代的規矩，就寫進 CLAUDE.md。</span></li>
