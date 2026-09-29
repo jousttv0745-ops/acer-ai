@@ -73,6 +73,9 @@ pre.file .k{color:var(--accent);font-weight:600}
 .evidence{font-size:14px;color:var(--ink-2);border-left:2px solid var(--line);padding-left:14px}
 
 /* takeaway slip: the one element that gets its own treatment */
+.io{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.io .block p b{color:var(--ink)}
+.io .label{margin-bottom:0}
 .take{background:var(--mark-soft);border-radius:8px;padding:18px 20px;display:grid;gap:6px}
 .take .label{color:var(--mark);margin:0}
 .take p{font-family:var(--f-display);font-weight:600;font-size:19px;line-height:1.55}
@@ -183,27 +186,29 @@ html{scroll-behavior:smooth}
 <section class="ch" id="benchmark">
   <div class="ch-head">
     <div class="ch-num">02 · BENCHMARK</div>
-    <h2>影片競品分析：爬社群找官方影片，再逐格拆解</h2>
-    <p class="pain">競品的官方影片散在各個社群平台，一支一支找、一支一支看太花時間，看完也只留下印象，很難比較。我請 Claude 寫爬蟲把影片找齊，再逐格拆成可以比較的資料。</p>
+    <h2>影片競品分析：從社群找齊官方影片，再逐格拆解</h2>
+    <p class="pain">ASUS 同一波 AI 產品行銷，在 Facebook 和 YouTube 用了好幾種完全不同的影片格式。一支一支看只會留下印象，所以我請 Claude 直接讀影片頁和影片檔，逐格抽樣，拆成可以並排比較的拆片表。</p>
   </div>
 
   <div>
     <div class="label">工作流程</div>
     <ol class="flow">
-      <li><div><b>定分析框架</b><span>先決定每支影片要看哪些面向，例如開場手法、AI 功能怎麼呈現、產品鏡頭和情境鏡頭的比例、結尾怎麼收。</span></div></li>
-      <li><div><b>爬社群找官方影片</b><span>請 Claude 寫爬蟲，在社群平台上搜尋競品（例如 ASUS）的官方帳號，整理出影片清單：標題、連結、日期、互動數。</span></div></li>
-      <li><div><b>逐格分析</b><span>把影片拆成影格，逐格記錄每一段的畫面、字卡、鏡頭和節奏，整理成時間軸。</span></div></li>
-      <li><div><b>整理成比較表</b><span>每支影片都用同一套欄位描述，並排之後，各家的共同手法和差異一眼就看得出來。</span></div></li>
-      <li><div><b>寫出對自家的建議</b><span>每一條建議都要對回某支影片的某個片段，不寫空泛的感想。</span></div></li>
+      <li><div><b>從社群找官方影片</b><span>在 ASUS 的 Facebook 粉專（全球、新加坡）和 YouTube 頻道找出同一檔期的官方影片，這次共 5 支。</span></div></li>
+      <li><div><b>讀頁面數據</b><span>由瀏覽器直接讀影片頁：發布日、觀看、讚數、留言、貼文文案。片長用 video 元素回報的實際秒數，不用頁面上四捨五入的數字。</span></div></li>
+      <li><div><b>逐格抽樣</b><span>用 canvas 每 0.6–4 秒抽一格，拼成影格條，再依畫面切出時間軸：主持人出鏡、實拍、動態圖卡、UI 錄影、尾卡。</span></div></li>
+      <li><div><b>整理成拆片表</b><span>每支影片都填同一組 10 個比較項：發布、長度、畫幅、觀看／互動、文案策略、拍攝形式、字幕／字卡、剪輯節奏、結尾 CTA、適合任務。</span></div></li>
+      <li><div><b>寫橫向觀察，標出限制</b><span>例如「Facebook 賣情境，YouTube 賣規格」、「互動率打平，但日均觀看差 9 倍，差在片長」。跨平台不能直接比的數字，一律標「未驗證」。</span></div></li>
     </ol>
   </div>
 
-  <div class="tools"><span>Claude Code</span><span>社群爬蟲</span><span>影格擷取</span><span>分析框架</span></div>
+  <div class="tools"><span>瀏覽器讀取</span><span>canvas 抽格</span><span>拆片表</span><span>Artifact 發佈</span></div>
+
+  <p class="evidence">成品：《Zenni Claw 影片拆片表》，5 支 ASUS AI 社群影片 × 10 個比較項，外加逐支分鏡與 9 條橫向觀察。</p>
 
   <div class="take">
     <div class="label">Take away</div>
-    <p>先定分析框架再抓資料，每條建議都要能對回一段影片。</p>
-    <p>爬蟲和逐格分析的流程可以重複用，競品出新影片時重跑一次，比較表就更新了。</p>
+    <p>先固定比較項再拆片，每條觀察都要能對回一段影片或一個數字。</p>
+    <p>數據要寫清楚來源和限制。像「互動率高」這種數字，如果跨平台、跨粉專，就不能拿來證明哪種內容比較好。</p>
   </div>
 </section>
 
@@ -211,27 +216,33 @@ html{scroll-behavior:smooth}
 <section class="ch" id="recommend">
   <div class="ch-head">
     <div class="ch-num">03 · RECOMMEND</div>
-    <h2>推薦機制：從相容性篩選開始，推薦出真正能用的產品</h2>
-    <p class="pain">AI 功能通常有硬體門檻。只放一長串相容清單，使用者很難知道自己該買哪一台。所以我先把「哪些機型支援」篩乾淨，再依使用情境推薦。</p>
+    <h2>推薦機制：先算出每台電腦能跑哪些 AI app，再依情境推薦</h2>
+    <p class="pain">AI 功能有硬體門檻，但官網只放一長串相容清單，使用者不知道該買哪一台。我把設定檔、官網需求和商城商品三個來源接起來，讓推薦結果可以一路追回規格。</p>
+  </div>
+
+  <div class="io">
+    <div class="block"><div class="label">Input</div><p><b>AIS 設定檔 App-list.json</b>：每個 app 的規格需求與安裝檢查</p><p><b>Qubi Claw 官網</b>：雲端／內顯本地 AI／RTX 5090 三級需求</p><p><b>Acer 官方商城</b>：正在販售的 345 台電腦與完整規格</p></div>
+    <div class="block"><div class="label">Output</div><p><b>App 規格表</b>：9 個 AIS app 各自的硬體條件</p><p><b>商品相容對照表</b>：345 台 × 9 個 app，加上 Qubi Claw 等級</p></div>
+    <div class="block"><div class="label">Final</div><p><b>情境推薦</b>：每個情境給出首選、第二推薦、CP 值最高三個位置</p></div>
   </div>
 
   <div>
     <div class="label">工作流程</div>
     <ol class="flow">
-      <li><div><b>整理功能的硬體條件</b><span>列出每個功能需要什麼條件，例如處理器、記憶體、作業系統版本。</span></div></li>
-      <li><div><b>建立產品規格表</b><span>把自家產品規格整理成同一張表，欄位對應上一步的條件。</span></div></li>
-      <li><div><b>寫篩選規則</b><span>用規則把規格表和條件表對起來，篩出支援的機型。規則寫成文件，換產品線也能直接沿用。</span></div></li>
-      <li><div><b>依情境排序推薦</b><span>把支援的機型對應到使用情境，決定每個情境要優先推哪幾台。</span></div></li>
-      <li><div><b>放進頁面</b><span>用真實機型和官方產品照做推薦卡和比較表。支援機型的說明放進 FAQ，取代原本的相容清單。</span></div></li>
+      <li><div><b>把設定檔整理成 App 規格表</b><span>設定檔裡給人看的說明文字（RequirementDetails）轉成「規格需求」欄；程式的安裝檢查（SystemRequirement）轉成「安裝時檢查」欄。Qubi Claw 不在設定檔內，另依官網需求分成 0～3 級。</span></div></li>
+      <li><div><b>逐台比對商城商品</b><span>讀每台商品頁的 CPU 世代、RAM、顯卡與 VRAM、螢幕，對每個 app 判定：可裝、寬判才可裝、不可裝。345 台裡有 324 台至少能裝一個 app。</span></div></li>
+      <li><div><b>從情境找關鍵 app</b><span>例如商務看 Meeting Assistant＋AI Agent，創意看 Drawing Assistant，遊戲改看獨顯。</span></div></li>
+      <li><div><b>定篩選門檻和排序</b><span>商務：兩個 app 都能裝、有庫存的筆電 57 台，依 Qubi Claw 等級 → 重量 → 商務配備 → 續航 → 價格排序。每個情境各有一套排序規則。</span></div></li>
+      <li><div><b>放進 mockup 的推薦卡</b><span>三個情境各選出首選、第二推薦、CP 值最高，直接變成「找到你的 AI 搭檔」推薦卡，並標註商城資料的日期。</span></div></li>
     </ol>
   </div>
 
-  <div class="tools"><span>產品規格表</span><span>篩選規則</span><span>情境對應</span><span>推薦卡</span></div>
+  <div class="tools"><span>App-list.json</span><span>商城商品頁</span><span>相容對照表</span><span>排序規則</span></div>
 
   <div class="take">
     <div class="label">Take away</div>
-    <p>推薦的前提是篩選：先確定哪些產品「能用」，再決定推薦哪一台。</p>
-    <p>條件、規格、規則分成三張表，新產品上市時只要補規格，推薦結果就會跟著更新。</p>
+    <p>推薦要先算得出來，才講得出來：每一張推薦卡都能追回設定檔和商品規格。</p>
+    <p>Input 和 Output 分開整理。商城資料或 app 需求一變，重跑一次比對，推薦結果就跟著更新。規格沒寫到的新世代標成「寬判」，不計分，不硬猜。</p>
   </div>
 </section>
 
@@ -297,6 +308,8 @@ html{scroll-behavior:smooth}
 
   <div class="tools"><span>安裝檔解包</span><span>設定檔／語系字串</span><span>功能地圖</span><span>規格文件</span></div>
 
+  <p class="evidence">成品：<code>qubi-reverse-spec</code>，從 Qubi 安裝檔回推出來的規格與需求文件。</p>
+
   <div class="take">
     <div class="label">Take away</div>
     <p>規格文件裡的每一條，都要能指回安裝檔裡的某個檔案。</p>
@@ -340,8 +353,8 @@ html{scroll-behavior:smooth}
   <div class="tpl">
     <div class="block"><b>CLAUDE.md</b><p>對話規則的範本。每次開新對話都自動套用。</p></div>
     <div class="block"><b>線上簡報引擎</b><p>提案的範本。換專案時只換設定檔和內容。</p></div>
-    <div class="block"><b>爬蟲與逐格分析</b><p>競品分析的範本。競品出新影片時重跑一次就更新。</p></div>
-    <div class="block"><b>篩選規則三張表</b><p>推薦機制的範本。新產品上市時只要補規格。</p></div>
+    <div class="block"><b>拆片表</b><p>影片競品分析的範本。固定 10 個比較項，新影片照填。</p></div>
+    <div class="block"><b>Input → Output 對照表</b><p>推薦機制的範本。商城或需求一變，重跑比對就更新。</p></div>
   </div>
   <ul class="principles">
     <li><span class="mono">01</span><span>每次要重新交代的規矩，就寫進 CLAUDE.md。</span></li>
