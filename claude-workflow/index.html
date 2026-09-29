@@ -19,7 +19,8 @@
 
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75;padding-inline:20px;padding-block:0 64px}
-.wrap{max-width:860px;margin:0 auto}
+.wrap{max-width:1200px;margin:0 auto}
+.pain,.hero .lede,ol.flow,.evidence,.take p{max-width:52em}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.3}
 p{margin:0}
 code,.mono{font-family:var(--f-mono);font-size:.86em}
@@ -32,7 +33,7 @@ header.hero{padding-block:56px 32px;border-bottom:1px solid var(--line);display:
 .eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
 .hero h1{font-size:clamp(34px,6vw,54px);font-weight:900}
 .hero .lede{font-size:18px;color:var(--ink-2);max-width:38em}
-.map{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:8px;padding:0;list-style:none}
+.map{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:8px;padding:0;list-style:none}
 .map a{display:grid;gap:2px;text-decoration:none;color:var(--ink);padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);height:100%}
 .map a:hover{border-color:var(--accent)}
 .map .n{font-family:var(--f-mono);font-size:12px;color:var(--accent)}
@@ -57,6 +58,11 @@ ol.flow span{color:var(--ink-2);font-size:15px}
 
 /* two-column blocks inside ch.1 */
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.grid4 h3{display:grid;gap:4px;font-size:20px}
+.grid4 h3 small{font-family:var(--f-body);font-size:14px;font-weight:500;color:var(--accent)}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:1000px){.map{grid-template-columns:repeat(3,minmax(0,1fr))}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.map{grid-template-columns:repeat(2,minmax(0,1fr))}.grid4{grid-template-columns:1fr}}
 .block{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 20px;display:grid;gap:8px;align-content:start;min-width:0}
 .block p,.block li{font-size:15px;color:var(--ink-2)}
 .block ul{margin:0;padding-left:1.1em;display:grid;gap:4px}
@@ -127,9 +133,9 @@ html{scroll-behavior:smooth}
     <p class="pain">預設的 Claude 每次開新對話都不記得我是誰、要什麼格式、做事有什麼規矩。我把這些寫進檔案和工具，只要設定一次。</p>
   </div>
 
-  <div class="grid2">
+  <div class="grid4">
     <div class="block">
-      <h3>CLAUDE.md：寫給 AI 的工作守則</h3>
+      <h3>CLAUDE.md<small>寫給 AI 的工作守則</small></h3>
       <p>每次對話都會自動載入。內容包括我的角色、預設技術環境、輸出格式，以及 14 條品質守則。</p>
       <ul>
         <li>固定輸出順序：先給可以直接用的產出，再說明</li>
@@ -139,7 +145,7 @@ html{scroll-behavior:smooth}
       </ul>
     </div>
     <div class="block">
-      <h3>Superpowers：讓 Claude 照工程流程做事</h3>
+      <h3>Superpowers<small>讓 Claude 照工程流程做事</small></h3>
       <p>Superpowers 是一套 skill 外掛，強迫 Claude 按固定階段工作，不會一收到需求就開始寫。</p>
       <ul>
         <li>brainstorm：先問清楚需求</li>
@@ -149,11 +155,11 @@ html{scroll-behavior:smooth}
       </ul>
     </div>
     <div class="block">
-      <h3>Skill 與 MCP：把 SOP 和資料接進來</h3>
+      <h3>Skill 與 MCP<small>把 SOP 和資料接進來</small></h3>
       <p>重複的任務包成 skill，用斜線指令叫出來，例如 <code>/competitive-analysis</code> 做競品分析。再用 connector 接上 Google Drive、Gmail、Figma、GitHub、ClickUp，Claude 就能直接讀寫資料，我不用再手動複製貼上。完整清單見下方。</p>
     </div>
     <div class="block">
-      <h3>手機遠端控制：離開電腦也能繼續跑</h3>
+      <h3>手機遠端控制<small>離開電腦也能繼續跑</small></h3>
       <p>在專案資料夾執行 <code>claude remote-control</code>，或在正在跑的 session 裡輸入 <code>/remote-control</code>。之後用手機上的 Claude app 就能接手同一個 session：看進度、回覆問題、下一步指令。我的提案簡報就是用這種方式，離開電腦後繼續修改。</p>
     </div>
   </div>
@@ -161,7 +167,7 @@ html{scroll-behavior:smooth}
   <div class="block kit">
     <h3>我目前的工具箱</h3>
     <div class="kit-row"><div class="label">Skills</div><div class="tools"><span>competitive-analysis</span><span>product-manager-toolkit</span><span>project-planner</span><span>stakeholder-comms</span><span>data-analyst</span><span>visualization-expert</span><span>brand-review</span><span>researchers-journalism</span><span>taiwan-ux-research</span><span>ad-keyword-planner</span></div></div>
-    <div class="kit-row"><div class="label">Connectors</div><div class="tools"><span>Google Drive</span><span>Gmail</span><span>Figma</span><span>GitHub</span><span>ClickUp</span><span>Claude in Chrome</span><span>Claude Docs</span><span>Motion</span><span>Slack</span><span>Scholar Gateway</span></div></div>
+    <div class="kit-row"><div class="label">Connectors</div><div class="tools"><span>Google Drive</span><span>Gmail</span><span>Figma</span><span>GitHub</span><span>ClickUp</span><span>Claude in Chrome</span><span>Claude Docs</span><span>Motion</span><span>Slack</span><span>Scholar Gateway</span><span>Obsidian</span></div></div>
     <div class="kit-row"><div class="label">Plugins</div><div class="tools"><span>superpowers-marketplace</span><span>ui-ux-pro-max-skill</span><span>Product Management</span><span>Design</span></div></div>
   </div>
 
@@ -362,14 +368,14 @@ html{scroll-behavior:smooth}
     <div class="label">工作流程</div>
     <ol class="flow">
       <li><div><b>ChatGPT 排程收集</b><span>設定排程任務，定期整理 AI agent 相關新訊，產出摘要。</span></div></li>
-      <li><div><b>放進共用資料夾</b><span>兩個模型共用本機上的同一個資料夾。摘要、查證結果、意見都寫成檔案放在裡面，兩邊讀的是同一份資料。</span></div></li>
+      <li><div><b>放進雲端共用資料夾</b><span>兩個模型共用雲端上的同一個資料夾。摘要、查證結果、意見都寫成檔案放在裡面，兩邊讀的是同一份資料。</span></div></li>
       <li><div><b>Claude 查證並補充</b><span>Claude 讀資料夾裡的摘要，逐條找第二個來源，標出互相衝突和查不到出處的內容，結果寫回資料夾。</span></div></li>
       <li><div><b>ChatGPT 回頭互評</b><span>ChatGPT 讀 Claude 的查證結果，反駁或補充。兩邊都同意的才列為結論。需要我判斷的地方，我會手動貼過去討論。</span></div></li>
-      <li><div><b>篩出和工作相關的行動</b><span>最後由 Claude 挑出和手上專案有關的項目，轉成待辦或 skill 的更新。</span></div></li>
+      <li><div><b>整理進 Obsidian</b><span>最後由 Claude 挑出和手上專案有關的項目，照固定格式寫進 Obsidian 筆記庫，累積成可以搜尋、互相連結的知識庫。</span></div></li>
     </ol>
   </div>
 
-  <div class="tools"><span>ChatGPT 排程任務</span><span>本機共用資料夾</span><span>Claude</span><span>雙向互評</span></div>
+  <div class="tools"><span>ChatGPT 排程任務</span><span>雲端共用資料夾</span><span>Obsidian</span><span>Claude</span><span>雙向互評</span></div>
 
   <div class="take">
     <div class="label">Take away</div>
@@ -389,7 +395,7 @@ html{scroll-behavior:smooth}
     <div class="block"><b>Input → Output 對照表</b><p>推薦機制的範本。商城或需求一變，重跑比對就更新。</p></div>
     <div class="block"><b>線上簡報引擎</b><p>提案的範本。換專案時只換設定檔和內容。</p></div>
     <div class="block"><b>證據等級 PRD</b><p>規格文件的範本。分四個證據等級，每一句都能追回證據編號。</p></div>
-    <div class="block"><b>共用資料夾</b><p>新訊查核的範本。兩個模型讀寫同一批檔案。</p></div>
+    <div class="block"><b>共用資料夾＋Obsidian</b><p>新訊查核的範本。兩個模型讀寫同一批檔案，結論固定整理進筆記庫。</p></div>
   </div>
   <ul class="principles">
     <li><span class="mono">01</span><span>每次要重新交代的規矩，就寫進 CLAUDE.md。</span></li>
