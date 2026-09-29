@@ -76,6 +76,14 @@ pre.file .k{color:var(--accent);font-weight:600}
 .io{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
 .io .block p b{color:var(--ink)}
 .io .label{margin-bottom:0}
+.prompt{margin:0;display:grid;gap:0}
+.prompt .label{margin-bottom:8px}
+.prompt blockquote{margin:0;padding:14px 18px;border:1px dashed var(--line);border-radius:8px;background:var(--surface);font-size:15px;line-height:1.8;color:var(--ink)}
+.prompt blockquote + blockquote{margin-top:8px}
+.kit{display:grid;gap:14px}
+.kit-row{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:baseline}
+.kit-row .label{margin:0}
+@media (max-width:520px){.kit-row{grid-template-columns:1fr;gap:6px}}
 .take{background:var(--mark-soft);border-radius:8px;padding:18px 20px;display:grid;gap:6px}
 .take .label{color:var(--mark);margin:0}
 .take p{font-family:var(--f-display);font-weight:600;font-size:19px;line-height:1.55}
@@ -142,12 +150,19 @@ html{scroll-behavior:smooth}
     </div>
     <div class="block">
       <h3>Skill 與 MCP：把 SOP 和資料接進來</h3>
-      <p>重複的任務用 skill-creator 包成 skill，例如台灣在地 UX 訪談、產品經理工具箱。再用 MCP 接上 Google Drive、Gmail、Figma、GitHub、ClickUp，Claude 就能直接讀寫資料，我不用再手動複製貼上。</p>
+      <p>重複的任務包成 skill，用斜線指令叫出來，例如 <code>/competitive-analysis</code> 做競品分析。再用 connector 接上 Google Drive、Gmail、Figma、GitHub、ClickUp，Claude 就能直接讀寫資料，我不用再手動複製貼上。完整清單見下方。</p>
     </div>
     <div class="block">
       <h3>手機遠端控制：離開電腦也能繼續跑</h3>
       <p>在專案資料夾執行 <code>claude remote-control</code>，或在正在跑的 session 裡輸入 <code>/remote-control</code>。之後用手機上的 Claude app 就能接手同一個 session：看進度、回覆問題、下一步指令。我的提案簡報就是用這種方式，離開電腦後繼續修改。</p>
     </div>
+  </div>
+
+  <div class="block kit">
+    <h3>我目前的工具箱</h3>
+    <div class="kit-row"><div class="label">Skills</div><div class="tools"><span>competitive-analysis</span><span>product-manager-toolkit</span><span>project-planner</span><span>stakeholder-comms</span><span>data-analyst</span><span>visualization-expert</span><span>brand-review</span><span>researchers-journalism</span><span>taiwan-ux-research</span><span>ad-keyword-planner</span></div></div>
+    <div class="kit-row"><div class="label">Connectors</div><div class="tools"><span>Google Drive</span><span>Gmail</span><span>Figma</span><span>GitHub</span><span>ClickUp</span><span>Claude in Chrome</span><span>Claude Docs</span><span>Motion</span><span>Slack</span><span>Scholar Gateway</span></div></div>
+    <div class="kit-row"><div class="label">Plugins</div><div class="tools"><span>superpowers-marketplace</span><span>ui-ux-pro-max-skill</span><span>Product Management</span><span>Design</span></div></div>
   </div>
 
   <div>
@@ -192,13 +207,19 @@ html{scroll-behavior:smooth}
     <p class="pain">ASUS 同一波 AI 產品行銷，在 Facebook 和 YouTube 用了好幾種完全不同的影片格式。一支一支看只會留下印象，所以我請 Claude 直接讀影片頁和影片檔，逐格抽樣，拆成可以並排比較的拆片表。</p>
   </div>
 
+  <figure class="prompt">
+    <figcaption class="label">我的開場 prompt</figcaption>
+    <blockquote>請幫我撰寫一個爬蟲，能夠爬取所有 Google 或 social media 上與 ASUS Zenni Claw 有關的宣傳影片，主要是 ASUS 官網或官方社群，若有其他 KOL 拍攝的主體是使用或開箱心得影片也請一併抓取。抓取後請列出一份清單，內容應包含發布單位｜發布標題｜發布連結｜社群反響（例如讚數、瀏覽數、留言數、分享數等）。</blockquote>
+    <blockquote><code>/competitive-analysis</code> 請分析以上影片的長度／文案內容／畫面結構／分鏡剪輯等資訊比較表格，我要提供給設計參考作為競品分析。</blockquote>
+  </figure>
+
   <div>
     <div class="label">工作流程</div>
     <ol class="flow">
-      <li><div><b>從社群找官方影片</b><span>在 ASUS 的 Facebook 粉專（全球、新加坡）和 YouTube 頻道找出同一檔期的官方影片，這次共 5 支。</span></div></li>
+      <li><div><b>爬蟲找影片、列清單</b><span>在 Google 和社群平台找 ASUS Zenni Claw 的宣傳影片，以官網和官方社群為主，KOL 的開箱或使用心得也一起抓。清單欄位：發布單位、標題、連結、社群反響。</span></div></li>
       <li><div><b>讀頁面數據</b><span>由瀏覽器直接讀影片頁：發布日、觀看、讚數、留言、貼文文案。片長用 video 元素回報的實際秒數，不用頁面上四捨五入的數字。</span></div></li>
       <li><div><b>逐格抽樣</b><span>用 canvas 每 0.6–4 秒抽一格，拼成影格條，再依畫面切出時間軸：主持人出鏡、實拍、動態圖卡、UI 錄影、尾卡。</span></div></li>
-      <li><div><b>整理成拆片表</b><span>每支影片都填同一組 10 個比較項：發布、長度、畫幅、觀看／互動、文案策略、拍攝形式、字幕／字卡、剪輯節奏、結尾 CTA、適合任務。</span></div></li>
+      <li><div><b>用 skill 整理成拆片表</b><span>第二個 prompt 叫出 <code>/competitive-analysis</code> skill。每支影片都填同一組 10 個比較項：發布、長度、畫幅、觀看／互動、文案策略、拍攝形式、字幕／字卡、剪輯節奏、結尾 CTA、適合任務。</span></div></li>
       <li><div><b>寫橫向觀察，標出限制</b><span>例如「Facebook 賣情境，YouTube 賣規格」、「互動率打平，但日均觀看差 9 倍，差在片長」。跨平台不能直接比的數字，一律標「未驗證」。</span></div></li>
     </ol>
   </div>
@@ -221,6 +242,11 @@ html{scroll-behavior:smooth}
     <h2>推薦機制：先算出每台電腦能跑哪些 AI app，再依情境推薦</h2>
     <p class="pain">AI 功能有硬體門檻，但官網只放一長串相容清單，使用者不知道該買哪一台。我把設定檔、官網需求和商城商品三個來源接起來，讓推薦結果可以一路追回規格。</p>
   </div>
+
+  <figure class="prompt">
+    <figcaption class="label">我的開場 prompt</figcaption>
+    <blockquote>我想要撈出 Acer 所有產品中能夠安裝 Acer Intelligence Space 和 Qubi Claw 的商品，並按照功能完整程度排序，你會怎麼規劃撈取？<br><span class="mono" style="color:var(--ink-2)">附上：Acer 官網商城、Qubi Claw 需求規格頁、AIS 需求規格頁三個網址</span></blockquote>
+  </figure>
 
   <div class="io">
     <div class="block"><div class="label">Input</div><p><b>AIS 設定檔 App-list.json</b>：每個 app 的規格需求與安裝檢查</p><p><b>Qubi Claw 官網</b>：雲端／內顯本地 AI／RTX 5090 三級需求</p><p><b>Acer 官方商城</b>：正在販售的 345 台電腦與完整規格</p></div>
@@ -297,10 +323,15 @@ html{scroll-behavior:smooth}
     <p class="pain">Qubi 已經上市，卻沒有一份完整的規格文件，產品是從 Acer AI Agent 演變來的，很多決定沒有留下紀錄。我請 Claude 拆解 Qubi 的安裝檔，把程式裡看得到的東西整理成一份 PRD，並且誠實標出哪些是證據、哪些是推論。</p>
   </div>
 
+  <figure class="prompt">
+    <figcaption class="label">我的開場 prompt</figcaption>
+    <blockquote><code>/superpowers:brainstorming</code> 你可以閱讀本機安裝的應用程式 Acer Qubi 的資料嗎？我想要反向撰寫一份 Acer Qubi 的 SPEC 和 PRD 出來，請告訴我你的規劃。</blockquote>
+  </figure>
+
   <div>
     <div class="label">工作流程</div>
     <ol class="flow">
-      <li><div><b>拆開兩個版本的安裝檔</b><span>以 1.9.1000 為基準，另外拆 1.8.2000 來比對。從執行檔名、通訊管道、登錄檔路徑、語系字串、產品目錄文字、介面元件，找出功能和設定。</span></div></li>
+      <li><div><b>讀取本機安裝的 Qubi</b><span>用 Superpowers 的 brainstorming 先談好範圍和產出物，再開始讀。以 1.9.1000 為基準，另外拆 1.8.2000 的安裝檔來比對。從執行檔名、通訊管道、登錄檔路徑、語系字串、產品目錄文字、介面元件，找出功能和設定。</span></div></li>
       <li><div><b>每條發現都登錄成證據</b><span>每個發現都編號（E001、E002…）記進 <code>qubi-evidence.csv</code>，寫清楚出自哪個檔案。例如執行檔名仍叫 <code>Acer_AI_Agent_Widget.exe</code>，證明它的前身是 Acer AI Agent。</span></div></li>
       <li><div><b>整理成功能矩陣</b><span>拆出 95 項功能，每一項都寫上觸發入口、相依模組和證據編號，存成 <code>qubi-feature-matrix.xlsx</code>。</span></div></li>
       <li><div><b>用四種證據等級寫 PRD</b><span>每一章都標等級：【事實】有程式或檔案證據、【產品團隊確認】、【推論】由設計取捨推得、【待確認】需要產品團隊補。「為什麼做、為誰做」讀不出來，就老實標成推論。</span></div></li>
@@ -308,7 +339,7 @@ html{scroll-behavior:smooth}
     </ol>
   </div>
 
-  <div class="tools"><span>安裝檔拆解</span><span>版本比對</span><span>qubi-evidence.csv</span><span>qubi-feature-matrix.xlsx</span><span>qubi-spec.md</span></div>
+  <div class="tools"><span>/superpowers:brainstorming</span><span>安裝檔拆解</span><span>版本比對</span><span>qubi-evidence.csv</span><span>qubi-feature-matrix.xlsx</span><span>qubi-spec.md</span></div>
 
   <p class="evidence">成品：《Acer Qubi 產品需求文件》工作版，共 10 章：概述、問題、目標使用者、使用場景、功能需求（FR-1～FR-12）、非功能需求、法規符合性、使用者旅程、與其他 Acer AI 產品的關係、版本演進。另附系統規格、功能矩陣、證據對照三份檔案。</p>
 
@@ -364,6 +395,7 @@ html{scroll-behavior:smooth}
     <li><span class="mono">01</span><span>每次要重新交代的規矩，就寫進 CLAUDE.md。</span></li>
     <li><span class="mono">02</span><span>同一件事做到第二次，就做成範本或 skill。</span></li>
     <li><span class="mono">03</span><span>AI 說完成不算完成，要另外跑一次驗證，或請另一個模型檢查。</span></li>
+    <li><span class="mono">04</span><span>開場先問規劃，不直接要答案：說清楚目標、附上資料來源，最後問「你會怎麼規劃？」</span></li>
   </ul>
 </section>
 
