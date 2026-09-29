@@ -68,6 +68,11 @@ aside.filters { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 76px
 .card.picked { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
 .card-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: start; }
 .card h4 { font-family: var(--display); font-size: 18px; line-height: 1.25; margin: 0; text-wrap: balance; }
+.preview { display: block; position: relative; margin: -16px -18px 0; aspect-ratio: 16 / 9; max-width: calc(100% + 36px); background: #07080c; border-radius: 10px 10px 0 0; overflow: hidden; }
+.preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.preview .badge { position: absolute; left: 10px; bottom: 10px; font: 600 11px var(--mono); color: #eef0f6; background: rgba(7, 8, 12, 0.72); border-radius: 4px; padding: 3px 8px; }
+.preview.none { display: grid; place-items: center; color: #8a90a6; font-size: 12.5px; text-align: center; padding: 16px; }
+a.preview:focus-visible { outline-offset: -2px; }
 .id { font-family: var(--mono); font-size: 11px; color: var(--cyan); word-break: break-all; }
 .star { font-size: 18px; line-height: 1; background: none; border: 1px solid var(--line); border-radius: 6px; width: 34px; height: 34px; cursor: pointer; color: var(--muted); }
 .star[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
@@ -216,10 +221,19 @@ const pickOk = id => !onlyPicked || picks.has(id);
 const star = (id, label) => `<button class="star" data-pick="${esc(id)}" aria-pressed="${picks.has(id)}" aria-label="挑選 ${esc(label)}" title="挑選">${picks.has(id) ? "★" : "☆"}</button>`;
 const empty = `<div class="empty">沒有符合條件的項目。清除篩選或換個關鍵字試試。</div>`;
 
+// 動畫預覽：demos/x.html → previews/x.webp（動態）／x.png（減少動態時的靜態圖）
+function preview(demo, label) {
+  if (!demo) return `<div class="preview none">尚無 demo 預覽<br>實作路線見下方</div>`;
+  const n = demo.replace("demos/", "").replace(".html", "");
+  return `<a class="preview" href="${BASE + demo}" target="_blank" rel="noopener" aria-label="開啟 ${esc(label)} demo">
+    <picture><source srcset="previews/${n}.png" media="(prefers-reduced-motion: reduce)"><img src="previews/${n}.webp" alt="${esc(label)} 動畫預覽" loading="lazy" width="480" height="270"></picture>
+    <span class="badge">${esc(demo)}</span></a>`;
+}
 function effectCard(e) {
   const vids = V.filter(v => v.motifs.includes(e.id));
   const srcs = S.filter(s => s.effects.includes(e.id));
   return `<article class="card ${picks.has(e.id) ? "picked" : ""}">
+    ${preview(e.demo, e.name)}
     <div class="card-head"><div><h4>${esc(e.name)}</h4><span class="id">${e.id}</span></div>${star(e.id, e.name)}</div>
     <div class="row"><span class="tag">${esc(CAT[e.category].split("：")[0])}</span><span class="pill ${e.video_ready}">${READY[e.video_ready]}</span>${e.demo ? `<a href="${BASE + e.demo}" target="_blank" rel="noopener">開 demo ↗</a>` : ""}</div>
     <p class="msg">${esc(e.message)}</p>
@@ -256,6 +270,7 @@ function renderLibs() {
   return `<div class="grid">${list.map(l => {
     const effs = E.filter(e => e.implementations[l.name]);
     return `<article class="card ${picks.has(l.id) ? "picked" : ""}">
+      ${preview(l.demo, l.name)}
       <div class="card-head"><div><h4>${esc(l.name)}</h4><span class="id">${l.npm ? `${l.npm}@${l.version}` : l.version}</span></div>${star(l.id, l.name)}</div>
       <div class="row"><span class="tag">${esc(DATA.libraries._meta.layers[l.layer].split("：")[0])}</span><span class="tag">${esc(l.license)}</span></div>
       <p class="msg">${esc(l.one_liner)}</p>
