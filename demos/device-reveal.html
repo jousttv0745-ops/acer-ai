@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three.js · 筆電登場：輪廓光 → 開蓋 → 螢幕亮起</title>
+<link rel="stylesheet" href="_demo.css">
+<style>
+  .title { position: absolute; left: 6%; bottom: 10%; font-size: clamp(18px, 3.6vw, 46px); font-weight: 800; letter-spacing: -0.02em; opacity: 0; transform: translateY(12px); }
+  .title small { display: block; font-size: 0.38em; font-weight: 500; color: var(--muted); letter-spacing: 0.08em; margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="stage" id="stage"><div class="title" id="title">Your AI Laptop<small>ON-DEVICE AI · 50 TOPS NPU</small></div></div>
+  <div class="meta">
+    <span><b>Three.js r186</b> · 效果：<code>device-reveal</code> · API：<code>RoundedBoxGeometry</code> <code>RoomEnvironment</code> + <code>PMREMGenerator</code>、<code>SpotLight</code> 掃光、lid 樞紐 <code>Group</code>、畫面＝<code>f(t)</code> 可逐幀重現</span>
+    <button id="replay">重播</button>
+  </div>
+</div>
+<script type="importmap">{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+} }</script>
+<script type="module">
+  import * as THREE from "three";
+  import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+  import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+  const stage = document.getElementById("stage");
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.shadowMap.enabled = true;
+  stage.prepend(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x07080c);
+  scene.fog = new THREE.Fog(0x07080c, 7, 14); // 地板往遠處融進背景，不露出邊界
+  // 金屬需要環境反射才有質感：用內建的 RoomEnvironment，不用外部 HDRI
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0;
+
+  const camera = new THREE.PerspectiveCamera(30, 16 / 9, 0.1, 100);
+
+  // ── 程序化筆電：底座 + 鍵盤區 + 以轉軸為樞紐的上蓋 ──
+  const metal = new THREE.MeshStandardMaterial({ color: 0x8e96a8, metalness: 0.9, roughness: 0.28 });
+  const dark = new THREE.MeshStandardMaterial({ color: 0x111319, metalness: 0.4, roughness: 0.6 });
+  const W = 3.2, D = 2.2, T = 0.09;
+  const laptop = new THREE.Group(); scene.add(laptop);
+  const base = new THREE.Mesh(new RoundedBoxGeometry(W, T, D, 4, 0.04), metal);
+  base.castShadow = true; laptop.add(base);
+  const deck = new THREE.Mesh(new THREE.PlaneGeometry(W * 0.86, D * 0.5), dark);
+  deck.rotation.x = -Math.PI / 2; deck.position.set(0, T / 2 + 0.001, -0.18); laptop.add(deck);
+  const pad = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 0.55), new THREE.MeshStandardMaterial({ color: 0x7c8496, metalness: 0.8, roughness: 0.4 }));
+  pad.rotation.x = -Math.PI / 2; pad.position.set(0, T / 2 + 0.001, 0.62); laptop.add(pad);
+
+  const hinge = new THREE.Group(); hinge.position.set(0, T / 2, -D / 2); laptop.add(hinge);
+  const lid = new THREE.Mesh(new RoundedBoxGeometry(W, 0.06, D, 4, 0.03), metal);
+  lid.position.set(0, 0.03, D / 2); lid.castShadow = true; hinge.add(lid);
+  // 螢幕：CanvasTexture 畫 AI 漸層與字，亮度由 emissiveIntensity 控制
+  const sc = document.createElement("canvas"); sc.width = 1024; sc.height = 640;
+  const sx = sc.getContext("2d");
+  const g = sx.createLinearGradient(0, 0, 1024, 640);
+  g.addColorStop(0, "#0b1030"); g.addColorStop(0.55, "#2a1f6e"); g.addColorStop(1, "#6a2a5e"); sx.fillStyle = g; sx.fillRect(0, 0, 1024, 640);
+  const rg = sx.createRadialGradient(512, 300, 10, 512, 300, 260); rg.addColorStop(0, "rgba(79,209,255,0.9)"); rg.addColorStop(0.5, "rgba(139,123,255,0.45)"); rg.addColorStop(1, "rgba(0,0,0,0)");
+  sx.fillStyle = rg; sx.fillRect(0, 0, 1024, 640);
+  sx.fillStyle = "#eef0f6"; sx.font = "700 64px system-ui"; sx.textAlign = "center"; sx.fillText("How can I help?", 512, 520);
+  const screenTex = new THREE.CanvasTexture(sc); screenTex.colorSpace = THREE.SRGBColorSpace;
+  const screenMat = new THREE.MeshStandardMaterial({ color: 0x000000, emissive: 0xffffff, emissiveMap: screenTex, emissiveIntensity: 0, roughness: 0.2 });
+  const screen = new THREE.Mesh(new THREE.PlaneGeometry(W * 0.92, D * 0.86), screenMat);
+  screen.rotation.x = Math.PI / 2; screen.position.set(0, -0.001, D / 2); hinge.add(screen);
+
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.MeshStandardMaterial({ color: 0x07080c, roughness: 0.9 }));
+  floor.rotation.x = -Math.PI / 2; floor.position.y = -T / 2; floor.receiveShadow = true; scene.add(floor);
+
+  // ── 燈光：輪廓掃光（SpotLight 從左掃到右）＋ 螢幕反光補光 ──
+  const rim = new THREE.SpotLight(0xbfd4ff, 0, 30, 0.35, 0.6, 1.2);
+  rim.castShadow = true; rim.target = laptop; scene.add(rim);
+  const key = new THREE.DirectionalLight(0xffffff, 0); key.position.set(4, 6, 5); scene.add(key);
+  const glow = new THREE.PointLight(0x8b7bff, 0, 6); glow.position.set(0, 1.4, 0.6); scene.add(glow);
+
+  // ── 時間函式：所有狀態都由 t 算出（可直接搬進影片渲染） ──
+  const clamp = (x) => Math.min(1, Math.max(0, x));
+  const seg = (t, a, b) => clamp((t - a) / (b - a));
+  const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2); // easeInOutCubic
+  const LOOP = 9;
+  const titleEl = document.getElementById("title");
+  function render(t) {
+    const sweep = ease(seg(t, 0.3, 2.2));          // 0.3–2.2s 輪廓光掃過
+    const open = ease(seg(t, 2.0, 4.0));           // 2.0–4.0s 開蓋
+    const lit = ease(seg(t, 3.6, 4.6));            // 3.6–4.6s 螢幕亮起
+    const turn = ease(seg(t, 4.0, LOOP));          // 4.0s 起鏡頭環繞
+    rim.intensity = 60 * Math.sin(Math.PI * clamp(sweep * 1.2)) + 25 * lit;
+    rim.position.set(-6 + 12 * sweep, 3.2, -3);
+    key.intensity = 0.2 + 1.3 * open;
+    scene.environmentIntensity = 0.15 + 0.85 * open;
+    hinge.rotation.x = -open * THREE.MathUtils.degToRad(105);
+    screenMat.emissiveIntensity = 1.4 * lit;
+    glow.intensity = 6 * lit;
+    const ang = THREE.MathUtils.degToRad(-28 + 50 * turn);
+    const r = 7.8 - 0.8 * open;
+    camera.position.set(Math.sin(ang) * r, 2.2 + 0.6 * (1 - open), Math.cos(ang) * r);
+    camera.lookAt(0, 0.7 * open, 0);
+    const tt = ease(seg(t, 5.0, 6.0));
+    titleEl.style.opacity = tt; titleEl.style.transform = `translateY(${12 * (1 - tt)}px)`;
+    renderer.render(scene, camera);
+  }
+
+  function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  new ResizeObserver(resize).observe(stage); resize();
+  let start = performance.now();
+  // ?t=3.5 → 定格在指定秒數；window.seek(t) 讓錄影／渲染工具逐格指定時間
+  let fixedT = new URLSearchParams(location.search).get("t");
+  window.seek = (t) => { fixedT = t; render(t); };
+  renderer.setAnimationLoop((now) => render(fixedT !== null ? +fixedT : ((now - start) / 1000) % LOOP));
+  document.getElementById("replay").onclick = () => { fixedT = null; start = performance.now(); };
+</script>
+</body>
+</html>

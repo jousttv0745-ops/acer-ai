@@ -21,6 +21,9 @@ sources.sources.forEach((s) => s.effects.forEach((m) => effIds.has(m) || errors.
 effects.effects.forEach((e) => {
   Object.keys(e.implementations).forEach((k) => libNames.has(k) || errors.push(`effect ${e.id}: unknown library ${k}`));
   if (e.demo && !fs.existsSync(path.join(root, e.demo))) errors.push(`effect ${e.id}: missing demo ${e.demo}`);
+  if (e.demo_lib && !libNames.has(e.demo_lib)) errors.push(`effect ${e.id}: unknown demo_lib ${e.demo_lib}`);
+  const prev = e.demo && path.join(root, "library/previews", path.basename(e.demo, ".html") + ".webp");
+  if (prev && !fs.existsSync(prev)) errors.push(`effect ${e.id}: missing preview ${path.relative(root, prev)}`);
 });
 const dup = (arr) => arr.filter((x, i) => arr.indexOf(x) !== i);
 dup([...effIds, ...videos.videos.map((v) => v.id), ...libraries.libraries.map((l) => l.id), ...sources.sources.map((s) => s.id)])
@@ -50,7 +53,7 @@ const libs = libraries.libraries;
 let md3 = `# 03｜動態效果庫與 JS 工具拆解\n\n> 自動產生自 \`data/motion-effects.json\` 與 \`data/js-libraries.json\`，請改 JSON 後執行 \`node scripts/build.mjs\`。\n\n`;
 md3 += `## 效果 × 工具矩陣\n\n▶ = 本 repo 有 demo　● = 有實作路線\n\n| 效果 | ${libs.map((l) => l.name).join(" | ")} |\n|---|${libs.map(() => ":-:").join("|")}|\n`;
 effects.effects.forEach((e) => {
-  md3 += `| ${e.name} \`${e.id}\` | ${libs.map((l) => (e.implementations[l.name] ? (e.demo && e.demo === l.demo ? "▶" : "●") : "")).join(" | ")} |\n`;
+  md3 += `| ${e.name} \`${e.id}\` | ${libs.map((l) => (e.implementations[l.name] ? (e.demo && (e.demo === l.demo || e.demo_lib === l.name) ? "▶" : "●") : "")).join(" | ")} |\n`;
 });
 md3 += `\n## 效果清單\n\n`;
 for (const [cat, label] of Object.entries(effects._meta.categories)) {

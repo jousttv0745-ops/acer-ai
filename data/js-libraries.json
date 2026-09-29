@@ -28,7 +28,7 @@
         { "name": "自訂曲線", "api": "CustomEase / CustomWiggle / CustomBounce", "use": "品牌專屬的動態節奏" }
       ],
       "video_fit": "最佳。timeline 可 seek / pause，渲染器可逐幀控制",
-      "demo": "demos/gsap.html",
+      "demo": "demos/gsap.html", "extra_demos": ["demos/wipe.html"],
       "docs": "https://gsap.com/docs/v3/",
       "learn": ["https://gsap.com/resources/get-started/", "https://tympanus.net/codrops/2025/05/14/from-splittext-to-morphsvg-5-creative-demos-using-free-gsap-plugins/"]
     },
@@ -131,7 +131,7 @@
         { "name": "逐幀渲染", "api": "renderer.setAnimationLoop(ms => …)", "use": "以時間 t 驅動（可改成 frame）" }
       ],
       "video_fit": "佳。Remotion 有 @remotion/three；HyperFrames 有 Three.js adapter",
-      "demo": "demos/three.html",
+      "demo": "demos/three.html", "extra_demos": ["demos/device-reveal.html"],
       "docs": "https://threejs.org/docs/",
       "learn": ["https://threejs-journey.com/", "https://threejs.org/examples/"]
     },

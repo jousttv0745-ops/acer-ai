@@ -14,7 +14,7 @@
 | 文字逐字生成 `text-generate` | ▶ | ● | ● |  |  |  |  |  | ● |  |  |  |
 | 手繪變成品 `sketch-to-image` | ● |  |  |  |  |  |  | ● |  | ▶ | ● |  |
 | 物件消除化為粒子 `object-erase-dissolve` |  |  |  |  | ● | ▶ | ● | ● |  |  |  |  |
-| 前後對比擦除 `before-after-wipe` | ● |  |  |  |  |  |  | ● | ● |  |  |  |
+| 前後對比擦除 `before-after-wipe` | ▶ |  |  |  |  |  |  | ● | ● |  |  |  |
 | 掃描線＋辨識框 `scan-detect` | ● |  | ● |  |  |  | ● |  | ▶ |  |  |  |
 | 手繪圈選 `circle-to-search` | ● |  |  |  |  |  |  |  | ● | ▶ | ● |  |
 | AI 降噪聲波 `audio-denoise` |  |  | ● |  |  |  |  | ● | ● |  |  | ▶ |
@@ -26,7 +26,7 @@
 | 粒子聚合成形 `particle-assemble` | ● |  |  | ● |  |  | ● |  |  |  | ▶ |  |
 | 浮動 UI 卡片 `ui-float-cards` | ▶ | ● |  | ● |  |  | ● |  |  |  |  |  |
 | 晶片／機身爆炸圖 `exploded-view` | ● |  |  |  |  |  | ▶ |  |  |  |  |  |
-| 產品登場 `device-reveal` | ● |  |  |  |  |  | ● |  |  |  |  |  |
+| 產品登場 `device-reveal` | ● |  |  |  |  |  | ▶ |  |  |  |  |  |
 | 大字標語遮罩 `kinetic-type-mask` | ▶ | ● |  |  |  |  |  |  | ● |  |  |  |
 
 ## 效果清單
@@ -149,11 +149,12 @@
 
 - **想傳達：** AI 開啟前／後，差異一眼看懂
 - **常見於：** 視訊增強、降噪、修圖類廣告（推測）
-- **配方：** 垂直分割線從左掃到右，線上帶光暈；可停在 50% 讓觀眾比較
+- **配方：** 同一畫面兩層，只差濾鏡（亮度、飽和、背景虛化、噪點）；分割線 1.4s power3.inOut 全掃 → 回到 50% 停住 → 左右小幅晃動；線上帶品牌漸層光暈
+- **Demo：** [`demos/wipe.html`](../demos/wipe.html)
 
 | 工具 | 實作路線 |
 |---|---|
-| GSAP | clip-path: inset(0 X% 0 0) 補間，或 Draggable 手動拖曳 |
+| GSAP | CSS 變數 --cut 驅動 clip-path: inset(0 0 0 X%)，timeline 補間＋分割線可拖曳（demo） |
 | GLSL Shader | step(uv.x, progress) 混合兩張貼圖 + 邊緣 glow |
 | Canvas 2D | drawImage 兩次，第二次用 clip() 裁切 |
 
@@ -276,15 +277,16 @@
 | Three.js | Group 內各 Mesh 依層級 lerp y（demo）；正式片載入 GLTF 產品模型 |
 | GSAP | ScrollTrigger 控制爆炸進度（網頁版） |
 
-#### 產品登場　`device-reveal`　🟣 做成素材
+#### 產品登場　`device-reveal`　✅ 可直接渲染
 
 - **想傳達：** 產品本身的美感與工藝
 - **常見於：** 所有 launch film
-- **配方：** 暗場 → 輪廓光掃過邊緣 → 開蓋／轉台 → 定格＋品名；鏡頭運動一律 ease-in-out、無抖動
+- **配方：** 暗場 → 輪廓光掃過邊緣（0.3–2.2s）→ 開蓋 105°（2.0–4.0s）→ 螢幕亮起（3.6–4.6s）→ 鏡頭環繞＋品名（4s 起）；全部 easeInOutCubic、無抖動
+- **Demo：** [`demos/device-reveal.html`](../demos/device-reveal.html)
 
 | 工具 | 實作路線 |
 |---|---|
-| Three.js | GLTFLoader + HDRI 環境光 + 相機路徑 |
+| Three.js | 程序化筆電（RoundedBoxGeometry）＋ RoomEnvironment 反射＋ SpotLight 掃光，畫面＝f(t)（demo）；正式片換成 GLTFLoader 載入產品模型 |
 | GSAP | ScrollTrigger + canvas 影格序列（Apple 產品頁手法） |
 
 ### 敘事與字卡

@@ -12,7 +12,7 @@ AI projects developed with Claude Code and Codex
 | [`docs/03-motion-effects-library.md`](docs/03-motion-effects-library.md) | 20 種動態效果 × 12 個 JS 工具的拆解（自動產生） |
 | [`docs/04-claude-code-video-pipeline.md`](docs/04-claude-code-video-pipeline.md) | 用 Claude Code 生成影片：HyperFrames／Remotion／Motion MCP 的比較與流程 |
 | [`library/index.html`](library/index.html) | 視覺資料庫頁面：篩選、☆ 挑選、匯出清單、效果 × 工具矩陣 |
-| [`demos/`](demos/) | 12 個可執行 demo，每個 JS 工具各一個 AI 影片效果 |
+| [`demos/`](demos/) | 14 個可執行 demo：每個 JS 工具各一個，另加前後對比擦除、產品登場；資料庫頁面內附動畫預覽 |
 | [`video/hyperframes-starter/`](video/hyperframes-starter/) | 12 秒 AI PC 形象片 starter，已實測可渲染成 MP4 |
 | `data/*.json` | 唯一資料來源：影片、效果、工具、靈感來源 |
 
@@ -29,7 +29,7 @@ cd video/hyperframes-starter
 npm run check && npm run render   # 需要 Node 22+ 與 FFmpeg
 ```
 
-### 12 個 demo
+### 14 個 demo
 | 工具 | Demo | 效果 |
 |---|---|---|
 | GSAP | [`demos/gsap.html`](demos/gsap.html) | 浮動 UI 卡片＋標語逐字浮現 |
@@ -44,5 +44,7 @@ npm run check && npm run render   # 需要 Node 22+ 與 FFmpeg
 | Rough.js | [`demos/rough.html`](demos/rough.html) | 手繪圈選 → 搜尋結果 |
 | p5.js | [`demos/p5.html`](demos/p5.html) | 粒子聚合成字 |
 | Tone.js | [`demos/tone.html`](demos/tone.html) | AI 降噪前後聲波（有聲音） |
+| GSAP | [`demos/wipe.html`](demos/wipe.html) | AI 視訊增強前後對比擦除（分隔線可拖曳） |
+| Three.js | [`demos/device-reveal.html`](demos/device-reveal.html) | 筆電登場：輪廓光 → 開蓋 → 螢幕亮起（`?t=秒數` 可定格） |
 
 Demo 透過 jsDelivr CDN 載入函式庫（版本已鎖定），直接用瀏覽器開啟即可。

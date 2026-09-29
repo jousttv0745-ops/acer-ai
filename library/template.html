@@ -258,7 +258,7 @@ function renderMatrix() {
     ${list.map(e => `<tr><th scope="row">${esc(e.name)}<span class="id">${e.id}</span></th>${L.map(l => {
       const how = e.implementations[l.name];
       if (!how) return "<td></td>";
-      const isDemo = e.demo && e.demo === l.demo;
+      const isDemo = e.demo && (e.demo === l.demo || e.demo_lib === l.name);
       return `<td class="hit ${isDemo ? "demo" : ""}" title="${esc(how)}">${isDemo ? "▶" : "●"}</td>`;
     }).join("")}</tr>`).join("")}
   </tbody></table></div>
@@ -276,7 +276,7 @@ function renderLibs() {
       <p class="msg">${esc(l.one_liner)}</p>
       <dl class="impl">${l.primitives.map(p => `<dt>${esc(p.name)}</dt><dd><code class="id">${esc(p.api)}</code><br>${esc(p.use)}</dd>`).join("")}</dl>
       <p class="recipe"><b>影片化：</b>${esc(l.video_fit)}</p>
-      <div class="links">${l.demo ? `<a href="${BASE + l.demo}" target="_blank" rel="noopener">demo ↗</a>` : ""}<a href="${esc(l.docs)}" target="_blank" rel="noopener">文件 ↗</a>${l.learn.map(u => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(new URL(u).hostname)}</a>`).join("")}</div>
+      <div class="links">${l.demo ? `<a href="${BASE + l.demo}" target="_blank" rel="noopener">demo ↗</a>` : ""}${(l.extra_demos || []).map(d => `<a href="${BASE + d}" target="_blank" rel="noopener">${esc(d.replace("demos/", ""))} ↗</a>`).join("")}<a href="${esc(l.docs)}" target="_blank" rel="noopener">文件 ↗</a>${l.learn.map(u => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(new URL(u).hostname)}</a>`).join("")}</div>
       <p class="meta-line">可實作 ${effs.length} 個效果：${effs.map(e => e.id).join(" · ")}</p>
     </article>`;
   }).join("")}</div>`;
