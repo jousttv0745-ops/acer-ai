@@ -1,0 +1,326 @@
+<title>我的 Claude 工作法</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a field manual. Narrow reading column, each chapter = problem → numbered steps on a rail → tools → takeaway slip. */
+:root{
+  --bg:#F4F6F3; --surface:#FFFFFF; --ink:#18221D; --ink-2:#48554E; --line:#D9E0DA;
+  --accent:#2E7552; --accent-soft:#E3EFE7; --mark:#B4540F; --mark-soft:#F8EADD;
+  --f-display:"Noto Serif TC","Songti TC",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111814; --surface:#18211C; --ink:#E6ECE7; --ink-2:#A6B3AB; --line:#2C3832;
+  --accent:#6FC195; --accent-soft:#1D3328; --mark:#F0A263; --mark-soft:#3A2717; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111814; --surface:#18211C; --ink:#E6ECE7; --ink-2:#A6B3AB; --line:#2C3832;
+  --accent:#6FC195; --accent-soft:#1D3328; --mark:#F0A263; --mark-soft:#3A2717; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75;padding-inline:20px;padding-block:0 64px}
+.wrap{max-width:860px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.3}
+p{margin:0}
+code,.mono{font-family:var(--f-mono);font-size:.86em}
+code{background:var(--accent-soft);color:var(--ink);padding:.05em .4em;border-radius:4px}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* hero */
+header.hero{padding-block:56px 32px;border-bottom:1px solid var(--line);display:grid;gap:20px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.hero h1{font-size:clamp(34px,6vw,54px);font-weight:900}
+.hero .lede{font-size:18px;color:var(--ink-2);max-width:38em}
+.map{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:8px;padding:0;list-style:none}
+.map a{display:grid;gap:2px;text-decoration:none;color:var(--ink);padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);height:100%}
+.map a:hover{border-color:var(--accent)}
+.map .n{font-family:var(--f-mono);font-size:12px;color:var(--accent)}
+.map .t{font-size:14px;font-weight:700;line-height:1.4}
+
+/* chapters */
+section.ch{padding-block:56px 8px;display:grid;gap:22px;scroll-margin-top:16px}
+.ch-head{display:grid;gap:8px}
+.ch-num{font-family:var(--f-mono);font-size:13px;color:var(--accent);letter-spacing:.08em}
+.ch h2{font-size:clamp(24px,4vw,32px);font-weight:900}
+.pain{color:var(--ink-2);max-width:40em}
+h3{font-size:18px;font-weight:600}
+.label{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-bottom:10px}
+
+/* numbered steps on a rail: this is a real sequence */
+ol.flow{list-style:none;margin:0;padding:0;display:grid;gap:0;counter-reset:s}
+ol.flow li{counter-increment:s;display:grid;grid-template-columns:36px minmax(0,1fr);gap:14px;position:relative;padding-bottom:18px}
+ol.flow li::before{content:counter(s);width:28px;height:28px;border-radius:50%;border:1.5px solid var(--accent);color:var(--accent);background:var(--bg);font-family:var(--f-mono);font-size:13px;font-weight:600;display:grid;place-items:center;position:relative;z-index:1}
+ol.flow li:not(:last-child)::after{content:"";position:absolute;left:13.5px;top:30px;bottom:0;width:1.5px;background:var(--line)}
+ol.flow b{display:block;font-weight:700}
+ol.flow span{color:var(--ink-2);font-size:15px}
+
+/* two-column blocks inside ch.1 */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.block{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 20px;display:grid;gap:8px;align-content:start;min-width:0}
+.block p,.block li{font-size:15px;color:var(--ink-2)}
+.block ul{margin:0;padding-left:1.1em;display:grid;gap:4px}
+
+/* file excerpt */
+pre.file{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow-x:auto;font-family:var(--f-mono);font-size:13px;line-height:1.7;color:var(--ink)}
+pre.file .c{color:var(--ink-2)}
+pre.file .k{color:var(--accent);font-weight:600}
+.file-name{font-family:var(--f-mono);font-size:12px;color:var(--ink-2);margin-bottom:6px}
+
+.tools{display:flex;flex-wrap:wrap;gap:6px}
+.tools span{font-family:var(--f-mono);font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);background:var(--surface)}
+
+.evidence{font-size:14px;color:var(--ink-2);border-left:2px solid var(--line);padding-left:14px}
+
+/* takeaway slip: the one element that gets its own treatment */
+.take{background:var(--mark-soft);border-radius:8px;padding:18px 20px;display:grid;gap:6px}
+.take .label{color:var(--mark);margin:0}
+.take p{font-family:var(--f-display);font-weight:600;font-size:19px;line-height:1.55}
+.take p + p{font-family:var(--f-body);font-weight:400;font-size:15px;color:var(--ink-2)}
+
+/* closing */
+.close{margin-top:56px;padding-top:40px;border-top:1px solid var(--line);display:grid;gap:18px}
+.close h2{font-size:clamp(24px,4vw,32px);font-weight:900}
+.tpl{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.tpl .block b{font-size:15px;color:var(--ink)}
+.principles{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.principles li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:baseline}
+.principles .mono{color:var(--accent)}
+footer{margin-top:48px;font-size:13px;color:var(--ink-2)}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+<header class="hero">
+  <div class="eyebrow">內部分享 · Claude 工作法</div>
+  <h1>我的 Claude 工作法</h1>
+  <p class="lede">我用 Claude 做過五種工作：設定環境、競品分析、提案簡報、規格文件、追蹤 AI 新訊。每一種都整理成一條可以重複跑的流程。我的原則是：同一件事做到第二次，就把它做成範本。</p>
+  <ul class="map">
+    <li><a href="#setup"><span class="n">01</span><span class="t">基礎設定與 Skill Set</span></a></li>
+    <li><a href="#benchmark"><span class="n">02</span><span class="t">競品分析與推薦機制</span></a></li>
+    <li><a href="#deck"><span class="n">03</span><span class="t">Mockup、線上簡報、版本控制</span></a></li>
+    <li><a href="#spec"><span class="n">04</span><span class="t">逆向工程產出規格</span></a></li>
+    <li><a href="#news"><span class="n">05</span><span class="t">AI 新訊排程與雙模型互評</span></a></li>
+  </ul>
+</header>
+
+<!-- 01 -->
+<section class="ch" id="setup">
+  <div class="ch-head">
+    <div class="ch-num">01 · SETUP</div>
+    <h2>先花一次力氣設定好，之後每次對話都用得到</h2>
+    <p class="pain">預設的 Claude 每次開新對話都不記得我是誰、要什麼格式、做事有什麼規矩。我把這些寫進檔案和工具，只要設定一次。</p>
+  </div>
+
+  <div class="grid2">
+    <div class="block">
+      <h3>CLAUDE.md：寫給 AI 的工作守則</h3>
+      <p>每次對話都會自動載入。內容包括我的角色、預設技術環境、輸出格式，以及 14 條品質守則。</p>
+      <ul>
+        <li>固定輸出順序：先給可以直接用的產出，再說明</li>
+        <li>資料不夠就停下來列出缺什麼，不用假設硬補</li>
+        <li>引用的數字要標來源，沒來源就標「未驗證」</li>
+        <li>用 <code>/plan</code> <code>/diff</code> <code>/snap</code> 這類短指令直接切換模式</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>Superpowers：讓 Claude 照工程流程做事</h3>
+      <p>Superpowers 是一套 skill 外掛，強迫 Claude 按固定階段工作，不會一收到需求就開始寫。</p>
+      <ul>
+        <li>brainstorm：先問清楚需求</li>
+        <li>write plan：拆成小步驟，我確認後才動手</li>
+        <li>execute：交給 subagent 逐步執行</li>
+        <li>verify：跑過驗證才能說「完成」</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>Skill 與 MCP：把 SOP 和資料接進來</h3>
+      <p>重複的任務用 skill-creator 包成 skill，例如台灣在地 UX 訪談、產品經理工具箱。再用 MCP 接上 Google Drive、Gmail、Figma、GitHub、ClickUp，Claude 就能直接讀寫資料，我不用再手動複製貼上。</p>
+    </div>
+    <div class="block">
+      <h3>手機遠端控制：離開電腦也能繼續跑</h3>
+      <p>在專案資料夾執行 <code>claude remote-control</code>，或在正在跑的 session 裡輸入 <code>/remote-control</code>。之後用手機上的 Claude app 就能接手同一個 session：看進度、回覆問題、下一步指令。這份提案簡報大部分的修改就是這樣在路上完成的。</p>
+    </div>
+  </div>
+
+  <div>
+    <div class="file-name">CLAUDE.md（節錄）</div>
+<pre class="file"><span class="k">### 輸出順序（固定）</span>
+① 可直接使用的產出 → ② 說明與分析 → ③ 替代方案（僅在真正重要時寫）
+
+<span class="k">### R7｜不確定就停，不猜</span>
+缺少關鍵輸入時：停下，列出「我需要哪些資訊」，不用假設填充後繼續
+
+<span class="k">### 縮寫觸發詞</span>
+/plan  輸出執行計劃（≤ 3 句），待確認再展開
+/snap  輸出 已完成 / 待處理 / 未解決
+/diff  只輸出修改段落，不輸出全文</pre>
+  </div>
+
+  <div>
+    <div class="label">工作流程</div>
+    <ol class="flow">
+      <li><div><b>寫 CLAUDE.md</b><span>角色、環境、輸出格式、品質守則、觸發詞。每次覺得「又要講一遍」就補進去。</span></div></li>
+      <li><div><b>裝 Superpowers</b><span>讓複雜任務一定先釐清需求、出計劃、確認，再動手。</span></div></li>
+      <li><div><b>接 MCP connector</b><span>Drive、Gmail、Figma、GitHub、ClickUp。資料來源在哪，就接到哪。</span></div></li>
+      <li><div><b>重複的任務包成 skill</b><span>同一種任務做過兩次，就用 skill-creator 整理成 skill。</span></div></li>
+      <li><div><b>開 Remote Control</b><span>長任務在電腦上跑，人離開座位後用手機接手。</span></div></li>
+    </ol>
+  </div>
+
+  <div class="tools"><span>CLAUDE.md</span><span>Superpowers</span><span>skill-creator</span><span>MCP connectors</span><span>Remote Control</span></div>
+
+  <div class="take">
+    <div class="label">Take away</div>
+    <p>最值得先做的兩件事：寫 CLAUDE.md、裝 Superpowers。</p>
+    <p>CLAUDE.md 讓你不用每次重新交代規矩。Superpowers 讓 Claude 先想清楚再動手。這兩件設定完，後面每一種工作流程的品質都會提高。</p>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="ch" id="benchmark">
+  <div class="ch-head">
+    <div class="ch-num">02 · BENCHMARK</div>
+    <h2>競品分析：先定比較框架，再抓資料，最後轉成推薦</h2>
+    <p class="pain">以前的競品分析是截幾張圖、寫感想，很難回答「所以我們該怎麼做」。現在的做法是：用同一把尺量每一家，再把結論轉成選機推薦規則。</p>
+  </div>
+
+  <div>
+    <div class="label">工作流程</div>
+    <ol class="flow">
+      <li><div><b>定比較框架</b><span>先決定要比哪些面向。以 AI 產品頁為例：網頁定位、功能介紹、資訊安全、硬體導流、SEO／FAQ。</span></div></li>
+      <li><div><b>用腳本抓完整頁面</b><span>請 Claude 寫 Puppeteer 腳本，在 1920px 寬度下慢慢捲動整頁，等圖片載完再全頁截圖，另外存一份手機用的縮小版。</span></div></li>
+      <li><div><b>切區塊、標分類</b><span>把每一家的長頁面切成區塊，每個區塊對應到框架裡的一個分類，最後整理成同一張比較表。</span></div></li>
+      <li><div><b>篩出相容產品</b><span>整理自家產品規格，依功能需要的硬體條件篩出支援的機型，取代一長串相容清單。</span></div></li>
+      <li><div><b>轉成推薦卡</b><span>把篩出來的真實機型、官方產品照放進 mockup 的比較表和推薦卡。</span></div></li>
+    </ol>
+  </div>
+
+  <div class="tools"><span>Claude Code</span><span>Puppeteer</span><span>sharp</span><span>比較框架</span><span>產品規格表</span></div>
+
+  <p class="evidence">實例：Apple Intelligence、Samsung Galaxy AI、ASUS 的 AI 產品頁比較。推薦卡用的是實際篩選出來的機型。</p>
+
+  <div class="take">
+    <div class="label">Take away</div>
+    <p>先定比較框架再抓資料，每個推薦都要能對回一項證據。</p>
+    <p>抓頁面的腳本可以重複用，競品改版時重跑一次就能更新比較表。</p>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="ch" id="deck">
+  <div class="ch-head">
+    <div class="ch-num">03 · PROPOSAL</div>
+    <h2>Mockup 和線上簡報：做成可以點的網頁，用 git 管理版本</h2>
+    <p class="pain">靜態投影片講不清楚動態的 hero 和互動效果，改版時也很難知道每一版改了什麼。所以我把提案直接做成網頁：mockup 是真的可以動的 HTML，簡報是一個範本引擎。</p>
+  </div>
+
+  <div class="grid2">
+    <div class="block">
+      <h3>簡報範本化：引擎和內容分開</h3>
+      <p><code>engine/deck.js</code> 負責畫面和換頁，裡面沒有任何專案專屬的內容。每份提案只要改 <code>deck.config.js</code>：章節、頁面、要框出的重點區域，全部寫在設定檔裡。</p>
+      <p>另外寫了 <code>check-config.js</code> 檢查設定：檔案是否存在、框選範圍有沒有超出頁面、規格欄位有沒有漏填。</p>
+    </div>
+    <div class="block">
+      <h3>Mockup：多個方向一起比較</h3>
+      <p>Hero 一次做五個方向（A–E），加上一個比較頁，大家可以直接點開來看。角色動畫用 three.js 做成可以操作的 3D 模型，提供走路、揮手、點頭、跳躍等動作。需要交給設計師時，再轉進 Figma。</p>
+    </div>
+  </div>
+
+  <div>
+    <div class="label">工作流程</div>
+    <ol class="flow">
+      <li><div><b>在本機開發</b><span>用 <code>.claude/launch.json</code> 啟動本機伺服器，Claude 改完就能馬上預覽。</span></div></li>
+      <li><div><b>每次修改都 commit</b><span>每個 commit 寫清楚改了什麼、為什麼改。改壞了隨時可以退回上一版。</span></div></li>
+      <li><div><b>大改版就開新資料夾</b><span><code>v3/</code> 和舊版並存，舊連結不會失效。圖片網址加版本參數，避免瀏覽器讀到舊的快取。</span></div></li>
+      <li><div><b>推上 GitHub Pages</b><span><code>git push</code> 之後網站自動更新，把連結給大家就能看最新版本，手機會自動切成輕量模式。</span></div></li>
+      <li><div><b>內部筆記不公開</b><span>設計筆記放在 <code>docs/</code>，並加進 <code>.gitignore</code>，不會跟著發佈出去。</span></div></li>
+    </ol>
+  </div>
+
+  <div class="tools"><span>HTML mockup</span><span>three.js</span><span>Figma</span><span>git</span><span>GitHub Pages</span><span>Remote Control</span></div>
+
+  <div class="take">
+    <div class="label">Take away</div>
+    <p>提案本身就是可以操作的原型，而簡報是一個可以重複使用的範本。</p>
+    <p>換下一個專案時，引擎和檢查工具直接沿用，只要換設定檔和內容。用 git 保留每一版，客戶問「上一版是什麼樣子」時，隨時都答得出來。</p>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="ch" id="spec">
+  <div class="ch-head">
+    <div class="ch-num">04 · REVERSE SPEC</div>
+    <h2>逆向工程：把既有產品拆回規格文件</h2>
+    <p class="pain">既有的 app 或頁面常常沒有完整規格，規則只存在畫面裡或某個人腦中。我請 Claude 一格一格拆畫面，把看得到的東西寫回文件。</p>
+  </div>
+
+  <div>
+    <div class="label">工作流程</div>
+    <ol class="flow">
+      <li><div><b>蒐集素材</b><span>截圖、錄影、實際頁面，加上官方說明與影片。</span></div></li>
+      <li><div><b>拆出畫面和功能</b><span>列出每個畫面、每個區塊，以及使用者在上面能做的事。</span></div></li>
+      <li><div><b>套進固定欄位</b><span>每個區塊都用同樣六個欄位描述：目標、素材、比例、範圍、資產、敘事。競品和自家產品用同一張表，拿來比較就很直接。</span></div></li>
+      <li><div><b>產出規格頁</b><span>規格寫在資料檔 <code>spec-data.js</code>，簡報和規格頁讀同一份資料，所以兩邊的內容一定一致。</span></div></li>
+      <li><div><b>找人確認缺口</b><span>看不出來的規則（後端邏輯、例外狀況）列成問題清單，找負責的人確認後補上。</span></div></li>
+    </ol>
+  </div>
+
+  <div class="tools"><span>截圖／錄影</span><span>六欄位規格表</span><span>spec-data.js</span><span>check-config.js</span></div>
+
+  <div class="take">
+    <div class="label">Take away</div>
+    <p>先固定規格的欄位，再請 AI 填內容。</p>
+    <p>欄位固定之後，缺了什麼一眼就看得出來，檢查腳本也能自動抓漏填的地方。AI 負責拆解和整理，看不出來的規則交給人判斷。</p>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="ch" id="news">
+  <div class="ch-head">
+    <div class="ch-num">05 · CROSS-CHECK</div>
+    <h2>AI 新訊：ChatGPT 排程收集，兩個模型互相查核</h2>
+    <p class="pain">AI agent 的消息一週就變一次，自己追不完，只看單一模型的整理又怕有錯。所以一邊負責定期收集，兩邊再互相挑錯。</p>
+  </div>
+
+  <div>
+    <div class="label">工作流程</div>
+    <ol class="flow">
+      <li><div><b>ChatGPT 排程收集</b><span>設定排程任務，定期整理 AI agent 相關新訊，產出摘要。</span></div></li>
+      <li><div><b>Claude 查證並補充</b><span>把摘要交給 Claude，逐條找第二個來源，標出互相衝突和查不到出處的內容。</span></div></li>
+      <li><div><b>回到 ChatGPT 互評</b><span>把 Claude 的查證結果拿回給 ChatGPT，請它反駁或補充。兩邊都同意的才列為結論。</span></div></li>
+      <li><div><b>讓兩個模型直接對話</b><span>除了手動轉貼，也讓兩個模型直接交換資訊，減少我來回搬運的時間。</span></div></li>
+      <li><div><b>篩出和工作相關的行動</b><span>最後由 Claude 挑出和手上專案有關的項目，轉成待辦或 skill 的更新。</span></div></li>
+    </ol>
+  </div>
+
+  <div class="tools"><span>ChatGPT 排程任務</span><span>Claude</span><span>雙向互評</span></div>
+
+  <div class="take">
+    <div class="label">Take away</div>
+    <p>一個模型負責收集，兩個模型互相挑錯。</p>
+    <p>單一模型整理的資訊可能有幻覺，讓另一個模型挑錯最便宜。雙方都有來源、也都同意的內容，我才拿來用。</p>
+  </div>
+</section>
+
+<!-- closing -->
+<section class="close">
+  <div class="eyebrow">總結</div>
+  <h2>把每一套工作流程做成範本</h2>
+  <p class="pain">上面五個流程有一個共通點：做第一次時順手留下可以重複用的東西，第二次就從範本開始。</p>
+  <div class="tpl">
+    <div class="block"><b>CLAUDE.md</b><p>對話規則的範本。每次開新對話都自動套用。</p></div>
+    <div class="block"><b>線上簡報引擎</b><p>提案的範本。換專案時只換設定檔和內容。</p></div>
+    <div class="block"><b>抓頁面腳本</b><p>競品分析的範本。競品改版時重跑一次就更新。</p></div>
+    <div class="block"><b>六欄位規格表</b><p>規格文件的範本。競品和自家產品用同一套欄位。</p></div>
+  </div>
+  <ul class="principles">
+    <li><span class="mono">01</span><span>每次要重新交代的規矩，就寫進 CLAUDE.md。</span></li>
+    <li><span class="mono">02</span><span>同一件事做到第二次，就做成範本或 skill。</span></li>
+    <li><span class="mono">03</span><span>AI 說完成不算完成，要另外跑一次驗證，或請另一個模型檢查。</span></li>
+  </ul>
+</section>
+
+<footer>內部分享用 · 2026-09</footer>
+</div>
