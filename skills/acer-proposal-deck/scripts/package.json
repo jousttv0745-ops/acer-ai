@@ -1,0 +1,14 @@
+{
+  "name": "acer-proposal-deck-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Record animated proposal mockups as GIFs for Slides decks.",
+  "scripts": {
+    "record": "node record-gif.mjs"
+  },
+  "dependencies": {
+    "gifenc": "^1.0.3",
+    "playwright": "^1.55.0",
+    "pngjs": "^7.0.0"
+  }
+}
