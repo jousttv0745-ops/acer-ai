@@ -12,7 +12,7 @@ Acer 的提案、規格、報告簡報一律在 Claude 的 **Slides** 裡做：�
 | 資源 | 連結 | 用途 |
 |---|---|---|
 | 設計系統 | https://claude.ai/artifact/BgyC6QLV4yNPtGN5LTCGRv | 「Acer 提案設計系統」：配色、字型、元件規則。每份新簡報都要安裝它 |
-| 版型範本 | https://claude.ai/artifact/4J4Wu7GuHyedPAUsKcCJoc | 「Acer 提案簡報範本」：8 種版型，每頁的 speaker notes 寫了該版型的用法 |
+| 版型範本 | https://claude.ai/artifact/4J4Wu7GuHyedPAUsKcCJoc | 「Acer 提案簡報範本」：15 種版型，每頁的 speaker notes 寫了該版型的用法 |
 | 線上 demo | https://jousttv0745-ops.github.io/acer-ais-proposal-2/v3/ | 互動版；Slides 裡用「See more ↗」按鈕連過去 |
 
 ## 流程
@@ -28,12 +28,19 @@ Acer 的提案、規格、報告簡報一律在 Claude 的 **Slides** 裡做：�
 | 範本 id | 版型 | 什麼時候用 |
 |---|---|---|
 | `cover` | 封面 | 第一頁：眉標（版本・日期）、主標（左側 10px 綠線）、副標、章節 chip |
+| `agenda` | 目錄 3×2 | 每格一章：大編號、章名、一行內容；章節不足六個改 2 欄或 4 欄 |
 | `recap` | Recap 表 | 上次報告的回饋與本版回應，三欄表格 |
 | `milestone` | Milestone 路線圖 | 分階段規劃，三張卡片，本次定案那張綠框 |
 | `intro` | 章節頁 | 每章開頭：描邊大編號、英文章名、中文副標 |
 | `sheet` | 素材表 | 拆解競品頁：左邊全頁截圖、右邊區塊／文案／影像表格、結論條 |
 | `framework` | Framework 比較 | 兩家的敘事順序（Hero／Assistant／Scenario），結論條 |
 | `spec` | Spec 規格頁 | 左邊畫面或 GIF＋demo 按鈕，右邊六欄位：目標、素材、比例、範圍、資產、敘事 |
+| `cards` | 四卡片＋結論條 | 四個並列重點：名稱、綠色副標、三個短項目（每項 13 字內），下方結論條 |
+| `lists` | 三欄清單 | 三個分類並排，標題旁綠字標數量：資產清單、工具清單、分工表 |
+| `steps` | 左框＋右步驟 | 左邊前提或資料來源＋結論條，右邊最多五步（綠色圓點編號） |
+| `flow` | 流程圖＋表格 | Input → Output → Final 三個方塊加箭頭，下方表格放實際結果 |
+| `hub` | 中心輻射圖 | 三個方塊橫排、主角在中間，雙向箭頭；往下箭頭指向結果。用固定座標排，不用空白格子對齊 |
+| `points` | 要點列表 | 三到五條大編號＋一句話，細線分隔：總結、決議、下一步 |
 | `summary` | Summary | 淺綠底收尾：一句總結＋兩張建議卡 |
 
 ## 每一頁都要遵守
