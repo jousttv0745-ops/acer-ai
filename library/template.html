@@ -94,6 +94,17 @@ details summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
 .meta-line { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
 .empty { padding: 32px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 10px; }
 
+ol.beats { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+ol.beats b { color: var(--ink); font-weight: 600; margin-right: 6px; }
+.views { font-size: 13px; }
+.views b { font-family: var(--display); font-size: 20px; color: var(--ink); font-variant-numeric: tabular-nums; margin-right: 2px; }
+.views.muted { color: var(--muted); font-size: 12px; }
+.tag.arch { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.pill.conf-high { background: var(--ok-soft); color: var(--ok); }
+.pill.conf-medium { background: var(--warn-soft); color: var(--warn); }
+.pill.conf-low { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.vbar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-bottom: 14px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .note { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--warn); border-radius: 6px; padding: 10px 14px; font-size: 13px; }
 .notes { display: grid; gap: 10px; margin-bottom: 16px; }
 
@@ -177,7 +188,7 @@ const TABS = [
   { id: "effects", label: "動態效果", n: E.length, title: "20 種把 AI 變得看得見的動態", text: "每個效果對應一個 AI 賣點，拆成訊息、動態配方、12 個 JS 工具的實作路線，並標註能否直接進 Claude Code 影片管線。按 ☆ 挑選，最後匯出清單。" },
   { id: "matrix", label: "工具拆解矩陣", n: L.length, title: "效果 × 工具：誰能做什麼", text: "橫軸是 12 個 JS 視覺工具，縱軸是動態效果。深色格＝本 repo 有可執行 demo；淺色格＝有實作路線（滑鼠停留看做法）。" },
   { id: "libs", label: "12 個工具", n: L.length, title: "12 個工具的動態原子", text: "每個工具最擅長、可拆出來重複使用的動態原子（primitives），附關鍵 API 與影片化適合度。" },
-  { id: "videos", label: "品牌影片", n: V.length, title: "AI 裝置影片參考庫", text: "Acer、Apple、Samsung、Google、Microsoft、ASUS、HP、Lenovo、Nothing 的 AI 功能影片。預期母題為推測，看完後請把狀態改成「已看」。" },
+  { id: "videos", label: "品牌影片", n: V.length, title: "AI 裝置影片參考庫", text: "Acer、Apple、Samsung、Google、Microsoft、ASUS、HP、Lenovo、Nothing 的 AI 功能影片，每支都拆成敘事結構與段落。可信度標示拆解依據的強弱：高＝有媒體逐段描述，低＝依類型推測。" },
   { id: "sources", label: "靈感來源", n: S.length, title: "動態靈感來源", text: "Dribbble、Pinterest、motion.dev、Codrops、CodePen 的搜尋頁與單一作品，已對應到效果 id。" },
 ];
 let tab = "effects", q = "", onlyPicked = false, filtersOpen = false;
@@ -204,6 +215,8 @@ function renderFilters() {
     html += chipGroup("brand", "品牌", [...new Set(V.map(v => v.brand))].map(b => [b, b]));
     html += chipGroup("device", "裝置", [["laptop", "筆電"], ["phone", "手機"], ["multi", "跨裝置"]]);
     html += chipGroup("type", "影片類型", [["launch-film", "發表形象片"], ["feature-ad", "功能廣告"], ["guided-demo", "實機示範"], ["brand-spot", "品牌廣告"], ["keynote", "發表會"], ["explainer", "功能說明"]]);
+    html += chipGroup("arch", "敘事結構", Object.entries(DATA.videos._meta.archetypes).map(([k, v]) => [k, `${v.split("：")[0].split(" → ")[0]} ${V.filter(x => x.story.archetype === k).length}`]).filter(([k]) => V.some(x => x.story.archetype === k)));
+    html += chipGroup("conf", "拆解可信度", [["high", "高"], ["medium", "中"], ["low", "低"]]);
     html += chipGroup("motif", "預期母題", E.map(e => [e.id, e.name]));
   } else if (tab === "libs") {
     html += chipGroup("layer", "層", Object.entries(DATA.libraries._meta.layers).map(([k, v]) => [k, v.split("：")[0]]));
@@ -282,18 +295,39 @@ function renderLibs() {
   }).join("")}</div>`;
 }
 const TYPE = { "launch-film": "發表形象片", "feature-ad": "功能廣告", "guided-demo": "實機示範", "brand-spot": "品牌廣告", keynote: "發表會", explainer: "功能說明" };
+const ARCH = DATA.videos._meta.archetypes, CONF = DATA.videos._meta.confidence_values;
+const fmtViews = n => n >= 1e6 ? (n / 1e6).toFixed(n >= 1e7 ? 0 : 1) + "M" : n >= 1e3 ? (n / 1e3).toFixed(n >= 1e4 ? 0 : 1) + "K" : String(n);
+const isYT = url => /youtube\.com|youtu\.be/.test(url);
+let sortViews = false;
+function statsLine(v) {
+  const st = v.stats || {};
+  if (st.views != null) return `<span class="views"><b>${fmtViews(st.views)}</b> 次觀看</span><span class="meta-line">${[st.duration, st.published && "上架 " + st.published, "抓取 " + st.fetched_at].filter(Boolean).join(" · ")}</span>`;
+  return `<span class="views muted">${isYT(v.url) ? "觀看數待抓取" : "非 YouTube，無觀看數"}</span>`;
+}
 function renderVideos() {
-  const list = V.filter(v => pass("brand", [v.brand]) && pass("device", [v.device]) && pass("type", [v.type]) && pass("motif", v.motifs) && hitQ(v) && pickOk(v.id));
+  let list = V.filter(v => pass("brand", [v.brand]) && pass("device", [v.device]) && pass("type", [v.type]) && pass("arch", [v.story.archetype]) && pass("conf", [v.story.confidence]) && pass("motif", v.motifs) && hitQ(v) && pickOk(v.id));
+  if (sortViews) list = [...list].sort((a, b) => (b.stats?.views ?? -1) - (a.stats?.views ?? -1));
   const notes = DATA.videos.context_notes.map(n => `<div class="note"><b>${esc(n.title)}</b>　${esc(n.text)}</div>`).join("");
-  if (!list.length) return `<div class="notes">${notes}</div>` + empty;
-  return `<div class="notes">${notes}</div><div class="grid">${list.map(v => `<article class="card ${picks.has(v.id) ? "picked" : ""}">
+  const anyViews = V.some(v => v.stats?.views != null);
+  const bar = `<div class="vbar"><button class="btn" id="sortViews" aria-pressed="${sortViews}" ${anyViews ? "" : "disabled title=\"尚未抓取觀看數\""}>${sortViews ? "依原順序" : "依觀看數排序"}</button><span class="meta-line">${DATA.videos._meta.stats_note}</span></div>`;
+  if (!list.length) return `<div class="notes">${notes}</div>${bar}` + empty;
+  return `<div class="notes">${notes}</div>${bar}<div class="grid">${list.map(v => { const st = v.story; return `<article class="card ${picks.has(v.id) ? "picked" : ""}">
     <div class="card-head"><div><span class="meta-line">${esc(v.brand)} · ${esc(v.product)}</span><h4>${esc(v.title)}</h4></div>${star(v.id, v.title)}</div>
-    <div class="row"><span class="tag">${TYPE[v.type] || v.type}</span><span class="tag">${v.date || "日期未知"}</span><span class="pill ${v.status === "reviewed" ? "reviewed" : "todo"}">${v.status === "reviewed" ? "已看" : "待看"}</span></div>
-    <p class="recipe"><b>AI 功能：</b>${v.ai_features.map(esc).join("、")}</p>
-    <p class="msg">${esc(v.watch_focus)}</p>
-    <div class="row">${v.motifs.map(m => `<span class="tag" title="${esc(effById[m]?.name || "")}">${esc(effById[m]?.name || m)}</span>`).join("")}</div>
-    <div class="links"><a href="${esc(v.url)}" target="_blank" rel="noopener">觀看 ↗</a><span class="meta-line">${esc(v.source)}</span></div>
-  </article>`).join("")}</div>`;
+    <div class="row">${statsLine(v)}</div>
+    <div class="row"><span class="tag arch">${esc(ARCH[st.archetype] || st.archetype)}</span><span class="tag">${TYPE[v.type] || v.type}</span><span class="tag">${v.date || "日期未知"}</span><span class="pill conf-${st.confidence}" title="${esc(CONF[st.confidence])}">拆解可信度：${{ high: "高", medium: "中", low: "低" }[st.confidence]}</span></div>
+    <p class="msg">${esc(st.logline)}</p>
+    <ol class="beats">${st.beats.map(b => `<li><b>${esc(b.act)}</b>${esc(b.text)}</li>`).join("")}</ol>
+    <dl class="impl">
+      <dt>AI 角色</dt><dd>${esc(st.ai_role)}</dd>
+      ${st.tagline ? `<dt>標語</dt><dd>${esc(st.tagline)}</dd>` : ""}
+      ${st.music ? `<dt>配樂</dt><dd>${esc(st.music)}</dd>` : ""}
+      ${st.duration ? `<dt>長度</dt><dd>${esc(st.duration)}</dd>` : ""}
+      ${st.credits ? `<dt>製作</dt><dd>${esc(st.credits)}</dd>` : ""}
+      <dt>AI 功能</dt><dd>${v.ai_features.map(esc).join("、")}</dd>
+    </dl>
+    <details><summary>觀看重點與預期母題</summary><p class="recipe">${esc(v.watch_focus)}</p><div class="row">${v.motifs.map(m => `<span class="tag">${esc(effById[m]?.name || m)}</span>`).join("")}</div></details>
+    <div class="links"><a href="${esc(v.url)}" target="_blank" rel="noopener">觀看 ↗</a>${st.sources.map(u => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(new URL(u).hostname.replace("www.", ""))}</a>`).join("")}</div>
+  </article>`; }).join("")}</div>`;
 }
 function renderSources() {
   const list = S.filter(s => pass("platform", [s.platform]) && hitQ(s) && pickOk(s.id));
@@ -318,6 +352,7 @@ document.addEventListener("click", ev => {
   if (b.dataset.tab) { tab = b.dataset.tab; for (const k in filt) delete filt[k]; try { history.replaceState(null, "", "#" + tab); } catch (e) {} render(); }
   else if (b.dataset.f) { const s = filt[b.dataset.f] ||= new Set(); s.has(b.dataset.v) ? s.delete(b.dataset.v) : s.add(b.dataset.v); render(); }
   else if (b.dataset.pick) { const id = b.dataset.pick; picks.has(id) ? picks.delete(id) : picks.add(id); savePicks(); render(); toast(picks.has(id) ? "已加入挑選" : "已移出挑選"); }
+  else if (b.id === "sortViews") { sortViews = !sortViews; render(); }
   else if (b.id === "onlyPicked") { onlyPicked = !onlyPicked; render(); }
   else if (b.id === "exportBtn") {
     const byType = { effects: E.filter(x => picks.has(x.id)).map(x => x.id), videos: V.filter(x => picks.has(x.id)).map(x => x.id), libraries: L.filter(x => picks.has(x.id)).map(x => x.id), sources: S.filter(x => picks.has(x.id)).map(x => x.id) };

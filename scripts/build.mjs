@@ -16,7 +16,13 @@ const sources = read("data/inspiration-sources.json");
 const effIds = new Set(effects.effects.map((e) => e.id));
 const libNames = new Set(libraries.libraries.map((l) => l.name));
 const errors = [];
-videos.videos.forEach((v) => v.motifs.forEach((m) => effIds.has(m) || errors.push(`video ${v.id}: unknown motif ${m}`)));
+videos.videos.forEach((v) => {
+  v.motifs.forEach((m) => effIds.has(m) || errors.push(`video ${v.id}: unknown motif ${m}`));
+  if (!v.story) return errors.push(`video ${v.id}: missing story`);
+  if (!videos._meta.archetypes[v.story.archetype]) errors.push(`video ${v.id}: unknown archetype ${v.story.archetype}`);
+  if (!videos._meta.confidence_values[v.story.confidence]) errors.push(`video ${v.id}: bad confidence ${v.story.confidence}`);
+  if (!v.story.beats?.length) errors.push(`video ${v.id}: story has no beats`);
+});
 sources.sources.forEach((s) => s.effects.forEach((m) => effIds.has(m) || errors.push(`source ${s.id}: unknown effect ${m}`)));
 effects.effects.forEach((e) => {
   Object.keys(e.implementations).forEach((k) => libNames.has(k) || errors.push(`effect ${e.id}: unknown library ${k}`));
@@ -35,16 +41,36 @@ const effName = Object.fromEntries(effects.effects.map((e) => [e.id, e.name]));
 const READY = { yes: "✅ 可直接渲染", adapt: "🟡 需改造", asset: "🟣 做成素材" };
 
 // ── docs/02 ──
+const ARCH = videos._meta.archetypes;
+const fmtViews = (n) => (n == null ? "—" : n.toLocaleString("en-US"));
 const byBrand = {};
 videos.videos.forEach((v) => (byBrand[v.brand] ||= []).push(v));
-let md2 = `# 02｜AI 裝置品牌影片參考庫\n\n> 自動產生自 \`data/brand-videos.json\`（${videos._meta.updated}），請改 JSON 後執行 \`node scripts/build.mjs\`，不要直接改這份檔案。\n> ${videos._meta.note}\n\n`;
+let md2 = `# 02｜AI 裝置品牌影片參考庫\n\n> 自動產生自 \`data/brand-videos.json\`（${videos._meta.updated}），請改 JSON 後執行 \`node scripts/build.mjs\`，不要直接改這份檔案。\n> ${videos._meta.note}\n> ${videos._meta.stats_note}\n\n`;
 md2 += `## 市場脈絡\n\n${videos.context_notes.map((n) => `- **${n.title}**：${n.text}（來源：${n.source}）`).join("\n")}\n\n`;
+// 敘事結構分布：哪種講法最常見、各品牌偏好哪種
+md2 += `## 敘事結構分布\n\n| 結構 | 說明 | 支數 | 影片 |\n|---|---|--:|---|\n`;
+Object.entries(ARCH).forEach(([k, label]) => {
+  const list = videos.videos.filter((v) => v.story.archetype === k);
+  if (list.length) md2 += `| \`${k}\` | ${label} | ${list.length} | ${list.map((v) => `${v.brand}：${cell(v.title)}`).join("<br>")} |\n`;
+});
+md2 += `\n可信度：${Object.entries(videos._meta.confidence_values).map(([k, v]) => `**${k}** ${v}`).join("；")}\n\n`;
+md2 += `## 總表\n\n| 品牌 | 影片 | 結構 | 觀看數 | 片長 | 上架日 | 可信度 |\n|---|---|---|--:|---|---|---|\n`;
+videos.videos.forEach((v) => {
+  md2 += `| ${v.brand} | [${cell(v.title)}](${v.url}) | ${ARCH[v.story.archetype].split("：")[0]} | ${fmtViews(v.stats?.views)} | ${v.stats?.duration || v.story.duration || "—"} | ${v.stats?.published || v.date || "—"} | ${v.story.confidence} |\n`;
+});
+md2 += "\n";
 for (const [brand, list] of Object.entries(byBrand)) {
-  md2 += `## ${brand}\n\n| 影片 | 類型 | 日期 | AI 功能 | 預期母題 | 觀看重點 | 狀態 |\n|---|---|---|---|---|---|---|\n`;
+  md2 += `## ${brand}\n\n`;
   list.forEach((v) => {
-    md2 += `| [${cell(v.title)}](${v.url}) | ${v.type} | ${cell(v.date)} | ${cell(v.ai_features.join("、"))} | ${cell(v.motifs.map((m) => `\`${m}\``).join(" "))} | ${cell(v.watch_focus)} | ${v.status} |\n`;
+    const st = v.story;
+    md2 += `### [${v.title}](${v.url})\n\n`;
+    md2 += `**${ARCH[st.archetype]}**　·　可信度 ${st.confidence}　·　觀看數 ${fmtViews(v.stats?.views)}${v.stats?.fetched_at ? `（${v.stats.fetched_at}）` : ""}\n\n`;
+    md2 += `> ${st.logline}\n\n`;
+    md2 += st.beats.map((b, i) => `${i + 1}. **${b.act}**：${b.text}`).join("\n") + "\n\n";
+    const meta = [["AI 角色", st.ai_role], ["標語", st.tagline], ["配樂", st.music], ["長度", st.duration], ["製作", st.credits], ["AI 功能", v.ai_features.join("、")], ["預期母題", v.motifs.map((m) => `\`${m}\``).join(" ")], ["觀看重點", v.watch_focus]].filter(([, x]) => x);
+    md2 += meta.map(([k, x]) => `- ${k}：${x}`).join("\n") + "\n";
+    md2 += `- 來源：${st.sources.map((u) => `<${u}>`).join(" ・ ")}\n\n`;
   });
-  md2 += "\n";
 }
 fs.writeFileSync(path.join(root, "docs/02-brand-video-library.md"), md2);
 
