@@ -11,6 +11,8 @@ AI projects developed with Claude Code and Codex
 | [`docs/02-brand-video-library.md`](docs/02-brand-video-library.md) | 9 個品牌、21 支 AI 裝置影片（自動產生） |
 | [`docs/03-motion-effects-library.md`](docs/03-motion-effects-library.md) | 20 種動態效果 × 12 個 JS 工具的拆解（自動產生） |
 | [`docs/04-claude-code-video-pipeline.md`](docs/04-claude-code-video-pipeline.md) | 用 Claude Code 生成影片：HyperFrames／Remotion／Motion MCP 的比較與流程 |
+| [`docs/05-ksp-recipe-system-plan.md`](docs/05-ksp-recipe-system-plan.md) | KSP 配方庫整體規劃：現況盤點、統一資料模型、「最適合」的定義、AI 製片工作流、分階段執行 |
+| [`video analytics/`](video%20analytics/) | 競品筆電廣告分析：96 支清單、11 支逐鏡量測、2 支逐鏡標註、研究計畫 |
 | [`library/index.html`](library/index.html) | 視覺資料庫頁面：篩選、☆ 挑選、匯出清單、效果 × 工具矩陣 |
 | [`demos/`](demos/) | 14 個可執行 demo：每個 JS 工具各一個，另加前後對比擦除、產品登場；資料庫頁面內附動畫預覽 |
 | [`video/hyperframes-starter/`](video/hyperframes-starter/) | 12 秒 AI PC 形象片 starter，已實測可渲染成 MP4 |
