@@ -1,0 +1,175 @@
+{
+  "id": "I_P8s3UXOSo",
+  "threshold": 0.15,
+  "frames": 1933,
+  "shots": [
+    {
+      "shot": 1,
+      "start": 0,
+      "end": 3.067,
+      "dur": 3.067,
+      "enter": "start",
+      "enterScore": null
+    },
+    {
+      "shot": 2,
+      "start": 3.067,
+      "end": 5.267,
+      "dur": 2.2,
+      "enter": "cut",
+      "enterScore": 0.421
+    },
+    {
+      "shot": 3,
+      "start": 5.267,
+      "end": 6.8,
+      "dur": 1.533,
+      "enter": "cut",
+      "enterScore": 0.64
+    },
+    {
+      "shot": 4,
+      "start": 6.8,
+      "end": 8.667,
+      "dur": 1.867,
+      "enter": "cut",
+      "enterScore": 0.501
+    },
+    {
+      "shot": 5,
+      "start": 8.667,
+      "end": 15.2,
+      "dur": 6.533,
+      "enter": "cut",
+      "enterScore": 0.657
+    },
+    {
+      "shot": 6,
+      "start": 15.2,
+      "end": 17.467,
+      "dur": 2.267,
+      "enter": "cut",
+      "enterScore": 0.478
+    },
+    {
+      "shot": 7,
+      "start": 17.467,
+      "end": 20.034,
+      "dur": 2.567,
+      "enter": "cut",
+      "enterScore": 0.566
+    },
+    {
+      "shot": 8,
+      "start": 20.034,
+      "end": 24.1,
+      "dur": 4.066,
+      "enter": "cut",
+      "enterScore": 0.307
+    },
+    {
+      "shot": 9,
+      "start": 24.1,
+      "end": 28.2,
+      "dur": 4.1,
+      "enter": "cut",
+      "enterScore": 0.422
+    },
+    {
+      "shot": 10,
+      "start": 28.2,
+      "end": 30.7,
+      "dur": 2.5,
+      "enter": "cut",
+      "enterScore": 0.6
+    },
+    {
+      "shot": 11,
+      "start": 30.7,
+      "end": 33.467,
+      "dur": 2.767,
+      "enter": "cut",
+      "enterScore": 0.253
+    },
+    {
+      "shot": 12,
+      "start": 33.467,
+      "end": 36.1,
+      "dur": 2.633,
+      "enter": "cut",
+      "enterScore": 0.407
+    },
+    {
+      "shot": 13,
+      "start": 36.1,
+      "end": 38.367,
+      "dur": 2.267,
+      "enter": "cut",
+      "enterScore": 0.345
+    },
+    {
+      "shot": 14,
+      "start": 38.367,
+      "end": 39.233,
+      "dur": 0.866,
+      "enter": "cut",
+      "enterScore": 0.422
+    },
+    {
+      "shot": 15,
+      "start": 39.233,
+      "end": 43.5,
+      "dur": 4.267,
+      "enter": "cut",
+      "enterScore": 0.344
+    },
+    {
+      "shot": 16,
+      "start": 43.5,
+      "end": 49.9,
+      "dur": 6.4,
+      "enter": "cut",
+      "enterScore": 0.306
+    },
+    {
+      "shot": 17,
+      "start": 49.9,
+      "end": 54.2,
+      "dur": 4.3,
+      "enter": "cut",
+      "enterScore": 0.675
+    },
+    {
+      "shot": 18,
+      "start": 54.2,
+      "end": 55.733,
+      "dur": 1.533,
+      "enter": "cut",
+      "enterScore": 0.381
+    },
+    {
+      "shot": 19,
+      "start": 55.733,
+      "end": 56.9,
+      "dur": 1.167,
+      "enter": "cut",
+      "enterScore": 0.479
+    },
+    {
+      "shot": 20,
+      "start": 56.9,
+      "end": 61.433,
+      "dur": 4.533,
+      "enter": "cut",
+      "enterScore": 0.334
+    },
+    {
+      "shot": 21,
+      "start": 61.433,
+      "end": 64.433,
+      "dur": 3,
+      "enter": "cut",
+      "enterScore": 1
+    }
+  ]
+}
