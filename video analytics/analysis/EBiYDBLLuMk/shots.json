@@ -1,0 +1,127 @@
+{
+  "id": "EBiYDBLLuMk",
+  "threshold": 0.15,
+  "frames": 870,
+  "shots": [
+    {
+      "shot": 1,
+      "start": 0,
+      "end": 4.271,
+      "dur": 4.271,
+      "enter": "start",
+      "enterScore": null
+    },
+    {
+      "shot": 2,
+      "start": 4.271,
+      "end": 7.341,
+      "dur": 3.07,
+      "enter": "cut",
+      "enterScore": 0.415
+    },
+    {
+      "shot": 3,
+      "start": 7.341,
+      "end": 9.31,
+      "dur": 1.969,
+      "enter": "cut",
+      "enterScore": 0.618
+    },
+    {
+      "shot": 4,
+      "start": 9.31,
+      "end": 10.177,
+      "dur": 0.867,
+      "enter": "cut",
+      "enterScore": 0.398
+    },
+    {
+      "shot": 5,
+      "start": 10.177,
+      "end": 11.745,
+      "dur": 1.568,
+      "enter": "cut",
+      "enterScore": 0.313
+    },
+    {
+      "shot": 6,
+      "start": 11.745,
+      "end": 12.513,
+      "dur": 0.768,
+      "enter": "cut",
+      "enterScore": 0.452
+    },
+    {
+      "shot": 7,
+      "start": 12.513,
+      "end": 13.347,
+      "dur": 0.834,
+      "enter": "cut",
+      "enterScore": 0.407
+    },
+    {
+      "shot": 8,
+      "start": 13.347,
+      "end": 14.281,
+      "dur": 0.934,
+      "enter": "cut",
+      "enterScore": 0.159
+    },
+    {
+      "shot": 9,
+      "start": 14.281,
+      "end": 17.384,
+      "dur": 3.103,
+      "enter": "cut",
+      "enterScore": 0.76
+    },
+    {
+      "shot": 10,
+      "start": 17.384,
+      "end": 17.951,
+      "dur": 0.567,
+      "enter": "cut",
+      "enterScore": 0.689
+    },
+    {
+      "shot": 11,
+      "start": 17.951,
+      "end": 18.885,
+      "dur": 0.934,
+      "enter": "cut",
+      "enterScore": 0.616
+    },
+    {
+      "shot": 12,
+      "start": 18.885,
+      "end": 20.888,
+      "dur": 2.003,
+      "enter": "cut",
+      "enterScore": 0.15
+    },
+    {
+      "shot": 13,
+      "start": 20.888,
+      "end": 23.424,
+      "dur": 2.536,
+      "enter": "cut",
+      "enterScore": 0.357
+    },
+    {
+      "shot": 14,
+      "start": 23.424,
+      "end": 26.026,
+      "dur": 2.602,
+      "enter": "cut",
+      "enterScore": 0.443
+    },
+    {
+      "shot": 15,
+      "start": 26.026,
+      "end": 29.028,
+      "dur": 3.002,
+      "enter": "cut",
+      "enterScore": 0.744
+    }
+  ]
+}

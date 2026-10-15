@@ -1,0 +1,681 @@
+{
+ "01a": [
+  {
+   "t": "NEW",
+   "c": 0.99
+  },
+  {
+   "t": "ASUS Zenbook DUO",
+   "c": 0.88
+  }
+ ],
+ "01b": [
+  {
+   "t": "NEW",
+   "c": 0.99
+  },
+  {
+   "t": "ASUS Zenbook DUO",
+   "c": 0.88
+  }
+ ],
+ "01c": [
+  {
+   "t": "NEW",
+   "c": 1.0
+  },
+  {
+   "t": "ASUS Zenbook DUO",
+   "c": 0.89
+  }
+ ],
+ "02a": [],
+ "02b": [],
+ "02c": [
+  {
+   "t": "CERALUMINUMTM ChasSis",
+   "c": 0.9
+  }
+ ],
+ "03a": [
+  {
+   "t": "CERALUMINUMTM ChasSis",
+   "c": 0.92
+  }
+ ],
+ "03b": [
+  {
+   "t": "CERALUMINUMTM Chassis",
+   "c": 0.92
+  }
+ ],
+ "03c": [
+  {
+   "t": "CERALUMINUMTM Chassis",
+   "c": 0.92
+  }
+ ],
+ "04a": [
+  {
+   "t": "New HINGE Design",
+   "c": 0.97
+  }
+ ],
+ "04b": [
+  {
+   "t": "New HINGE Design",
+   "c": 0.96
+  }
+ ],
+ "04c": [
+  {
+   "t": "Precise Hold, Built to Last",
+   "c": 0.97
+  }
+ ],
+ "05a": [
+  {
+   "t": "IMMERSIVE",
+   "c": 0.99
+  }
+ ],
+ "05b": [
+  {
+   "t": "McIMMERSIVE",
+   "c": 0.95
+  }
+ ],
+ "05c": [
+  {
+   "t": "More IMMERSIVE",
+   "c": 0.94
+  }
+ ],
+ "06a": [
+  {
+   "t": "ASUS",
+   "c": 0.95
+  },
+  {
+   "t": "3KASUSLumina Pro OLED",
+   "c": 0.9
+  },
+  {
+   "t": "LuminaPro",
+   "c": 1.0
+  },
+  {
+   "t": "OLED",
+   "c": 0.99
+  },
+  {
+   "t": "Anti-reflection.10o0.nitspeakbrightness.",
+   "c": 0.95
+  }
+ ],
+ "06b": [
+  {
+   "t": "6 Studio Tuned Speakers,lmmersive Sound",
+   "c": 0.95
+  }
+ ],
+ "06c": [
+  {
+   "t": "6 Studio Tuned Speakers, Immersive Sound",
+   "c": 0.97
+  }
+ ],
+ "07a": [
+  {
+   "t": "PERFORMANCE",
+   "c": 0.99
+  }
+ ],
+ "07b": [
+  {
+   "t": "PERFORMANCE ap",
+   "c": 0.96
+  }
+ ],
+ "07c": [
+  {
+   "t": "PERFORMANCE Leap",
+   "c": 0.95
+  }
+ ],
+ "08a": [
+  {
+   "t": "DUALBATTERIES,",
+   "c": 0.97
+  },
+  {
+   "t": "All Day Power",
+   "c": 0.95
+  }
+ ],
+ "08b": [
+  {
+   "t": "DUALBATTERIES",
+   "c": 0.99
+  },
+  {
+   "t": "Day Power",
+   "c": 0.95
+  }
+ ],
+ "08c": [
+  {
+   "t": "DUALBATTERIES,AlI DayPower",
+   "c": 0.88
+  }
+ ],
+ "09a": [
+  {
+   "t": "24%More Air Flow",
+   "c": 0.96
+  },
+  {
+   "t": "QUIET&COOL",
+   "c": 0.98
+  }
+ ],
+ "09b": [
+  {
+   "t": "24% More Air Flow",
+   "c": 0.98
+  },
+  {
+   "t": "QUIET&COOL",
+   "c": 0.98
+  }
+ ],
+ "09c": [
+  {
+   "t": "24% More Air Flow",
+   "c": 0.98
+  },
+  {
+   "t": "QUIET&COOL",
+   "c": 0.98
+  }
+ ],
+ "10a": [
+  {
+   "t": "ols",
+   "c": 0.9
+  },
+  {
+   "t": "Options",
+   "c": 0.99
+  },
+  {
+   "t": "Help",
+   "c": 0.9
+  },
+  {
+   "t": "After_01.veg*-VEGAS Pro23.0",
+   "c": 0.98
+  },
+  {
+   "t": "VEGASHubLogout",
+   "c": 0.99
+  },
+  {
+   "t": "?",
+   "c": 0.73
+  },
+  {
+   "t": "fxPreview（Full",
+   "c": 0.91
+  },
+  {
+   "t": "100%#",
+   "c": 0.96
+  },
+  {
+   "t": "Intel CoreTMUltra X9 Series3 Pracessor",
+   "c": 0.92
+  },
+  {
+   "t": "fxMS",
+   "c": 0.91
+  },
+  {
+   "t": "33600-h4909471-h8322737-usocial_niplu",
+   "c": 0.98
+  },
+  {
+   "t": "920_..d_.1920...hd_4096...s._https..",
+   "c": 0.76
+  },
+  {
+   "t": "DUAL",
+   "c": 0.98
+  },
+  {
+   "t": "DUAL",
+   "c": 0.97
+  },
+  {
+   "t": "EGAS",
+   "c": 0.99
+  },
+  {
+   "t": "VEGAS",
+   "c": 0.99
+  },
+  {
+   "t": "VEGAS",
+   "c": 0.99
+  },
+  {
+   "t": "VEGAS",
+   "c": 0.99
+  },
+  {
+   "t": "es&..",
+   "c": 0.89
+  },
+  {
+   "t": "Titles&...Titles &...Titles&...",
+   "c": 0.79
+  },
+  {
+   "t": "DUAL",
+   "c": 0.98
+  },
+  {
+   "t": "CREATE",
+   "c": 0.98
+  },
+  {
+   "t": "DUAL",
+   "c": 0.96
+  },
+  {
+   "t": "DUAL",
+   "c": 0.93
+  },
+  {
+   "t": "VEGAS",
+   "c": 0.99
+  },
+  {
+   "t": "VEGAS",
+   "c": 0.99
+  },
+  {
+   "t": "Series3",
+   "c": 0.99
+  },
+  {
+   "t": "EGAS",
+   "c": 0.99
+  },
+  {
+   "t": "VEGAS",
+   "c": 0.99
+  },
+  {
+   "t": "Tities&Tites&.Tites&",
+   "c": 0.86
+  },
+  {
+   "t": "Anywhere",
+   "c": 0.99
+  },
+  {
+   "t": "intel",
+   "c": 0.98
+  },
+  {
+   "t": "CORE",
+   "c": 0.82
+  },
+  {
+   "t": "ULTRA",
+   "c": 0.99
+  },
+  {
+   "t": "X9",
+   "c": 0.87
+  },
+  {
+   "t": "UAI",
+   "c": 0.71
+  },
+  {
+   "t": "1080x1920.29.970p",
+   "c": 0.96
+  },
+  {
+   "t": "0.00.0",
+   "c": 0.91
+  },
+  {
+   "t": "1080x1920,29.970p",
+   "c": 0.94
+  },
+  {
+   "t": "MasterBus",
+   "c": 0.98
+  },
+  {
+   "t": "VideoPrevlew",
+   "c": 0.9
+  },
+  {
+   "t": "Trimmer",
+   "c": 0.92
+  }
+ ],
+ "10b": [
+  {
+   "t": "Intel CoreTM UItra X9.Series3 Processor",
+   "c": 0.93
+  },
+  {
+   "t": "TheEvolutionofGenerativeAl",
+   "c": 0.99
+  },
+  {
+   "t": "GenerativeAlhasrapidlyevolved",
+   "c": 0.97
+  },
+  {
+   "t": "Whatwasoncesciencefictionhas",
+   "c": 0.98
+  },
+  {
+   "t": "frombasictextpredictionmodelsto",
+   "c": 0.98
+  },
+  {
+   "t": "nowbecomereality-Alcomposes",
+   "c": 0.98
+  },
+  {
+   "t": "systemscapableof creating entire",
+   "c": 0.95
+  },
+  {
+   "t": "music,paints,writes,andcodes.The",
+   "c": 0.93
+  },
+  {
+   "t": "worldsofimagination.",
+   "c": 0.99
+  },
+  {
+   "t": "boundarybetween human and",
+   "c": 0.96
+  },
+  {
+   "t": "machinecreativitygrowsthinner",
+   "c": 0.97
+  },
+  {
+   "t": "Its foundationliesindeep",
+   "c": 0.94
+  },
+  {
+   "t": "eachday.",
+   "c": 0.98
+  },
+  {
+   "t": "learning-neuralnetworkstrained",
+   "c": 0.98
+  },
+  {
+   "t": "machinesto understand language,",
+   "c": 0.96
+  },
+  {
+   "t": "style,and context.",
+   "c": 0.94
+  },
+  {
+   "t": "WORK",
+   "c": 0.99
+  },
+  {
+   "t": "Series3",
+   "c": 0.99
+  },
+  {
+   "t": "Anywhere",
+   "c": 0.99
+  },
+  {
+   "t": "intel",
+   "c": 0.98
+  },
+  {
+   "t": "CORE",
+   "c": 0.82
+  },
+  {
+   "t": "ULTRA",
+   "c": 0.99
+  },
+  {
+   "t": "X9",
+   "c": 0.88
+  }
+ ],
+ "10c": [
+  {
+   "t": "Intel CoreTM Ultra X9 Series 3 Processor",
+   "c": 0.93
+  },
+  {
+   "t": "GAME",
+   "c": 0.99
+  },
+  {
+   "t": "Anywhere",
+   "c": 0.99
+  },
+  {
+   "t": "LIVE",
+   "c": 1.0
+  },
+  {
+   "t": "Series3",
+   "c": 0.99
+  },
+  {
+   "t": "intel",
+   "c": 0.99
+  },
+  {
+   "t": "CORE",
+   "c": 0.82
+  },
+  {
+   "t": "ULTRAX9",
+   "c": 0.99
+  }
+ ],
+ "11a": [
+  {
+   "t": "oucan",
+   "c": 0.98
+  },
+  {
+   "t": "feel",
+   "c": 0.95
+  }
+ ],
+ "11b": [
+  {
+   "t": "Everyultraportableithin",
+   "c": 0.84
+  },
+  {
+   "t": "Only Zenbooki Zen.",
+   "c": 0.86
+  }
+ ],
+ "11c": [],
+ "12a": [
+  {
+   "t": "design you",
+   "c": 0.84
+  },
+  {
+   "t": "canifeel",
+   "c": 0.87
+  },
+  {
+   "t": "Series3",
+   "c": 0.99
+  },
+  {
+   "t": "That's thepower ofIntel Inside",
+   "c": 0.92
+  },
+  {
+   "t": "intel",
+   "c": 0.99
+  },
+  {
+   "t": "CORe",
+   "c": 0.83
+  },
+  {
+   "t": "Powered by IntelCoreTMUltraX9Series3 Processor",
+   "c": 0.95
+  },
+  {
+   "t": "ULTRAX9",
+   "c": 0.99
+  },
+  {
+   "t": "Learnmoreathttps://www.asus.com/laptops/for-home/zenbook/asus-zenbook-duo-ux8407/",
+   "c": 0.93
+  }
+ ],
+ "12b": [
+  {
+   "t": "ASUS Zenbook DUO",
+   "c": 0.9
+  },
+  {
+   "t": "Let's Duo it",
+   "c": 0.86
+  },
+  {
+   "t": "Series3'",
+   "c": 0.92
+  },
+  {
+   "t": "That's the power of Intel Inside?",
+   "c": 0.94
+  },
+  {
+   "t": "intel",
+   "c": 0.93
+  },
+  {
+   "t": "CORe",
+   "c": 0.75
+  },
+  {
+   "t": "PoweredbyIntelCoreTMUltraX9Series3Processor",
+   "c": 0.97
+  },
+  {
+   "t": "ULTRAX9",
+   "c": 0.99
+  },
+  {
+   "t": "Learnmoreathttps:/www.asus.com/laptops/for-home/zenbook/asus-zenbook-duo-ux8407/",
+   "c": 0.97
+  }
+ ],
+ "12c": [
+  {
+   "t": "ASUS Zenbook DUO",
+   "c": 0.92
+  },
+  {
+   "t": "Let's DUOit",
+   "c": 0.92
+  },
+  {
+   "t": "Series3",
+   "c": 0.99
+  },
+  {
+   "t": "That's the power of Intel Inside?",
+   "c": 0.94
+  },
+  {
+   "t": "intel",
+   "c": 0.94
+  },
+  {
+   "t": "CORe",
+   "c": 0.76
+  },
+  {
+   "t": "PoweredbyIntelCoreTMUltraX9Series3Processor",
+   "c": 0.97
+  },
+  {
+   "t": "ULTRAX9",
+   "c": 0.99
+  },
+  {
+   "t": "Learnmoreathttps://ww.asus.com/aptops/for-home/zenbook/asus-zenbook-duo-ux8407/",
+   "c": 0.98
+  }
+ ],
+ "13a": [],
+ "13b": [
+  {
+   "t": "SUS",
+   "c": 0.61
+  }
+ ],
+ "13c": [],
+ "14a": [
+  {
+   "t": "intet",
+   "c": 0.87
+  },
+  {
+   "t": "CO",
+   "c": 0.8
+  }
+ ],
+ "14b": [
+  {
+   "t": "intel.",
+   "c": 0.94
+  },
+  {
+   "t": "CORe",
+   "c": 0.79
+  },
+  {
+   "t": "ULTRA",
+   "c": 0.97
+  }
+ ],
+ "14c": [
+  {
+   "t": "intel.",
+   "c": 0.96
+  },
+  {
+   "t": "CORE",
+   "c": 0.73
+  },
+  {
+   "t": "ULTRA",
+   "c": 0.97
+  }
+ ]
+}

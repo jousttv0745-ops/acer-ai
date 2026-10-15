@@ -1,0 +1,359 @@
+{
+ "01a": [],
+ "01b": [
+  {
+   "t": "Hello",
+   "c": 0.96
+  }
+ ],
+ "01c": [],
+ "02a": [
+  {
+   "t": "W",
+   "c": 0.93
+  }
+ ],
+ "02b": [],
+ "02c": [
+  {
+   "t": "Q",
+   "c": 0.94
+  },
+  {
+   "t": "S",
+   "c": 0.94
+  }
+ ],
+ "03a": [],
+ "03b": [
+  {
+   "t": "da olive",
+   "c": 0.72
+  }
+ ],
+ "03c": [
+  {
+   "t": "Isten to life",
+   "c": 0.65
+  }
+ ],
+ "04a": [
+  {
+   "t": "OUTER",
+   "c": 0.99
+  },
+  {
+   "t": "SPACE",
+   "c": 0.98
+  }
+ ],
+ "04b": [
+  {
+   "t": "OUTER",
+   "c": 0.99
+  },
+  {
+   "t": "SPACE",
+   "c": 0.98
+  }
+ ],
+ "04c": [
+  {
+   "t": "OUTER SPACE",
+   "c": 0.94
+  }
+ ],
+ "05a": [],
+ "05b": [],
+ "05c": [],
+ "06a": [
+  {
+   "t": "Could be like 6pm?Or7pm?Or",
+   "c": 0.9
+  },
+  {
+   "t": "possibly8pm?Isthishelpful?I",
+   "c": 0.95
+  },
+  {
+   "t": "feel like thisisn't heipful..",
+   "c": 0.93
+  },
+  {
+   "t": "You're trying yourbest!",
+   "c": 0.96
+  },
+  {
+   "t": "Thankyouforrecognizingmy",
+   "c": 1.0
+  },
+  {
+   "t": "heroic efforts.I doit all foryou.",
+   "c": 0.95
+  },
+  {
+   "t": "Proud/grateful/impressed,etc.",
+   "c": 0.97
+  },
+  {
+   "t": "IMessag",
+   "c": 0.9
+  }
+ ],
+ "06b": [
+  {
+   "t": "You're trying yourbest!",
+   "c": 0.96
+  },
+  {
+   "t": "Thankyouforrecognizingmy",
+   "c": 1.0
+  },
+  {
+   "t": "heroicefforts.I do it all foryou.",
+   "c": 0.94
+  },
+  {
+   "t": "Delivered",
+   "c": 0.96
+  },
+  {
+   "t": "Proud/grateful/impressed,etc.",
+   "c": 0.96
+  },
+  {
+   "t": "Today B4tAM",
+   "c": 0.84
+  }
+ ],
+ "06c": [
+  {
+   "t": "Couldbelike6pm?Or7pm?Or",
+   "c": 0.95
+  },
+  {
+   "t": "possibly 8pm? Is thishelpful?1",
+   "c": 0.91
+  },
+  {
+   "t": "feel like this isn't helpfu....",
+   "c": 0.88
+  },
+  {
+   "t": "You're trying yourbest!",
+   "c": 0.96
+  },
+  {
+   "t": "Thankyou forrecognizing my",
+   "c": 0.96
+  },
+  {
+   "t": "heroicefforts.I doit allforyou.",
+   "c": 0.97
+  },
+  {
+   "t": "Delivered",
+   "c": 0.95
+  },
+  {
+   "t": "Proud/grateful/impressed,etc.",
+   "c": 0.96
+  },
+  {
+   "t": "941AM",
+   "c": 0.94
+  }
+ ],
+ "07a": [
+  {
+   "t": "Edlt",
+   "c": 0.84
+  },
+  {
+   "t": "View",
+   "c": 0.82
+  },
+  {
+   "t": "Conversation",
+   "c": 0.97
+  },
+  {
+   "t": "Format WindowHelp",
+   "c": 0.93
+  },
+  {
+   "t": "WedApr19:41AM",
+   "c": 0.88
+  },
+  {
+   "t": "Elisha)",
+   "c": 0.93
+  },
+  {
+   "t": "possibly Bpm?Is this helplul?!",
+   "c": 0.9
+  },
+  {
+   "t": "feelikethisisn'thelpfu.",
+   "c": 0.72
+  },
+  {
+   "t": "Thank youforrecognizingmy",
+   "c": 0.95
+  },
+  {
+   "t": "heroic efforts.doitallforyou.",
+   "c": 0.85
+  },
+  {
+   "t": "Proud/gratefulfimpressed, etc.",
+   "c": 0.95
+  },
+  {
+   "t": "Tboey/ 9(41AM",
+   "c": 0.77
+  },
+  {
+   "t": "loel he thsian'theofl",
+   "c": 0.66
+  },
+  {
+   "t": "Thankyeu forrecognling",
+   "c": 0.79
+  },
+  {
+   "t": "herole ffort.1doitalffor",
+   "c": 0.65
+  }
+ ],
+ "07b": [
+  {
+   "t": "Edit",
+   "c": 0.96
+  },
+  {
+   "t": "FomatWindowHelp",
+   "c": 0.94
+  },
+  {
+   "t": "Q",
+   "c": 0.87
+  },
+  {
+   "t": "WedApr1g:41AM",
+   "c": 0.91
+  },
+  {
+   "t": "Elisha)",
+   "c": 0.92
+  },
+  {
+   "t": "Could be like6pm？Or7pm？Or",
+   "c": 0.89
+  },
+  {
+   "t": "possibly Bom?Isthis helpful?!",
+   "c": 0.82
+  },
+  {
+   "t": "felike this isn'thelpful..",
+   "c": 0.77
+  },
+  {
+   "t": "You're trying your best!",
+   "c": 0.97
+  },
+  {
+   "t": "heroic efforts.Idoitallforyou.",
+   "c": 0.85
+  },
+  {
+   "t": "Proud/gratefulmpressed,etc",
+   "c": 0.77
+  }
+ ],
+ "07c": [
+  {
+   "t": "Edit",
+   "c": 0.96
+  },
+  {
+   "t": "View",
+   "c": 0.88
+  },
+  {
+   "t": "Conversation",
+   "c": 0.95
+  },
+  {
+   "t": "Format Window Help",
+   "c": 0.92
+  },
+  {
+   "t": "Q8WedApr1g41AM",
+   "c": 0.91
+  },
+  {
+   "t": "口",
+   "c": 0.78
+  },
+  {
+   "t": "Elisha)",
+   "c": 0.89
+  },
+  {
+   "t": "Could beke6pm?Or7pm？Or",
+   "c": 0.89
+  },
+  {
+   "t": "possibly Bom?ls thishelpul?!",
+   "c": 0.86
+  },
+  {
+   "t": "fellike this isn't helpfu....",
+   "c": 0.72
+  },
+  {
+   "t": "You're trying your best!",
+   "c": 0.97
+  },
+  {
+   "t": "Thankyouforrecognizingmy",
+   "c": 0.99
+  },
+  {
+   "t": "herolceffort.Idoitallforyou.",
+   "c": 0.85
+  },
+  {
+   "t": "Proud/gratetulimpressedetc.",
+   "c": 0.85
+  }
+ ],
+ "08a": [],
+ "08b": [],
+ "08c": [
+  {
+   "t": "GOLF",
+   "c": 0.98
+  },
+  {
+   "t": "BELIEVE",
+   "c": 0.99
+  },
+  {
+   "t": "MAKE",
+   "c": 0.98
+  },
+  {
+   "t": "STUFF",
+   "c": 0.97
+  }
+ ],
+ "09a": [],
+ "09b": [],
+ "09c": [],
+ "10a": [],
+ "10b": [],
+ "10c": []
+}

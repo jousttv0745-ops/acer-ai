@@ -1,0 +1,119 @@
+{
+  "id": "tLwcHZW7hS4",
+  "threshold": 0.15,
+  "frames": 1076,
+  "shots": [
+    {
+      "shot": 1,
+      "start": 0,
+      "end": 2.3,
+      "dur": 2.3,
+      "enter": "start",
+      "enterScore": null
+    },
+    {
+      "shot": 2,
+      "start": 2.3,
+      "end": 4.167,
+      "dur": 1.867,
+      "enter": "cut",
+      "enterScore": 0.201
+    },
+    {
+      "shot": 3,
+      "start": 4.167,
+      "end": 4.833,
+      "dur": 0.666,
+      "enter": "cut",
+      "enterScore": 0.152
+    },
+    {
+      "shot": 4,
+      "start": 4.833,
+      "end": 7.533,
+      "dur": 2.7,
+      "enter": "cut",
+      "enterScore": 0.446
+    },
+    {
+      "shot": 5,
+      "start": 7.533,
+      "end": 9.9,
+      "dur": 2.367,
+      "enter": "cut",
+      "enterScore": 0.668
+    },
+    {
+      "shot": 6,
+      "start": 9.9,
+      "end": 12.867,
+      "dur": 2.967,
+      "enter": "cut",
+      "enterScore": 0.493
+    },
+    {
+      "shot": 7,
+      "start": 12.867,
+      "end": 15.234,
+      "dur": 2.367,
+      "enter": "cut",
+      "enterScore": 0.802
+    },
+    {
+      "shot": 8,
+      "start": 15.234,
+      "end": 17.034,
+      "dur": 1.8,
+      "enter": "cut",
+      "enterScore": 0.678
+    },
+    {
+      "shot": 9,
+      "start": 17.034,
+      "end": 18.667,
+      "dur": 1.633,
+      "enter": "cut",
+      "enterScore": 0.198
+    },
+    {
+      "shot": 10,
+      "start": 18.667,
+      "end": 22.7,
+      "dur": 4.033,
+      "enter": "cut",
+      "enterScore": 0.228
+    },
+    {
+      "shot": 11,
+      "start": 22.7,
+      "end": 26.9,
+      "dur": 4.2,
+      "enter": "cut",
+      "enterScore": 0.313
+    },
+    {
+      "shot": 12,
+      "start": 26.9,
+      "end": 29.9,
+      "dur": 3,
+      "enter": "cut",
+      "enterScore": 0.452
+    },
+    {
+      "shot": 13,
+      "start": 29.9,
+      "end": 33.7,
+      "dur": 3.8,
+      "enter": "cut",
+      "enterScore": 0.666
+    },
+    {
+      "shot": 14,
+      "start": 33.7,
+      "end": 35.866,
+      "dur": 2.166,
+      "enter": "cut",
+      "enterScore": 0.969
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "id": "bg3iEHHTGtQ",
+  "threshold": 0.2,
+  "frames": 840,
+  "shots": [
+    {
+      "shot": 1,
+      "start": 0,
+      "end": 8.175,
+      "dur": 8.175,
+      "enter": "start",
+      "enterScore": null
+    },
+    {
+      "shot": 2,
+      "start": 8.175,
+      "end": 8.925,
+      "dur": 0.75,
+      "enter": "cut",
+      "enterScore": 0.277
+    },
+    {
+      "shot": 3,
+      "start": 8.925,
+      "end": 9.551,
+      "dur": 0.626,
+      "enter": "cut",
+      "enterScore": 0.34
+    },
+    {
+      "shot": 4,
+      "start": 9.551,
+      "end": 10.51,
+      "dur": 0.959,
+      "enter": "cut",
+      "enterScore": 0.301
+    },
+    {
+      "shot": 5,
+      "start": 10.51,
+      "end": 11.261,
+      "dur": 0.751,
+      "enter": "cut",
+      "enterScore": 0.255
+    },
+    {
+      "shot": 6,
+      "start": 11.261,
+      "end": 12.554,
+      "dur": 1.293,
+      "enter": "cut",
+      "enterScore": 0.684
+    },
+    {
+      "shot": 7,
+      "start": 12.554,
+      "end": 13.889,
+      "dur": 1.335,
+      "enter": "cut",
+      "enterScore": 0.674
+    },
+    {
+      "shot": 8,
+      "start": 13.889,
+      "end": 23.773,
+      "dur": 9.884,
+      "enter": "cut",
+      "enterScore": 0.762
+    },
+    {
+      "shot": 9,
+      "start": 23.773,
+      "end": 24.482,
+      "dur": 0.709,
+      "enter": "cut",
+      "enterScore": 0.326
+    },
+    {
+      "shot": 10,
+      "start": 24.482,
+      "end": 34.994,
+      "dur": 10.512,
+      "enter": "cut",
+      "enterScore": 0.312
+    },
+    {
+      "shot": 11,
+      "start": 34.994,
+      "end": 35.036,
+      "dur": 0.042,
+      "enter": "cut",
+      "enterScore": 1
+    }
+  ]
+}

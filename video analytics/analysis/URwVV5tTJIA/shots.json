@@ -1,0 +1,223 @@
+{
+  "id": "URwVV5tTJIA",
+  "threshold": 0.2,
+  "frames": 1200,
+  "shots": [
+    {
+      "shot": 1,
+      "start": 0,
+      "end": 3.212,
+      "dur": 3.212,
+      "enter": "start",
+      "enterScore": null
+    },
+    {
+      "shot": 2,
+      "start": 3.212,
+      "end": 3.754,
+      "dur": 0.542,
+      "enter": "cut",
+      "enterScore": 0.409
+    },
+    {
+      "shot": 3,
+      "start": 3.754,
+      "end": 4.546,
+      "dur": 0.792,
+      "enter": "cut",
+      "enterScore": 0.642
+    },
+    {
+      "shot": 4,
+      "start": 4.546,
+      "end": 5.255,
+      "dur": 0.709,
+      "enter": "cut",
+      "enterScore": 0.984
+    },
+    {
+      "shot": 5,
+      "start": 5.255,
+      "end": 10.427,
+      "dur": 5.172,
+      "enter": "soft",
+      "enterScore": 0.603
+    },
+    {
+      "shot": 6,
+      "start": 10.427,
+      "end": 10.719,
+      "dur": 0.292,
+      "enter": "cut",
+      "enterScore": 0.904
+    },
+    {
+      "shot": 7,
+      "start": 10.719,
+      "end": 11.053,
+      "dur": 0.334,
+      "enter": "cut",
+      "enterScore": 0.348
+    },
+    {
+      "shot": 8,
+      "start": 11.053,
+      "end": 11.511,
+      "dur": 0.459,
+      "enter": "cut",
+      "enterScore": 0.628
+    },
+    {
+      "shot": 9,
+      "start": 11.511,
+      "end": 12.137,
+      "dur": 0.626,
+      "enter": "cut",
+      "enterScore": 0.676
+    },
+    {
+      "shot": 10,
+      "start": 12.137,
+      "end": 14.973,
+      "dur": 2.836,
+      "enter": "cut",
+      "enterScore": 0.318
+    },
+    {
+      "shot": 11,
+      "start": 14.973,
+      "end": 16.558,
+      "dur": 1.585,
+      "enter": "cut",
+      "enterScore": 0.799
+    },
+    {
+      "shot": 12,
+      "start": 16.558,
+      "end": 19.603,
+      "dur": 3.045,
+      "enter": "cut",
+      "enterScore": 0.523
+    },
+    {
+      "shot": 13,
+      "start": 19.603,
+      "end": 20.103,
+      "dur": 0.5,
+      "enter": "cut",
+      "enterScore": 0.618
+    },
+    {
+      "shot": 14,
+      "start": 20.103,
+      "end": 21.23,
+      "dur": 1.126,
+      "enter": "cut",
+      "enterScore": 0.405
+    },
+    {
+      "shot": 15,
+      "start": 21.23,
+      "end": 25.067,
+      "dur": 3.837,
+      "enter": "cut",
+      "enterScore": 0.661
+    },
+    {
+      "shot": 16,
+      "start": 25.067,
+      "end": 26.61,
+      "dur": 1.543,
+      "enter": "cut",
+      "enterScore": 0.629
+    },
+    {
+      "shot": 17,
+      "start": 26.61,
+      "end": 27.152,
+      "dur": 0.542,
+      "enter": "cut",
+      "enterScore": 0.607
+    },
+    {
+      "shot": 18,
+      "start": 27.152,
+      "end": 27.444,
+      "dur": 0.292,
+      "enter": "cut",
+      "enterScore": 0.785
+    },
+    {
+      "shot": 19,
+      "start": 27.444,
+      "end": 30.113,
+      "dur": 2.669,
+      "enter": "cut",
+      "enterScore": 0.255
+    },
+    {
+      "shot": 20,
+      "start": 30.113,
+      "end": 31.365,
+      "dur": 1.251,
+      "enter": "cut",
+      "enterScore": 0.351
+    },
+    {
+      "shot": 21,
+      "start": 31.365,
+      "end": 32.532,
+      "dur": 1.168,
+      "enter": "cut",
+      "enterScore": 0.275
+    },
+    {
+      "shot": 22,
+      "start": 32.532,
+      "end": 36.286,
+      "dur": 3.754,
+      "enter": "cut",
+      "enterScore": 0.87
+    },
+    {
+      "shot": 23,
+      "start": 36.286,
+      "end": 37.037,
+      "dur": 0.751,
+      "enter": "cut",
+      "enterScore": 1
+    },
+    {
+      "shot": 24,
+      "start": 37.037,
+      "end": 37.579,
+      "dur": 0.542,
+      "enter": "cut",
+      "enterScore": 0.527
+    },
+    {
+      "shot": 25,
+      "start": 37.579,
+      "end": 38.163,
+      "dur": 0.584,
+      "enter": "cut",
+      "enterScore": 1
+    },
+    {
+      "shot": 26,
+      "start": 38.163,
+      "end": 45.045,
+      "dur": 6.882,
+      "enter": "cut",
+      "enterScore": 1
+    },
+    {
+      "shot": 27,
+      "start": 45.045,
+      "end": 50.05,
+      "dur": 5.005,
+      "enter": "cut",
+      "enterScore": 1
+    }
+  ]
+}
